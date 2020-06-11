@@ -3,13 +3,183 @@
 #include <string>
 #include "base_app.hpp"
 #include <dlfcn.h>
+#include <iostream>
+#include <map>
 using std::string;
+using std::map;
+using std::cout;
+using std::endl;
+//变量区
+//sotable存放打开的动态库
+map<string,struct sofiles*> sotable; 
+//apptable存放启动的应用对象
+map<int, struct app_objects> apptable;
+//ssdp应用管理函数表
+struct ssdp_app_functable app_functable;
+//handleid管理
+static int cur_id =1;
 
-struct sofiles sotable[128];
-static AppBase* apptable[128];
-static int app_nums = 1;
 
-int SSDP_InstantiateApp(int fromid, string handlename, string filepath ){
-    sotable[app_nums].so_boject = dlopen(filepath.c_str(), RTLD_LAZY);
-    
+//获取新应用的handleid
+int get_new_id(){
+    return cur_id++;
+}
+//获取目标so文件对象
+struct sofiles* get_so(string sofilename){
+    map<string,struct sofiles*>::iterator iter = sotable.find(sofilename);
+    if (iter == sotable.end()){
+        void* so_object = dlopen(sofilename.c_str(),RTLD_LAZY);
+        APP_Instance_ptr create = (APP_Instance_ptr) dlsym(so_object, "APP_Instance");
+        APP_Destroy_ptr destroy = (APP_Destroy_ptr) dlsym(so_object,"APP_Destroy");
+        struct sofiles* new_so = new struct sofiles(so_object,create,destroy);
+        sotable.insert(make_pair(sofilename,new_so));
+        return new_so;
+    }
+    else{
+        return iter->second;
+    }
+}
+
+int SSDP_InstantiateApp(int fromid, string handlename, string sofile ){
+    struct sofiles * targetso = get_so(sofile);
+    AppBase* new_app = targetso->create(handlename,get_new_id(),&app_functable);
+    struct app_objects a_o(new_app,targetso);
+    apptable.insert(std::make_pair(new_app->APP_GetHandleID(),a_o));
+    return new_app->APP_GetHandleID();
+}
+
+int SSDP_Start(int formid, int toid){
+    if (apptable.count(toid) != 0){
+        apptable[toid].app_ptr->APP_Start();
+        return 0;
+    }
+    else{
+        return -1;
+    }
+}
+
+int SSDP_Stop(int formid, int toid){
+    if (apptable.count(toid) != 0){
+        apptable[toid].app_ptr->APP_Stop();
+        return 0;
+    }
+    else{
+        return -1;
+    }
+}
+
+int SSDP_Initialize(int formid, int toid){
+    if (apptable.count(toid) != 0){
+        apptable[toid].app_ptr->APP_Initialize();
+        return 0;
+    }
+    else{
+        return -1;
+    }
+}
+
+int SSDP_ReleaseObject(int formid, int toid){
+    if (apptable.count(toid) != 0){
+        apptable[toid].app_ptr->APP_ReleaseObject();
+        return 0;
+    }
+    else{
+        return -1;
+    }
+}
+
+int SSDP_Write(int fromid, int toid, string buffer, int buffer_size){
+    if (apptable.count(toid) != 0){
+        apptable[toid].app_ptr->APP_Write(buffer,buffer_size);
+        return buffer_size;
+    }
+    else{
+        return -1;
+    }
+}
+
+int SSDP_Read(int formid, int toid, string* buffer, int buffer_size){
+    if (apptable.count(toid) != 0){
+        apptable[toid].app_ptr->APP_Read(buffer,buffer_size);
+        return buffer_size;
+    }
+    else{
+        return -1;
+    }
+}
+
+int SSDP_GetHandleName(int fromid, int toid, string* targetname){
+    if (apptable.count(toid) != 0){
+        return 0;
+    }
+    else{
+        return -1;
+    }
+}
+
+int SSDP_ValidateHandleID(int testid){
+    if (apptable.count(testid) != 0){
+        return 0;
+    }
+    else{
+        return -1;
+    }
+}
+
+int SSDP_Configure(int fromid, int toid, string name, string value, int value_size){
+    if (apptable.count(toid) != 0){
+        apptable[toid].app_ptr->APP_Configure(name,value,value_size);
+        return 0;
+    }
+    else{
+        return -1;
+    }
+}
+
+int SSDP_Query(int fromid, int toid, string name, string* value, int value_size){
+    if (apptable.count(toid) != 0){
+        apptable[toid].app_ptr->APP_Query(name,value,value_size);
+        return 0;
+    }
+    else{
+        return -1;
+    }
+}
+
+int SSDP_AbortApp(int fromid, int toid){
+    if (apptable.count(toid) != 0){
+        apptable[toid].so_ptr->destroy(apptable[toid].app_ptr);
+        apptable.erase(toid);
+        return 0;
+    }
+    else{
+        return -1;
+    }
+}
+
+int SSDP_show_cur_apps(){
+    if (apptable.size() == 0){
+        cout<<"no app now"<<endl;
+    }
+    auto iter = apptable.begin();
+    while(iter != apptable.end()){
+        cout<<iter->first<<" "<<iter->second.app_ptr->APP_GetHandleName()<<endl;
+        ++iter;
+    }
+}
+
+int SSDP_self_Init(){
+    app_functable.instan = &SSDP_InstantiateApp;
+    app_functable.start = &SSDP_Start;
+    app_functable.stop = &SSDP_Stop;
+    app_functable.init = &SSDP_Initialize;
+    app_functable.release = &SSDP_ReleaseObject;
+    app_functable.write = &SSDP_Write;
+    app_functable.read = &SSDP_Read;
+    app_functable.getname = &SSDP_GetHandleName;
+    app_functable.validid = &SSDP_ValidateHandleID;
+    app_functable.config = &SSDP_Configure;
+    app_functable.query = &SSDP_Query;
+    app_functable.abort = &SSDP_AbortApp;
+    return 0;
 }

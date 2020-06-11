@@ -8,13 +8,13 @@ class APP1: public AppBase{
 private:
     int pro1;
 public:
-    APP1(string name, int id, struct ssdp_app_functable ft):AppBase(name,id, ft){}
-    virtual int  APP_start(){
+    APP1(string name, int id, struct ssdp_app_functable* ft):AppBase(name,id, ft){}
+    virtual int  APP_Start(){
         cout<<"APP1 started"<<std::endl;
         //ftable.start(1,1);
         return 0;
     }
-    virtual int APP_stop(){
+    virtual int APP_Stop(){
         cout<<"APP1 stopped"<<std::endl;
         //ftable.stop(2,2);
         return 0;
@@ -45,7 +45,7 @@ public:
     }
 };
 
-extern "C" AppBase*  APP_Instance(string name, int id, struct ssdp_app_functable ft) {
+extern "C" AppBase*  APP_Instance(string name, int id, struct ssdp_app_functable* ft) {
     return new APP1(name,id,ft);
 }
 extern "C" void APP_Destroy(AppBase* p) {

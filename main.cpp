@@ -3,29 +3,29 @@
 //
 #include "base_app.hpp"
 #include <iostream>
-
-#include <dlfcn.h>
+#include "SSDP.h"
+#include "SSDP_API.h"
 using std::cout;
 using std::endl;
 using std::cerr;
-int SSDP_InstantiateApp (int fromid, std::string handlename, std::string filepath ){
-    cout<<"SSDP_InstantiateApp"<<endl;
-};
-int SSDP_start (int fromid,int toid ){
-    cout<<fromid<<endl;
-};
-int SSDP_stop (int fromid,int toid ){
-    cout<<fromid<<endl;
-};
-
-struct ssdp_functable ssdp_funs;
 
 
 int main() {
     //APP1TEST
-    ssdp_funs.init = &SSDP_InstantiateApp;
-    ssdp_funs.start = &SSDP_start;
-    ssdp_funs.stop = &SSDP_stop;
+    int ssdp_init_result = SSDP_self_Init();
+    if (ssdp_init_result != 0){
+        cout<<"ssdp init failed"<<endl;
+        return 1;
+    }
+    SSDP_show_cur_apps();
+    int appid = SSDP_InstantiateApp(0,"myapp1","./app1.so");
+    SSDP_Start(0,appid);
+    SSDP_Stop(0,appid);
+    SSDP_show_cur_apps();
+    SSDP_AbortApp(0,appid);
+    SSDP_show_cur_apps();
+    return 0;
+    /*
     void *app1 = dlopen("./app1.so",RTLD_LAZY);
     if (!app1){
         cerr << "Cannot load library: " << dlerror() << '\n';
@@ -53,5 +53,5 @@ int main() {
 
     destroy_app1(myapp1);
     dlclose(app1);
-
+    */
 }
