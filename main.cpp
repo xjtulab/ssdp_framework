@@ -19,10 +19,13 @@ int main() {
     }
     SSDP_show_cur_apps();
     int appid = SSDP_InstantiateApp(0,"myapp1","./app1.so");
-    SSDP_Start(0,appid);
-    SSDP_Stop(0,appid);
+    int appid1 = SSDP_InstantiateApp(0,"myapp2","./app2.so");
+    SSDP_Start(0,appid1);
+    SSDP_Stop(0,appid1);
     SSDP_show_cur_apps();
     SSDP_AbortApp(0,appid);
+    SSDP_show_cur_apps();
+    SSDP_AbortApp(0,appid1);
     SSDP_show_cur_apps();
     return 0;
     /*

@@ -1,5 +1,6 @@
 #include "SSDP_API.h"
 #include "SSDP.h"
+#include "SSDP_pre_data.h"
 #include <string>
 #include "base_app.hpp"
 #include <dlfcn.h>
@@ -11,27 +12,26 @@ using std::cout;
 using std::endl;
 //变量区
 //sotable存放打开的动态库
-map<string,struct sofiles*> sotable; 
+map<string,sofiles*> sotable; 
 //apptable存放启动的应用对象
-map<int, struct app_objects> apptable;
+map<SSDP_HandleID, app_objects> apptable;
 //ssdp应用管理函数表
-struct ssdp_app_functable app_functable;
+ssdp_app_functable app_functable;
 //handleid管理
-static int cur_id =1;
-
+static SSDP_HandleID cur_id =1;
 
 //获取新应用的handleid
-int get_new_id(){
+SSDP_HandleID get_new_id(){
     return cur_id++;
 }
 //获取目标so文件对象
-struct sofiles* get_so(string sofilename){
-    map<string,struct sofiles*>::iterator iter = sotable.find(sofilename);
+sofiles* get_so(string sofilename){
+    map<string,sofiles*>::iterator iter = sotable.find(sofilename);
     if (iter == sotable.end()){
         void* so_object = dlopen(sofilename.c_str(),RTLD_LAZY);
         APP_Instance_ptr create = (APP_Instance_ptr) dlsym(so_object, "APP_Instance");
         APP_Destroy_ptr destroy = (APP_Destroy_ptr) dlsym(so_object,"APP_Destroy");
-        struct sofiles* new_so = new struct sofiles(so_object,create,destroy);
+        sofiles* new_so = new sofiles(so_object,create,destroy);
         sotable.insert(make_pair(sofilename,new_so));
         return new_so;
     }
@@ -40,15 +40,15 @@ struct sofiles* get_so(string sofilename){
     }
 }
 
-int SSDP_InstantiateApp(int fromid, string handlename, string sofile ){
-    struct sofiles * targetso = get_so(sofile);
+SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, string sofile ){
+    sofiles * targetso = get_so(sofile);
     AppBase* new_app = targetso->create(handlename,get_new_id(),&app_functable);
-    struct app_objects a_o(new_app,targetso);
+    app_objects a_o(new_app,targetso);
     apptable.insert(std::make_pair(new_app->APP_GetHandleID(),a_o));
     return new_app->APP_GetHandleID();
 }
 
-int SSDP_Start(int formid, int toid){
+SSDP_Result SSDP_Start(SSDP_HandleID formid, SSDP_HandleID toid){
     if (apptable.count(toid) != 0){
         apptable[toid].app_ptr->APP_Start();
         return 0;
@@ -58,7 +58,7 @@ int SSDP_Start(int formid, int toid){
     }
 }
 
-int SSDP_Stop(int formid, int toid){
+SSDP_Result SSDP_Stop(SSDP_HandleID formid, SSDP_HandleID toid){
     if (apptable.count(toid) != 0){
         apptable[toid].app_ptr->APP_Stop();
         return 0;
@@ -68,7 +68,7 @@ int SSDP_Stop(int formid, int toid){
     }
 }
 
-int SSDP_Initialize(int formid, int toid){
+SSDP_Result SSDP_Initialize(SSDP_HandleID formid, SSDP_HandleID toid){
     if (apptable.count(toid) != 0){
         apptable[toid].app_ptr->APP_Initialize();
         return 0;
@@ -78,7 +78,7 @@ int SSDP_Initialize(int formid, int toid){
     }
 }
 
-int SSDP_ReleaseObject(int formid, int toid){
+SSDP_Result SSDP_ReleaseObject(SSDP_HandleID formid, SSDP_HandleID toid){
     if (apptable.count(toid) != 0){
         apptable[toid].app_ptr->APP_ReleaseObject();
         return 0;
@@ -88,7 +88,7 @@ int SSDP_ReleaseObject(int formid, int toid){
     }
 }
 
-int SSDP_Write(int fromid, int toid, string buffer, int buffer_size){
+SSDP_Result SSDP_Write(SSDP_HandleID fromid, SSDP_HandleID toid, SSDP_Message buffer, SSDP_Buffer_Size buffer_size){
     if (apptable.count(toid) != 0){
         apptable[toid].app_ptr->APP_Write(buffer,buffer_size);
         return buffer_size;
@@ -98,7 +98,7 @@ int SSDP_Write(int fromid, int toid, string buffer, int buffer_size){
     }
 }
 
-int SSDP_Read(int formid, int toid, string* buffer, int buffer_size){
+SSDP_Result SSDP_Read(SSDP_HandleID formid, SSDP_HandleID toid, SSDP_Message& buffer, SSDP_Buffer_Size buffer_size){
     if (apptable.count(toid) != 0){
         apptable[toid].app_ptr->APP_Read(buffer,buffer_size);
         return buffer_size;
@@ -108,7 +108,7 @@ int SSDP_Read(int formid, int toid, string* buffer, int buffer_size){
     }
 }
 
-int SSDP_GetHandleName(int fromid, int toid, string* targetname){
+SSDP_Result SSDP_GetHandleName(SSDP_HandleID fromid, SSDP_HandleID toid, string& targetname){
     if (apptable.count(toid) != 0){
         return 0;
     }
@@ -117,7 +117,7 @@ int SSDP_GetHandleName(int fromid, int toid, string* targetname){
     }
 }
 
-int SSDP_ValidateHandleID(int testid){
+SSDP_Result SSDP_ValidateHandleID(SSDP_HandleID testid){
     if (apptable.count(testid) != 0){
         return 0;
     }
@@ -126,7 +126,7 @@ int SSDP_ValidateHandleID(int testid){
     }
 }
 
-int SSDP_Configure(int fromid, int toid, string name, string value, int value_size){
+SSDP_Result SSDP_Configure(SSDP_HandleID fromid, SSDP_HandleID toid, SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_size){
     if (apptable.count(toid) != 0){
         apptable[toid].app_ptr->APP_Configure(name,value,value_size);
         return 0;
@@ -136,7 +136,7 @@ int SSDP_Configure(int fromid, int toid, string name, string value, int value_si
     }
 }
 
-int SSDP_Query(int fromid, int toid, string name, string* value, int value_size){
+SSDP_Result SSDP_Query(SSDP_HandleID fromid, SSDP_HandleID toid, SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size){
     if (apptable.count(toid) != 0){
         apptable[toid].app_ptr->APP_Query(name,value,value_size);
         return 0;
@@ -146,7 +146,7 @@ int SSDP_Query(int fromid, int toid, string name, string* value, int value_size)
     }
 }
 
-int SSDP_AbortApp(int fromid, int toid){
+SSDP_Result SSDP_AbortApp(SSDP_HandleID fromid, SSDP_HandleID toid){
     if (apptable.count(toid) != 0){
         apptable[toid].so_ptr->destroy(apptable[toid].app_ptr);
         apptable.erase(toid);
@@ -157,7 +157,7 @@ int SSDP_AbortApp(int fromid, int toid){
     }
 }
 
-int SSDP_show_cur_apps(){
+SSDP_Result SSDP_show_cur_apps(){
     if (apptable.size() == 0){
         cout<<"no app now"<<endl;
     }
@@ -168,7 +168,7 @@ int SSDP_show_cur_apps(){
     }
 }
 
-int SSDP_self_Init(){
+SSDP_Result SSDP_self_Init(){
     app_functable.instan = &SSDP_InstantiateApp;
     app_functable.start = &SSDP_Start;
     app_functable.stop = &SSDP_Stop;

@@ -1,5 +1,6 @@
 #include "base_app.hpp"
 #include <iostream>
+#include "SSDP_pre_data.h"
 using std::string;
 using std::cout;
 using std::endl;
@@ -8,44 +9,44 @@ class APP1: public AppBase{
 private:
     int pro1;
 public:
-    APP1(string name, int id, struct ssdp_app_functable* ft):AppBase(name,id, ft){}
-    virtual int  APP_Start(){
+    APP1(string name, SSDP_HandleID id, ssdp_app_functable* ft):AppBase(name,id, ft){}
+    virtual SSDP_Result  APP_Start(){
         cout<<"APP1 started"<<std::endl;
         //ftable.start(1,1);
         return 0;
     }
-    virtual int APP_Stop(){
+    virtual SSDP_Result APP_Stop(){
         cout<<"APP1 stopped"<<std::endl;
         //ftable.stop(2,2);
         return 0;
     }
-    virtual int APP_Initialize() {
+    virtual SSDP_Result APP_Initialize() {
         cout<<"APP1 init"<<endl;
         return 0;
     }
-    virtual int APP_ReleaseObject(){
+    virtual SSDP_Result APP_ReleaseObject(){
         cout<<"APP1 Release"<<endl;
         return 0;
     }
-    virtual int APP_Write(string buffer, int buffer_size){
+    virtual SSDP_Result APP_Write(SSDP_Message buffer, SSDP_Buffer_Size buffer_size){
         cout<<"APP1 write"<<endl;
         return 0;
     }
-    virtual int APP_Read(string* buffer, int buffer_size){
+    virtual SSDP_Result APP_Read(SSDP_Message& buffer, SSDP_Buffer_Size buffer_size){
         cout<<"APP1 read"<<endl;
         return 0;
     }
-    virtual int APP_Configure(string name, string value, int value_szie){
+    virtual SSDP_Result APP_Configure(SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie){
         cout<<"APP1 config"<<endl;
         return 0;
     }
-    virtual int APP_Query (string name, string* value, int value_size){
+    virtual SSDP_Result APP_Query (SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size){
         cout<<"APP1 query"<<endl;
         return 0;
     }
 };
 
-extern "C" AppBase*  APP_Instance(string name, int id, struct ssdp_app_functable* ft) {
+extern "C" AppBase*  APP_Instance(string name, SSDP_HandleID id, ssdp_app_functable* ft) {
     return new APP1(name,id,ft);
 }
 extern "C" void APP_Destroy(AppBase* p) {

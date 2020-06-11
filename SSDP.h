@@ -5,20 +5,21 @@
 #ifndef UNTITLED_SSDP_H
 #define UNTITLED_SSDP_H
 #include <string>
+#include "SSDP_pre_data.h"
 using std::string;
 // APP控制函数指针
-typedef int (*SSDP_InstantiateApp_ptr) (int fromid, string handlename, string filepath );
-typedef int (*SSDP_Start_ptr) (int fromid,int toid );
-typedef int (*SSDP_Stop_ptr) (int fromid,int toid );
-typedef int (*SSDP_Initialize_ptr) (int fromid, int toid);
-typedef int (*SSDP_ReleaseObject_ptr) (int fromid, int toid);
-typedef int (*SSDP_Write_ptr) (int fromid, int toid, string buffer, int buffer_size);
-typedef int (*SSDP_Read_ptr) (int formid, int toid, string* buffer, int buffer_size);
-typedef int (*SSDP_GetHandleName_ptr) (int fromid, int toid, string* targetname);
-typedef int (*SSDP_ValidateHandleID_ptr) (int testid);
-typedef int (*SSDP_Configure_ptr) (int fromid, int toid, string name, string value, int value_size);
-typedef int (*SSDP_Query_ptr) (int fromid, int toid, string name, string* value, int value_size);
-typedef int (*SSDP_AbortApp_ptr) (int fromid, int toid);
+typedef SSDP_HandleID (*SSDP_InstantiateApp_ptr) (SSDP_HandleID fromid, string handlename, string filepath );
+typedef SSDP_Result (*SSDP_Start_ptr) (SSDP_HandleID fromid,SSDP_HandleID toid );
+typedef SSDP_Result (*SSDP_Stop_ptr) (SSDP_HandleID fromid,SSDP_HandleID toid );
+typedef SSDP_Result (*SSDP_Initialize_ptr) (SSDP_HandleID fromid, SSDP_HandleID toid);
+typedef SSDP_Result (*SSDP_ReleaseObject_ptr) (SSDP_HandleID fromid, SSDP_HandleID toid);
+typedef SSDP_Result (*SSDP_Write_ptr) (SSDP_HandleID fromid, SSDP_HandleID toid, string buffer, SSDP_Buffer_Size buffer_size);
+typedef SSDP_Result (*SSDP_Read_ptr) (SSDP_HandleID formid, SSDP_HandleID toid, string& buffer, SSDP_Buffer_Size buffer_size);
+typedef SSDP_Result (*SSDP_GetHandleName_ptr) (SSDP_HandleID fromid, SSDP_HandleID toid, string& targetname);
+typedef SSDP_Result (*SSDP_ValidateHandleID_ptr) (SSDP_HandleID testid);
+typedef SSDP_Result (*SSDP_Configure_ptr) (SSDP_HandleID fromid, SSDP_HandleID toid, string name, string value, SSDP_Buffer_Size value_size);
+typedef SSDP_Result (*SSDP_Query_ptr) (SSDP_HandleID fromid, SSDP_HandleID toid, string name, string& value, SSDP_Buffer_Size value_size);
+typedef SSDP_Result (*SSDP_AbortApp_ptr) (SSDP_HandleID fromid, SSDP_HandleID toid);
 
 //APP控制函数表
 struct ssdp_app_functable{

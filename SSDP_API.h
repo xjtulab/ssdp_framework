@@ -3,6 +3,7 @@
 #include <string>
 #include "base_app.hpp"
 #include <dlfcn.h>
+#include "SSDP_pre_data.h"
 using std::string;
 
 struct sofiles{
@@ -30,13 +31,13 @@ struct app_objects{
 };
 
 
-int SSDP_InstantiateApp(int fromid, string handlename, string filepath );
-int SSDP_Start(int fromid,int toid );
-int SSDP_Stop(int fromid,int toid );
-int SSDP_Initialize(int fromid, int toid);
-int SSDP_Configure(int fromid, int toid, string name, string value, int value_size);
-int SSDP_Query(int fromid, int toid, string name, string* value, int value_size);
-int SSDP_AbortApp(int fromid, int toid);
-int SSDP_show_cur_apps();
-int SSDP_self_Init();
+SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, string filepath );
+SSDP_Result SSDP_Start(SSDP_HandleID fromid,SSDP_HandleID toid );
+SSDP_Result SSDP_Stop(SSDP_HandleID fromid,SSDP_HandleID toid );
+SSDP_Result SSDP_Initialize(SSDP_HandleID fromid, SSDP_HandleID toid);
+SSDP_Result SSDP_Configure(SSDP_HandleID fromid, SSDP_HandleID toid, SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_size);
+SSDP_Result SSDP_Query(SSDP_HandleID fromid, SSDP_HandleID toid, SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size);
+SSDP_Result SSDP_AbortApp(SSDP_HandleID fromid, SSDP_HandleID toid);
+SSDP_Result SSDP_show_cur_apps();
+SSDP_Result SSDP_self_Init();
 #endif
