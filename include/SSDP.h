@@ -5,7 +5,7 @@
 #ifndef UNTITLED_SSDP_H
 #define UNTITLED_SSDP_H
 #include <string>
-#include "SSDP_pre_data.h"
+#include "SSDP_PRE_DATA.h"
 using std::string;
 // APP控制函数指针
 typedef SSDP_HandleID (*SSDP_InstantiateApp_ptr) (SSDP_HandleID fromid, string handlename, string filepath );

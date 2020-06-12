@@ -1,11 +1,11 @@
 #ifndef UNTITLED_SSDP_API_H
 #define UNTITLED_SSDP_API_H
 #include <string>
-#include "base_app.hpp"
+#include "base_app.h"
 #include <dlfcn.h>
-#include "SSDP_pre_data.h"
+#include "SSDP_PRE_DATA.h"
 using std::string;
-
+//123
 struct sofiles{
     void* so_object;
     APP_Instance_ptr create;
