@@ -5,7 +5,6 @@
 #include <iostream>
 #include "SSDP.h"
 #include "SSDP_API.h"
-#include "spdlog/spdlog.h"
 #include "SSDP_LOG.h"
 using std::cout;
 using std::endl;
