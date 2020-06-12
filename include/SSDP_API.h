@@ -5,7 +5,6 @@
 #include <dlfcn.h>
 #include "SSDP_PRE_DATA.h"
 using std::string;
-//123
 struct sofiles{
     void* so_object;
     APP_Instance_ptr create;
