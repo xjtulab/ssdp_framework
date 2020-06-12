@@ -1,0 +1,9 @@
+文件描述：
+1、base_app.hpp：  
+    包含了SSDP应用的基类，以及两个分别用于创建和销毁应用对象的C接口函数
+2、SSDP.h
+    目前包含SSDP应用控制函数表的定义
+3、SSDP_API.h
+    包含SSDP应用控制函数，以及SSDP的初始化函数
+4、SSDP_pre_data.h
+    包含SSDP定义的数据类型和常量

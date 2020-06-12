@@ -12,15 +12,16 @@ using std::cout;
 using std::endl;
 //变量区
 //sotable存放打开的动态库
+//TODO 目前没考虑什么时间卸载动态库
 map<string,sofiles*> sotable; 
 //apptable存放启动的应用对象
 map<SSDP_HandleID, app_objects> apptable;
 //ssdp应用管理函数表
 ssdp_app_functable app_functable;
 //handleid管理
-static SSDP_HandleID cur_id =1;
+static SSDP_HandleID cur_id = 4;
 
-//获取新应用的handleid
+//TODO 获取新应用的handleid，可考虑怎么优化ID的生成和分配
 SSDP_HandleID get_new_id(){
     return cur_id++;
 }
