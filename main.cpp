@@ -13,8 +13,7 @@ using std::cerr;
 
 int main() {
     SSDP_Result res = SSDP_LogInit();
-    SSDP_Log(0,1,"sfasfd",3);
-    return 0;
+    SSDP_Log(0,SSDP_GetErrorQueue(SSDP_WARNING),"sfasfd",3);
     /*
     auto file_logger = spdlog::rotating_logger_mt("file_logger", "tmp/myfilename", 1024 * 1024 * 5, 3);
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
@@ -27,7 +26,7 @@ int main() {
         i++;
     }*/
     //APP1TEST
-    /*
+    
     int ssdp_init_result = SSDP_self_Init();
     if (ssdp_init_result != 0){
         cout<<"ssdp init failed"<<endl;
@@ -43,6 +42,5 @@ int main() {
     SSDP_show_cur_apps();
     SSDP_AbortApp(0,appid1);
     SSDP_show_cur_apps();
-    */
     return 0;
 }
