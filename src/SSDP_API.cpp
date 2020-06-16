@@ -41,11 +41,15 @@ sofiles* get_so(string sofilename){
     }
 }
 
+//创建应用实例
 SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, string sofile ){
     sofiles * targetso = get_so(sofile);
     AppBase* new_app = targetso->create(handlename,get_new_id(),&app_functable);
     app_objects a_o(new_app,targetso);
     apptable.insert(std::make_pair(new_app->APP_GetHandleID(),a_o));
+
+    //TODO 进行应用属性配置，启动等
+
     return new_app->APP_GetHandleID();
 }
 
