@@ -7,6 +7,7 @@
 #include "SSDP.h"
 #include "component.h"
 #include <map>
+#include <iostream>
 using std::string;
 
 //应用基类
@@ -21,6 +22,7 @@ public:
     //构造函数
     AppBase(string name, SSDP_HandleID id, ssdp_app_functable* ft): handle_name(name),handle_id(id){
         ftable = ft;
+        std::cout<<name<<" inited"<<std::endl;
         //component_list = new map<int,component>;
     }
     
@@ -33,14 +35,14 @@ public:
     }
     
     //应用待实现接口
-    virtual SSDP_Result APP_Start() =0;
-    virtual SSDP_Result APP_Stop() =0;
-    virtual SSDP_Result APP_Initialize() =0;
-    virtual SSDP_Result APP_ReleaseObject() =0;
-    virtual SSDP_Result APP_Write(SSDP_Message buffer, SSDP_Buffer_Size buffer_size) =0;
-    virtual SSDP_Result APP_Read(SSDP_Message& buffer, SSDP_Buffer_Size buffer_size) =0;
-    virtual SSDP_Result APP_Configure(SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie) =0;
-    virtual SSDP_Result APP_Query (SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size) =0;
+    virtual SSDP_Result APP_Start(){};
+    virtual SSDP_Result APP_Stop(){};
+    virtual SSDP_Result APP_Initialize(){};
+    virtual SSDP_Result APP_ReleaseObject(){};
+    virtual SSDP_Result APP_Write(SSDP_Message buffer, SSDP_Buffer_Size buffer_size) {};
+    virtual SSDP_Result APP_Read(SSDP_Message& buffer, SSDP_Buffer_Size buffer_size) {};
+    virtual SSDP_Result APP_Configure(SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie) {};
+    virtual SSDP_Result APP_Query (SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size) {};
 
     //TODO 析构函数
     virtual ~AppBase(){}

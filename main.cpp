@@ -6,14 +6,23 @@
 #include "SSDP.h"
 #include "SSDP_API.h"
 #include "SSDP_LOG.h"
+#include "commandprocess.h"
 using std::cout;
 using std::endl;
 using std::cerr;
 
 
 int main() {
+    /*
+    CmdProcess cmdprocesser;
+    cmdprocesser.ReceiveCommand("asdf dsf");
+    cmdprocesser.ReceiveCommand("SSDP -s s -t t -f f -a 1");
+    return 0;
+    */
+    /*
     SSDP_Result res = SSDP_LogInit();
     SSDP_Log(0,SSDP_GetErrorQueue(SSDP_WARNING),"sfasfd",3);
+    */
     /*
     auto file_logger = spdlog::rotating_logger_mt("file_logger", "tmp/myfilename", 1024 * 1024 * 5, 3);
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
@@ -32,15 +41,24 @@ int main() {
         cout<<"ssdp init failed"<<endl;
         return 1;
     }
+    int i =0;
+    while(i< 1000000){
+        //SSDP_show_cur_apps();
+        int appid = SSDP_InstantiateApp(0,"myapp1","./app1.so");
+        //SSDP_AbortApp(0,appid);
+        i++;
+        cout<<i<<endl;
+    }
+    sleep(100);
     SSDP_show_cur_apps();
     int appid = SSDP_InstantiateApp(0,"myapp1","./app1.so");
-    int appid1 = SSDP_InstantiateApp(0,"myapp2","./app2.so");
-    SSDP_Start(0,appid1);
-    SSDP_Stop(0,appid1);
+    //int appid1 = SSDP_InstantiateApp(0,"myapp2","./app2.so");
+    SSDP_Start(0,appid);
+    SSDP_Stop(0,appid);
     SSDP_show_cur_apps();
     SSDP_AbortApp(0,appid);
-    SSDP_show_cur_apps();
-    SSDP_AbortApp(0,appid1);
-    SSDP_show_cur_apps();
+    //SSDP_show_cur_apps();
+    //SSDP_AbortApp(0,appid1);
+    //SSDP_show_cur_apps();
     return 0;
 }

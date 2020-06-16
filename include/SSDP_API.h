@@ -5,31 +5,16 @@
 #include <dlfcn.h>
 #include "SSDP_PRE_DATA.h"
 using std::string;
-struct sofiles{
-    void* so_object;
-    APP_Instance_ptr create;
-    APP_Destroy_ptr destroy;
-    sofiles(void* so,APP_Instance_ptr cre, APP_Destroy_ptr des){
-        so_object = so;
-        create = cre;
-        destroy = des;
-    }
-};
 
-struct app_objects{
-    AppBase* app_ptr;
-    struct sofiles* so_ptr;
-    app_objects(AppBase* app,struct sofiles* so){
-        app_ptr = app;
-        so_ptr = so;
-    }
-    app_objects(){
-        app_ptr = NULL;
-        so_ptr =NULL;
-    }
-};
+#define BEGIN_ID 4
 
 
+//ID管理相关API
+SSDP_Result SSDP_ValidateHandleID(SSDP_HandleID testid);
+SSDP_Result SSDP_GetHandleName(SSDP_HandleID fromid, SSDP_HandleID toid, string& targetname);
+SSDP_HandleID SSDP_HandleRequest(SSDP_HandleID fromid, string& targetname);
+
+//应用控制相关API
 SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, string filepath );
 SSDP_Result SSDP_Start(SSDP_HandleID fromid,SSDP_HandleID toid );
 SSDP_Result SSDP_Stop(SSDP_HandleID fromid,SSDP_HandleID toid );

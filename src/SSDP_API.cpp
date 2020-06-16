@@ -6,56 +6,49 @@
 #include <dlfcn.h>
 #include <iostream>
 #include <map>
+#include <memory>
+#include <set>
 using std::string;
 using std::map;
 using std::cout;
 using std::endl;
+using std::set;
 //变量区
-//sotable存放打开的动态库
-//TODO 目前没考虑什么时间卸载动态库
-map<string,sofiles*> sotable; 
+
 //apptable存放启动的应用对象
-map<SSDP_HandleID, app_objects> apptable;
+map<SSDP_HandleID, std::shared_ptr<AppBase>> apptable;
 //ssdp应用管理函数表
 ssdp_app_functable app_functable;
-//handleid管理
-static SSDP_HandleID cur_id = 4;
+
+//HandleID管理相关数据
+//TODO 目前假设32位的id够一次运行中使用
+
+static SSDP_HandleID cur_id = BEGIN_ID;
+set<SSDP_HandleID> id_in_use;
 
 //TODO 获取新应用的handleid，可考虑怎么优化ID的生成和分配
-SSDP_HandleID get_new_id(){
-    return cur_id++;
+SSDP_HandleID SSDP_GetNewHandleID(){
+    
+    id_in_use.insert(cur_id);
+    SSDP_HandleID res = cur_id++;
+    return res;
 }
-//获取目标so文件对象
-sofiles* get_so(string sofilename){
-    map<string,sofiles*>::iterator iter = sotable.find(sofilename);
-    if (iter == sotable.end()){
-        void* so_object = dlopen(sofilename.c_str(),RTLD_LAZY);
-        APP_Instance_ptr create = (APP_Instance_ptr) dlsym(so_object, "APP_Instance");
-        APP_Destroy_ptr destroy = (APP_Destroy_ptr) dlsym(so_object,"APP_Destroy");
-        sofiles* new_so = new sofiles(so_object,create,destroy);
-        sotable.insert(make_pair(sofilename,new_so));
-        return new_so;
-    }
-    else{
-        return iter->second;
-    }
-}
+
 
 //创建应用实例
-SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, string sofile ){
-    sofiles * targetso = get_so(sofile);
-    AppBase* new_app = targetso->create(handlename,get_new_id(),&app_functable);
-    app_objects a_o(new_app,targetso);
-    apptable.insert(std::make_pair(new_app->APP_GetHandleID(),a_o));
-
+SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, string filepath ){
+    auto new_app = std::make_shared<AppBase>(handlename, SSDP_GetNewHandleID(),&app_functable);
+    //cout<<new_app.use_count()<<endl;
+    apptable.insert(std::make_pair(new_app->APP_GetHandleID(),new_app));
+    //cout<<new_app.use_count()<<endl;
     //TODO 进行应用属性配置，启动等
-
+    //new_app.use_count();
     return new_app->APP_GetHandleID();
 }
 
 SSDP_Result SSDP_Start(SSDP_HandleID formid, SSDP_HandleID toid){
     if (apptable.count(toid) != 0){
-        apptable[toid].app_ptr->APP_Start();
+        apptable[toid]->APP_Start();
         return 0;
     }
     else{
@@ -65,7 +58,7 @@ SSDP_Result SSDP_Start(SSDP_HandleID formid, SSDP_HandleID toid){
 
 SSDP_Result SSDP_Stop(SSDP_HandleID formid, SSDP_HandleID toid){
     if (apptable.count(toid) != 0){
-        apptable[toid].app_ptr->APP_Stop();
+        apptable[toid]->APP_Stop();
         return 0;
     }
     else{
@@ -75,7 +68,7 @@ SSDP_Result SSDP_Stop(SSDP_HandleID formid, SSDP_HandleID toid){
 
 SSDP_Result SSDP_Initialize(SSDP_HandleID formid, SSDP_HandleID toid){
     if (apptable.count(toid) != 0){
-        apptable[toid].app_ptr->APP_Initialize();
+        apptable[toid]->APP_Initialize();
         return 0;
     }
     else{
@@ -85,7 +78,7 @@ SSDP_Result SSDP_Initialize(SSDP_HandleID formid, SSDP_HandleID toid){
 
 SSDP_Result SSDP_ReleaseObject(SSDP_HandleID formid, SSDP_HandleID toid){
     if (apptable.count(toid) != 0){
-        apptable[toid].app_ptr->APP_ReleaseObject();
+        apptable[toid]->APP_ReleaseObject();
         return 0;
     }
     else{
@@ -95,7 +88,7 @@ SSDP_Result SSDP_ReleaseObject(SSDP_HandleID formid, SSDP_HandleID toid){
 
 SSDP_Result SSDP_Write(SSDP_HandleID fromid, SSDP_HandleID toid, SSDP_Message buffer, SSDP_Buffer_Size buffer_size){
     if (apptable.count(toid) != 0){
-        apptable[toid].app_ptr->APP_Write(buffer,buffer_size);
+        apptable[toid]->APP_Write(buffer,buffer_size);
         return buffer_size;
     }
     else{
@@ -105,7 +98,7 @@ SSDP_Result SSDP_Write(SSDP_HandleID fromid, SSDP_HandleID toid, SSDP_Message bu
 
 SSDP_Result SSDP_Read(SSDP_HandleID formid, SSDP_HandleID toid, SSDP_Message& buffer, SSDP_Buffer_Size buffer_size){
     if (apptable.count(toid) != 0){
-        apptable[toid].app_ptr->APP_Read(buffer,buffer_size);
+        apptable[toid]->APP_Read(buffer,buffer_size);
         return buffer_size;
     }
     else{
@@ -133,7 +126,7 @@ SSDP_Result SSDP_ValidateHandleID(SSDP_HandleID testid){
 
 SSDP_Result SSDP_Configure(SSDP_HandleID fromid, SSDP_HandleID toid, SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_size){
     if (apptable.count(toid) != 0){
-        apptable[toid].app_ptr->APP_Configure(name,value,value_size);
+        apptable[toid]->APP_Configure(name,value,value_size);
         return 0;
     }
     else{
@@ -143,7 +136,7 @@ SSDP_Result SSDP_Configure(SSDP_HandleID fromid, SSDP_HandleID toid, SSDP_Proper
 
 SSDP_Result SSDP_Query(SSDP_HandleID fromid, SSDP_HandleID toid, SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size){
     if (apptable.count(toid) != 0){
-        apptable[toid].app_ptr->APP_Query(name,value,value_size);
+        apptable[toid]->APP_Query(name,value,value_size);
         return 0;
     }
     else{
@@ -153,8 +146,13 @@ SSDP_Result SSDP_Query(SSDP_HandleID fromid, SSDP_HandleID toid, SSDP_Property_N
 
 SSDP_Result SSDP_AbortApp(SSDP_HandleID fromid, SSDP_HandleID toid){
     if (apptable.count(toid) != 0){
-        apptable[toid].so_ptr->destroy(apptable[toid].app_ptr);
+        //cout<<apptable[toid].use_count()<<endl;
+        //delete apptable[toid];
+        //auto app = apptable[toid];
+        //cout<<apptable[toid].use_count()<<endl;
+        //delete apptable[toid];
         apptable.erase(toid);
+        //cout<<ad->APP_GetHandleID()<<endl;
         return 0;
     }
     else{
@@ -168,7 +166,7 @@ SSDP_Result SSDP_show_cur_apps(){
     }
     auto iter = apptable.begin();
     while(iter != apptable.end()){
-        cout<<iter->first<<" "<<iter->second.app_ptr->APP_GetHandleName()<<endl;
+        cout<<iter->first<<" "<<iter->second->APP_GetHandleName()<<endl;
         ++iter;
     }
 }

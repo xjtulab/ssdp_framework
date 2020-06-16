@@ -1,25 +1,18 @@
 #include <iostream>
+#include <map>
+#include <string>
+#include <memory>
+using namespace std;
+map<int,shared_ptr<string>> ta;
+void get(){
+    auto b = make_shared<string>("safdasfsa");
+    ta.insert(make_pair(1,b));
 
-template<class t>
-class newhandle{
-    public:
-    static int a;
-    private:
-    static int b;
-};
-
-template<class t>
-int newhandle<t>::a =0;
-template<class t>
-int newhandle<t>::b = 1;
-
-class x:public newhandle<x>{
-    public:
-    const int b = 0;
-};
-
-
+}
 int main(){
-    x* a = new x;
+    auto b = make_shared<char>('3');
+    char *a = b.get();
+    b.reset();
+    cout<<*(int *)a<<endl;
     return 0;
 }

@@ -3,7 +3,7 @@ myhfile := $(inclde/wildcard *.h)
 
 CC = g++
 ARM = arm-linux-gnueabihf-
-objects = src/SSDP_LOG.o src/SSDP_API.o
+objects = src/SSDP_LOG.o src/SSDP_API.o src/commandprocess.o
 
 run: main.o $(objects)
 	$(CC) -o run main.o $(objects) -ldl

@@ -12,7 +12,7 @@ private:
 
 public:
     CmdProcess();
-    SSDP_Result ReceiveCommand(string& cmd);
+    SSDP_Result ReceiveCommand(const string& cmd);
     ~CmdProcess();
 };
 
