@@ -43,6 +43,7 @@ const SSDP_HandleID SSDP_ERROR_QUEUE = 1;
 const SSDP_Result SSDP_FATAL = -2;
 const SSDP_HandleID SSDP_FATAL_QUEUE =2;
 const SSDP_HandleID SSDP_TELEMETRY_QUEUE = 3;
+const SSDP_HandleID SSDP_OE_HANDLE_ID = 0;
 const SSDP_Type SSDP_TYPE_BINARY = 0;
 const SSDP_Type SSDP_TYPE_TEXT = 1;
 const SSDP_Result SSDP_WARNING = -3;

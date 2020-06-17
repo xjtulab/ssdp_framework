@@ -41,22 +41,18 @@ int main() {
         cout<<"ssdp init failed"<<endl;
         return 1;
     }
-    int i =0;
-    while(i< 1000000){
-        //SSDP_show_cur_apps();
-        int appid = SSDP_InstantiateApp(0,"myapp1","./app1.so");
-        //SSDP_AbortApp(0,appid);
-        i++;
-        cout<<i<<endl;
-    }
-    sleep(100);
     SSDP_show_cur_apps();
     int appid = SSDP_InstantiateApp(0,"myapp1","./app1.so");
+    cout<< SSDP_HandleRequest(0,"myapp1")<<endl;
+    cout<< SSDP_HandleRequest(0,"sadfsa")<<endl;
+    string c;
+    cout<< SSDP_GetHandleName(0,0,c)<<endl;
+    cout<<c<<endl;
     //int appid1 = SSDP_InstantiateApp(0,"myapp2","./app2.so");
-    SSDP_Start(0,appid);
-    SSDP_Stop(0,appid);
-    SSDP_show_cur_apps();
-    SSDP_AbortApp(0,appid);
+    //SSDP_Start(0,appid);
+    //SSDP_Stop(0,appid);
+    //SSDP_show_cur_apps();
+    //SSDP_AbortApp(0,appid);
     //SSDP_show_cur_apps();
     //SSDP_AbortApp(0,appid1);
     //SSDP_show_cur_apps();

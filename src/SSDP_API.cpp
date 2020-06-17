@@ -34,6 +34,53 @@ SSDP_HandleID SSDP_GetNewHandleID(){
     return res;
 }
 
+SSDP_Result SSDP_ValidateHandleID(SSDP_HandleID testid){
+    if(testid == SSDP_ERROR_QUEUE || testid == SSDP_FATAL_QUEUE || testid == SSDP_WARNING_QUEUE){
+        return SSDP_OK;
+    }
+    if(testid == SSDP_OE_HANDLE_ID){
+        return SSDP_OK;
+    }
+    if (id_in_use.count(testid) != 0){
+        return SSDP_OK;
+    }else{
+        return SSDP_ERROR;
+    }
+}
+
+SSDP_HandleID SSDP_HandleRequest(SSDP_HandleID fromid, const string& targetname){
+    //要求的名字不存在则返回SSDP_ERROR
+    SSDP_HandleID res = SSDP_ERROR;
+    auto iter = apptable.begin();
+    while(iter != apptable.end()){
+        if(iter->second->APP_GetHandleName() ==  targetname){
+            res = iter->second->APP_GetHandleID();
+        }
+        ++iter;
+    }
+    return res;
+}
+
+SSDP_Result SSDP_GetHandleName(SSDP_HandleID fromid, SSDP_HandleID toid, string& targetname){
+    //TODO ID不存在返回什么值？
+    string res_str = "EMPTY";
+    SSDP_Result res = SSDP_ERROR;
+    if(toid == SSDP_OE_HANDLE_ID){
+        res = SSDP_OK;
+        res_str = SSDP_OE_HANDLE_NAME;
+    }
+    if(apptable.count(toid) >0){
+        res_str = apptable[toid]->APP_GetHandleName();
+        res = SSDP_OK;
+    }
+    targetname = res_str;
+    return res;
+}
+
+bool SSDP_IsOK(SSDP_Result result){
+    if (result >=0) return true;
+    else return false;
+}
 
 //创建应用实例
 SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, string filepath ){
@@ -86,9 +133,9 @@ SSDP_Result SSDP_ReleaseObject(SSDP_HandleID formid, SSDP_HandleID toid){
     }
 }
 
-SSDP_Result SSDP_Write(SSDP_HandleID fromid, SSDP_HandleID toid, SSDP_Message buffer, SSDP_Buffer_Size buffer_size){
+SSDP_Result SSDP_Write(SSDP_HandleID fromid, SSDP_HandleID toid,int comp_id, SSDP_Message buffer, SSDP_Buffer_Size buffer_size){
     if (apptable.count(toid) != 0){
-        apptable[toid]->APP_Write(buffer,buffer_size);
+        apptable[toid]->APP_Write(comp_id, buffer,buffer_size);
         return buffer_size;
     }
     else{
@@ -96,9 +143,9 @@ SSDP_Result SSDP_Write(SSDP_HandleID fromid, SSDP_HandleID toid, SSDP_Message bu
     }
 }
 
-SSDP_Result SSDP_Read(SSDP_HandleID formid, SSDP_HandleID toid, SSDP_Message& buffer, SSDP_Buffer_Size buffer_size){
+SSDP_Result SSDP_Read(SSDP_HandleID formid, SSDP_HandleID toid,int comp_id, SSDP_Message& buffer, SSDP_Buffer_Size buffer_size){
     if (apptable.count(toid) != 0){
-        apptable[toid]->APP_Read(buffer,buffer_size);
+        apptable[toid]->APP_Read(comp_id,buffer,buffer_size);
         return buffer_size;
     }
     else{
@@ -106,8 +153,9 @@ SSDP_Result SSDP_Read(SSDP_HandleID formid, SSDP_HandleID toid, SSDP_Message& bu
     }
 }
 
-SSDP_Result SSDP_GetHandleName(SSDP_HandleID fromid, SSDP_HandleID toid, string& targetname){
+SSDP_Result SSDP_Configure(SSDP_HandleID fromid, SSDP_HandleID toid,int comp_id, SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_size){
     if (apptable.count(toid) != 0){
+        apptable[toid]->APP_Configure(comp_id,name,value,value_size);
         return 0;
     }
     else{
@@ -115,28 +163,9 @@ SSDP_Result SSDP_GetHandleName(SSDP_HandleID fromid, SSDP_HandleID toid, string&
     }
 }
 
-SSDP_Result SSDP_ValidateHandleID(SSDP_HandleID testid){
-    if (apptable.count(testid) != 0){
-        return 0;
-    }
-    else{
-        return -1;
-    }
-}
-
-SSDP_Result SSDP_Configure(SSDP_HandleID fromid, SSDP_HandleID toid, SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_size){
+SSDP_Result SSDP_Query(SSDP_HandleID fromid, SSDP_HandleID toid,int comp_id, SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size){
     if (apptable.count(toid) != 0){
-        apptable[toid]->APP_Configure(name,value,value_size);
-        return 0;
-    }
-    else{
-        return -1;
-    }
-}
-
-SSDP_Result SSDP_Query(SSDP_HandleID fromid, SSDP_HandleID toid, SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size){
-    if (apptable.count(toid) != 0){
-        apptable[toid]->APP_Query(name,value,value_size);
+        apptable[toid]->APP_Query(comp_id,name,value,value_size);
         return 0;
     }
     else{
@@ -152,6 +181,7 @@ SSDP_Result SSDP_AbortApp(SSDP_HandleID fromid, SSDP_HandleID toid){
         //cout<<apptable[toid].use_count()<<endl;
         //delete apptable[toid];
         apptable.erase(toid);
+        id_in_use.erase(toid);
         //cout<<ad->APP_GetHandleID()<<endl;
         return 0;
     }

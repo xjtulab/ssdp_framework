@@ -20,7 +20,7 @@ protected:
 
 public:
     //构造函数
-    AppBase(string name, SSDP_HandleID id, ssdp_app_functable* ft): handle_name(name),handle_id(id){
+    AppBase(string name, SSDP_HandleID app_id, ssdp_app_functable* ft): handle_name(name),handle_id(app_id){
         ftable = ft;
         std::cout<<name<<" inited"<<std::endl;
         //component_list = new map<int,component>;
@@ -28,10 +28,10 @@ public:
     
     //获取ID和name的接口
     SSDP_HandleID APP_GetHandleID(){ return handle_id;}
-    string APP_GetHandleName(){ return handle_name;}
+    const string& APP_GetHandleName(){ return handle_name;}
     //添加组件
-    SSDP_Result Add_Component(int id, string filepath, SSDP_HandleID targetdevice){
-        component_list.insert(std::make_pair(id, component(filepath,targetdevice)));
+    SSDP_Result Add_Component(int id_on_app, string filepath, SSDP_HandleID targetdevice, int id_on_device){
+        component_list.insert(std::make_pair(id_on_app, component(filepath,targetdevice, id_on_device)));
     }
     
     //应用待实现接口
@@ -39,13 +39,13 @@ public:
     virtual SSDP_Result APP_Stop(){};
     virtual SSDP_Result APP_Initialize(){};
     virtual SSDP_Result APP_ReleaseObject(){};
-    virtual SSDP_Result APP_Write(SSDP_Message buffer, SSDP_Buffer_Size buffer_size) {};
-    virtual SSDP_Result APP_Read(SSDP_Message& buffer, SSDP_Buffer_Size buffer_size) {};
-    virtual SSDP_Result APP_Configure(SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie) {};
-    virtual SSDP_Result APP_Query (SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size) {};
+    virtual SSDP_Result APP_Write(int comp_id,SSDP_Message buffer, SSDP_Buffer_Size buffer_size) {};
+    virtual SSDP_Result APP_Read(int comp_id,SSDP_Message& buffer, SSDP_Buffer_Size buffer_size) {};
+    virtual SSDP_Result APP_Configure(int comp_id,SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie) {};
+    virtual SSDP_Result APP_Query (int comp_id,SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size) {};
 
     //TODO 析构函数
-    virtual ~AppBase(){}
+    virtual ~AppBase(){}                                                           
 };
 
 //应用创建函数
