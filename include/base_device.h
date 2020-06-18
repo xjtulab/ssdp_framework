@@ -5,12 +5,14 @@
 #include "SSDP.h"
 using std::string;
 
-enum resource_type {BYTE, GATE};
+enum ResourceType {BYTE, GATE};
+//TODO 设备状态怎么确定？有哪些状态？
+enum DeviceState {DEVICE_READY,DEVICE_RUNNIG,DEVICE_CLOSED};
 struct device_resource{
     int total;
     int remain;
-    resource_type type;
-    device_resource(int to, resource_type ty): total(to),remain(to),type(ty) {}
+    ResourceType type;
+    device_resource(int to, ResourceType ty): total(to),remain(to),type(ty) {}
 };
 //设备基类
 class DeviceBase{
@@ -18,13 +20,14 @@ protected:
     SSDP_HandleID handle_id;
     string handle_name;
     device_resource* resource;
-
-    
+    DeviceState state;
+    //TODO 设备是否有自己的属性?
 public:
     //构造函数
     DeviceBase(string name, SSDP_HandleID id): handle_name(name), handle_id(id) {
         //TODO 资源的初始化？通过配置文件还是可以直接从设备读取
         resource = new device_resource(100,GATE);
+        state = DEVICE_READY;
     }
     //设备待实现接口
     virtual SSDP_Result APP_Start() =0;

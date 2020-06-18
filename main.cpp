@@ -13,6 +13,14 @@ using std::cerr;
 
 
 int main() {
+    //TODO 框架启动流程设计
+    /*
+        1、启动和FC的连接，返回开始启动消息
+        2、装载驱动、HAL等，读取平台配置文件，创建设备实例
+        3、运行设备测试
+        4、读取平台配置文件，决定需要启动的应用
+        7、读取应用配置文件，部署应用
+    */
     /*
     CmdProcess cmdprocesser;
     cmdprocesser.ReceiveCommand("asdf dsf");

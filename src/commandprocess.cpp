@@ -6,6 +6,7 @@ using std::endl;
 
 CmdProcess::CmdProcess(){
     par = new parser;
+    //TODO 指令格式的设计待定
     par->add<string>("source", 's', "Command source", true);
     par->add<string>("target", 't', "Command target", true);
     par->add<string>("function", 'f',"Function to be called",true);

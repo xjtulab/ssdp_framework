@@ -30,7 +30,7 @@ struct SSDP_TimeWarp{
 };
 typedef int SSDP_TimeRate;
 typedef int SSDP_Type;
-
+enum ResourceType {BYTE, GATE};
 
 //TODO 确定常量的值
 const SSDP_Access SSDP_ACCESS_APPEND = 1;

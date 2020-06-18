@@ -10,6 +10,9 @@
 #include <iostream>
 using std::string;
 
+enum AppState {APP_INSTANTIATED,APP_STOPPED,APP_RUNNING,APP_TESTING,APP_FATAL};
+
+
 //应用基类
 class AppBase{
 protected:
