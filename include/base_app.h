@@ -12,7 +12,7 @@ using std::string;
 
 enum AppState {APP_INSTANTIATED,APP_STOPPED,APP_RUNNING,APP_TESTING,APP_FATAL};
 
-
+//TODO 使用协议类或者句柄类来实现APP的定义，分离接口定义和实现，简化编译依赖
 //应用基类
 class AppBase{
 protected:
@@ -20,11 +20,12 @@ protected:
     string handle_name;
     SSDP_HandleID handle_id;
     std::map<int, struct component> component_list;
+    AppState state;
 
 public:
     //构造函数
-    AppBase(string name, SSDP_HandleID app_id, ssdp_app_functable* ft): handle_name(name),handle_id(app_id){
-        ftable = ft;
+    AppBase(string name, SSDP_HandleID app_id, ssdp_app_functable* ft): handle_name(name),handle_id(app_id),ftable(ft){
+        state = APP_INSTANTIATED;
         std::cout<<name<<" inited"<<std::endl;
         //component_list = new map<int,component>;
     }
