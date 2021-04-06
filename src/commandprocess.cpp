@@ -10,8 +10,8 @@ CmdProcess::CmdProcess(){
     par->add<string>("source", 's', "Command source", true);
     par->add<string>("target", 't', "Command target", true);
     par->add<string>("function", 'f',"Function to be called",true);
-    par->add<SSDP_HandleID>("APP_id",'a',"APP ID", true);
-    par->add<int>("comp_id",'c',"Component ID", false);
+    par->add<string>("APP_id",'a',"APP ID", true);
+    par->add<string>("comp_id",'c',"Component ID", false);
     par->add<string>("property_name",'n',"Property Name", false);
     par->add<string>("property_value",'v',"Property Value",false);
     par->set_program_name("SSDP");
@@ -25,13 +25,13 @@ SSDP_Result CmdProcess::ReceiveCommand(const string& cmd){
         return SSDP_ERROR;
     }
     //TODO 加上ID检测，和功能检测等
-    
-    /*
-    switch(par->get<string>("function")){
-        case "SSDP_InstantiateApp"
-    }
-    cout<<par->get<string>("source")<<endl;
-    */
+    cout<<par->get<string>("APP_id")<<" needs to "<<par->get<string>("function")<<endl;
+
+    // switch(par->get<string>("function")){
+    //     case "SSDP_InstantiateApp"
+    // }
+    // cout<<par->get<string>("source")<<endl;
+
     return SSDP_OK;
     
 }

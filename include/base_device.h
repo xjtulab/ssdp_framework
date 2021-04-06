@@ -3,9 +3,11 @@
 
 #include "SSDP_PRE_DATA.h"
 #include "SSDP.h"
+#include <iostream>
 using std::string;
+using namespace std;
 
-enum ResourceType {BYTE, GATE};
+
 //TODO 设备状态怎么确定？有哪些状态？
 enum DeviceState {DEVICE_READY,DEVICE_RUNNIG,DEVICE_CLOSED};
 struct device_resource{
@@ -30,6 +32,9 @@ public:
         state = DEVICE_READY;
     }
     //设备待实现接口
+    virtual SSDP_Result DEV_Configure(int comp_id,SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie){
+        cout<<"comp "<<comp_id<<" is to be configed"<<endl;
+    }
     virtual SSDP_Result APP_Start() =0;
     virtual SSDP_Result APP_Stop() =0;
     virtual SSDP_Result APP_Initialize() =0;

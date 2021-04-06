@@ -8,11 +8,14 @@
 #include <map>
 #include <memory>
 #include <set>
+#include "rapidxml.hpp"
+#include "rapidxml_utils.hpp"
 using std::string;
 using std::map;
 using std::cout;
 using std::endl;
 using std::set;
+
 //变量区
 
 //apptable存放启动的应用对象
@@ -84,9 +87,20 @@ bool SSDP_IsOK(SSDP_Result result){
 
 //创建应用实例
 SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, string filepath ){
+    //TODO 解析配置文件，读取comp列表，并添加comp
+    rapidxml::file<> fdoc(filepath.c_str());
+    rapidxml::xml_document<> doc;
+    doc.parse<0>(fdoc.data());
+    rapidxml::xml_node<> *waveform = doc.first_node();
     auto new_app = std::make_shared<AppBase>(handlename, SSDP_GetNewHandleID(),&app_functable);
     //cout<<new_app.use_count()<<endl;
     apptable.insert(std::make_pair(new_app->APP_GetHandleID(),new_app));
+    rapidxml::xml_node<> *comp = waveform->first_node("components")->first_node("component");
+    while(comp){
+        // cout<<comp->first_node("objId")->value()<<endl;
+        new_app->Add_Component(comp->first_node("objId")->value(), comp->first_node("resourceInfo")->first_node("info")->first_node("codeLocation")->value(), -1, comp->first_node("componenId")->value());
+        comp = comp->next_sibling();
+    }
     //cout<<new_app.use_count()<<endl;
     //TODO 进行应用属性配置，启动等
     //new_app.use_count();
@@ -94,6 +108,10 @@ SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, strin
 }
 
 SSDP_Result SSDP_Start(SSDP_HandleID formid, SSDP_HandleID toid){
+    if(toid == -1){
+        cout<<"device not defined yet"<<endl;
+        return SSDP_OK;
+    }
     if (apptable.count(toid) != 0){
         apptable[toid]->APP_Start();
         return 0;
@@ -153,7 +171,7 @@ SSDP_Result SSDP_Read(SSDP_HandleID formid, SSDP_HandleID toid,int comp_id, SSDP
     }
 }
 
-SSDP_Result SSDP_Configure(SSDP_HandleID fromid, SSDP_HandleID toid,int comp_id, SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_size){
+SSDP_Result SSDP_Configure(SSDP_HandleID fromid, SSDP_HandleID toid,string comp_id, SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_size){
     if (apptable.count(toid) != 0){
         apptable[toid]->APP_Configure(comp_id,name,value,value_size);
         return 0;
