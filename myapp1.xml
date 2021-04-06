@@ -33,6 +33,7 @@
 			<resourceInfo>
 				<info>
 					<category>FPGA</category>
+					<name>fpga1</name>
 					<codeLocation>E:\IDE\eclipse-rcp-2\FIL1</codeLocation>
 					<resourceUsed>30%</resourceUsed>
 					<type>345</type>
@@ -56,6 +57,7 @@
 			<resourceInfo>
 				<info>
 					<category>DSP</category>
+					<name>dsp1</name>
 					<codeLocation>E:\IDE\eclipse-rcp-2\FILE2</codeLocation>
 					<resourceUsed>10%</resourceUsed>
 					<type>324</type>
@@ -79,6 +81,7 @@
 			<resourceInfo>
 				<info>
 					<category>DSP</category>
+					<name>dsp2</name>
 					<codeLocation>CODE</codeLocation>
 					<resourceUsed>34%</resourceUsed>
 					<type>1312</type>

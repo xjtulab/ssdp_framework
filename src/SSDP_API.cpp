@@ -3,6 +3,7 @@
 #include "SSDP_PRE_DATA.h"
 #include <string>
 #include "base_app.h"
+#include "base_device.h"
 #include <dlfcn.h>
 #include <iostream>
 #include <map>
@@ -20,6 +21,8 @@ using std::set;
 
 //apptable存放启动的应用对象
 map<SSDP_HandleID, std::shared_ptr<AppBase>> apptable;
+//devicetable存放设备对象
+map<SSDP_HandleID, std::shared_ptr<DeviceBase>> devicetable;
 //ssdp应用管理函数表
 ssdp_app_functable app_functable;
 
@@ -58,8 +61,17 @@ SSDP_HandleID SSDP_HandleRequest(SSDP_HandleID fromid, const string& targetname)
     while(iter != apptable.end()){
         if(iter->second->APP_GetHandleName() ==  targetname){
             res = iter->second->APP_GetHandleID();
+            return res;
         }
         ++iter;
+    }
+    auto dev_iter = devicetable.begin();
+    while(dev_iter != devicetable.end()){
+        if(dev_iter->second->DEV_GetHandleName() == targetname ){
+            res = dev_iter->second->DEV_GetHandleID();
+            return res;
+        }
+        ++dev_iter;
     }
     return res;
 }
@@ -74,6 +86,9 @@ SSDP_Result SSDP_GetHandleName(SSDP_HandleID fromid, SSDP_HandleID toid, string&
     }
     if(apptable.count(toid) >0){
         res_str = apptable[toid]->APP_GetHandleName();
+        res = SSDP_OK;
+    }else if(devicetable.count(toid) > 0){
+        res_str = devicetable[toid]->DEV_GetHandleName();
         res = SSDP_OK;
     }
     targetname = res_str;
@@ -98,7 +113,10 @@ SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, strin
     rapidxml::xml_node<> *comp = waveform->first_node("components")->first_node("component");
     while(comp){
         // cout<<comp->first_node("objId")->value()<<endl;
-        new_app->Add_Component(comp->first_node("objId")->value(), comp->first_node("resourceInfo")->first_node("info")->first_node("codeLocation")->value(), -1, comp->first_node("componenId")->value());
+        SSDP_HandleID dev_id =  SSDP_HandleRequest(fromid, comp->first_node("resourceInfo")->first_node("info")->first_node("name")->value());
+        cout<<"dev_id: "<<dev_id<<endl;
+        new_app->Add_Component(comp->first_node("objId")->value(), comp->first_node("resourceInfo")->first_node("info")->first_node("codeLocation")->value(), \
+            dev_id, comp->first_node("componenId")->value());
         comp = comp->next_sibling();
     }
     //cout<<new_app.use_count()<<endl;
@@ -114,10 +132,13 @@ SSDP_Result SSDP_Start(SSDP_HandleID formid, SSDP_HandleID toid){
     }
     if (apptable.count(toid) != 0){
         apptable[toid]->APP_Start();
-        return 0;
+        return SSDP_OK;
     }
-    else{
-        return -1;
+    else if(devicetable.count(toid) != 0){
+        devicetable[toid]->DEV_Start();
+        return SSDP_OK;
+    }else{
+        return SSDP_ERROR;
     }
 }
 
@@ -217,6 +238,12 @@ SSDP_Result SSDP_show_cur_apps(){
         cout<<iter->first<<" "<<iter->second->APP_GetHandleName()<<endl;
         ++iter;
     }
+}
+
+SSDP_HandleID SSDP_InstantiateDevice(SSDP_HandleID fromid, string handlename, string config_file_path){
+    auto new_dev = std::make_shared<DeviceBase>(handlename, SSDP_GetNewHandleID());
+    devicetable.insert(std::make_pair(new_dev->DEV_GetHandleID(), new_dev));
+    return new_dev->DEV_GetHandleID();
 }
 
 SSDP_Result SSDP_self_Init(){

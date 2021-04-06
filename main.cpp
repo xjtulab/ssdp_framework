@@ -123,14 +123,15 @@ int main() {
         return 1;
     }
     SSDP_show_cur_apps();
+    int devid = SSDP_InstantiateDevice(0, "fpga1", "a.xml");
+    int devid1 = SSDP_InstantiateDevice(0, "dsp1", "a.xml");
+    int devid2 = SSDP_InstantiateDevice(0, "dsp2", "a.xml");
     int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
-    cout<< SSDP_HandleRequest(0,"myapp1")<<endl;
-    cout<< SSDP_HandleRequest(0,"sadfsa")<<endl;
-    string c;
-    cout<< SSDP_GetHandleName(0,4,c)<<endl;
-    cout<<c<<endl;
+    // string c;
+    // cout<< SSDP_GetHandleName(0,4,c)<<endl;
+    // cout<<c<<endl;
     SSDP_Start(0, SSDP_HandleRequest(0, "myapp1"));
-    cout<<"end"<<endl;
+    cout<<"test end"<<endl;
     //int appid1 = SSDP_InstantiateApp(0,"myapp2","./app2.so");
     //SSDP_Start(0,appid);
     //SSDP_Stop(0,appid);
