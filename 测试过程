@@ -1,0 +1,12 @@
+准备部分：
+    配置文件：
+        设备配置文件: fpga, dsp 各一个
+        应用配置文件： 一个
+
+
+过程：
+    首先发送文件： 应用配置文件，程序文件
+    然后发送指令：
+        ssdpctl start
+        ssdpctl config
+        ssdpctl stop

@@ -37,9 +37,9 @@ public:
     const string& DEV_GetHandleName(){ return handle_name;}
 
     //设备待实现接口
-    virtual SSDP_Result DEV_Configure(int comp_id,SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie){
-        cout<<"comp "<<comp_id<<" is to be configed"<<endl;
-    }
+    // virtual SSDP_Result DEV_Configure(int comp_id,SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie){
+    //     cout<<"comp "<<comp_id<<" is to be configed"<<endl;
+    // }
 
     virtual SSDP_Result DEV_Start() {
         cout<<"dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
@@ -49,7 +49,9 @@ public:
     virtual SSDP_Result APP_ReleaseObject() {};
     virtual SSDP_Result APP_Write(SSDP_Message buffer, SSDP_Buffer_Size buffer_size) {};
     virtual SSDP_Result APP_Read(SSDP_Message& buffer, SSDP_Buffer_Size buffer_size) {};
-    virtual SSDP_Result APP_Configure(SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie) {};
+    virtual SSDP_Result DEV_Configure(string comp_id, SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie) {
+        cout<<"on dev "<<handle_name<<" comp: "<<comp_id<<" property: "<<name<<" is changing to: "<<value<<endl;
+    };
     virtual SSDP_Result APP_Query (SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size) {};
     //设备独有功能
     virtual SSDP_Result DEV_Open() {};

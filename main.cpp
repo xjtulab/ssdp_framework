@@ -44,7 +44,7 @@ void start_routine(struct thread_params *params)
             cout<<"recieve file: path-> "<<mes.content<<endl;
         }
 
-        string reply = "recieve success";
+        string reply = "recieve file success";
         params->server->do_send(client_sockfd, reply);
 
     }
@@ -89,11 +89,9 @@ int main() {
 
     //TODO 框架启动流程设计
     /*
-        1、启动和FC的连接，返回开始启动消息
-        2、装载驱动、HAL等，读取平台配置文件，创建设备实例
-        3、运行设备测试
-        4、读取平台配置文件，决定需要启动的应用
-        7、读取应用配置文件，部署应用
+        1、读取设备配置文件，创建设备实例
+        2、启动和显控界面的连接，准备接收指令
+        3、循环接收指令
     */
 
     // CmdProcess cmdprocesser;
@@ -117,20 +115,57 @@ int main() {
     }*/
     //APP1TEST
     
+    //系统的初始化
     int ssdp_init_result = SSDP_self_Init();
     if (ssdp_init_result != 0){
         cout<<"ssdp init failed"<<endl;
         return 1;
     }
     SSDP_show_cur_apps();
+
+    // 1、读取设备配置文件，创建设备实例
     int devid = SSDP_InstantiateDevice(0, "fpga1", "a.xml");
     int devid1 = SSDP_InstantiateDevice(0, "dsp1", "a.xml");
     int devid2 = SSDP_InstantiateDevice(0, "dsp2", "a.xml");
-    int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
+    // int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
+
+    // 2、启动和显控界面的连接，准备接收指令
+    CmdProcess cmdprocesser;
+    Server *server = new Server(const_cast<char*>(IP), PORT);
+    struct thread_params params;
+    params.server = server;
+    struct sockaddr_in client_sockaddr;
+    socklen_t length = sizeof(client_sockaddr);
+
+    if(server->setup()){
+        cout<<"network setup success"<<endl;
+    }
+
+    while (true)
+    {
+        params.fd = server->do_accept((struct sockaddr *)&client_sockaddr, &length);
+        if (params.fd < 0)
+        {
+            printf("accept error\n");
+            break;
+        }else{
+            printf("Accept a new client from fd:%d->%s:%d\n",params.fd,inet_ntoa(client_sockaddr.sin_addr),client_sockaddr.sin_port);
+        }
+        
+        thread data_read(start_routine, &params);
+        data_read.detach();
+    }
+    server->do_shutdown();
+    delete server;
+    server = NULL;
+    params.server = NULL;
+    return 0;
+    
     // string c;
     // cout<< SSDP_GetHandleName(0,4,c)<<endl;
     // cout<<c<<endl;
     SSDP_Start(0, SSDP_HandleRequest(0, "myapp1"));
+    SSDP_Configure(0, SSDP_HandleRequest(0, "myapp1"), "BCH192_64800-DVBS2@9b2dc56", "abc", "dedf", 10);
     cout<<"test end"<<endl;
     //int appid1 = SSDP_InstantiateApp(0,"myapp2","./app2.so");
     //SSDP_Start(0,appid);
