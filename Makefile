@@ -1,8 +1,8 @@
 VPATH = include:src
 myhfile := $(inclde/wildcard *.h)
 
-CC =$(ARM)g++
-# CC = g++
+# CC =$(ARM)g++
+CC = g++
 ARM = arm-linux-gnueabihf-
 objects = src/SSDP_LOG.o src/SSDP_API.o src/commandprocess.o src/server.o
 

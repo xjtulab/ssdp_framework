@@ -117,6 +117,12 @@ SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, strin
         cout<<"dev_id: "<<dev_id<<endl;
         new_app->Add_Component(comp->first_node("objId")->value(), comp->first_node("resourceInfo")->first_node("info")->first_node("codeLocation")->value(), \
             dev_id, comp->first_node("componenId")->value());
+        //依次添加参数名/地址对
+        rapidxml::xml_node<> *parameter = comp->first_node("parameters")->first_node("parameter");
+        while(parameter){
+            new_app->Add_Component_Parameter(comp->first_node("objId")->value(), parameter->first_node("name")->value(), parameter->first_node("address")->value());
+            parameter = parameter->next_sibling();
+        }
         comp = comp->next_sibling();
     }
     //cout<<new_app.use_count()<<endl;

@@ -127,7 +127,7 @@ int main() {
     int devid = SSDP_InstantiateDevice(0, "fpga1", "a.xml");
     int devid1 = SSDP_InstantiateDevice(0, "dsp1", "a.xml");
     int devid2 = SSDP_InstantiateDevice(0, "dsp2", "a.xml");
-    // int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
+    int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
 
     // 2、启动和显控界面的连接，准备接收指令
     CmdProcess cmdprocesser;

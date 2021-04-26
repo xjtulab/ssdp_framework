@@ -40,6 +40,11 @@ public:
         component* ptr = new component(filepath,targetdevice, id_on_device);
         component_list.insert(std::make_pair(id_on_app, ptr));
     }
+    //添加组件参数名/地址对
+    SSDP_Result Add_Component_Parameter(string id_on_app, string name, string address){
+        component_list[id_on_app]->add_parameter(name, address);
+        return SSDP_OK;
+    }
     
     //应用待实现接口
     virtual SSDP_Result APP_Start(){
