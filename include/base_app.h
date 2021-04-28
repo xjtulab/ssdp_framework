@@ -51,6 +51,7 @@ public:
         SSDP_Result res = SSDP_OK;
         auto iter = component_list.begin();
         while(iter != component_list.end()){
+            //TODO 需要传输compi地址参数，修改组件空间的02地址？
             if(!ftable->start(handle_id, iter->second->target_device)){
                 res = SSDP_ERROR;
             }
@@ -64,7 +65,10 @@ public:
     virtual SSDP_Result APP_Write(int comp_id,SSDP_Message buffer, SSDP_Buffer_Size buffer_size) {};
     virtual SSDP_Result APP_Read(int comp_id,SSDP_Message& buffer, SSDP_Buffer_Size buffer_size) {};
     virtual SSDP_Result APP_Configure(string comp_id,SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_size) {
-        SSDP_Result res = ftable->config(handle_id, component_list[comp_id]->target_device, component_list[comp_id]->comp_id_on_device, name, value, value_size);
+        //需要输入设备id，组件在设备上的id？地址和参数
+        //nanm就是地址，参数值还是参数值
+        SSDP_Result res = ftable->config(handle_id, component_list[comp_id]->target_device, component_list[comp_id]->comp_id_on_device, 
+            component_list[comp_id]->get_address(name), value, value_size);
         return res;
     };
     virtual SSDP_Result APP_Query (int comp_id,SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size) {};
