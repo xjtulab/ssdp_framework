@@ -1,7 +1,14 @@
 #include "commandprocess.h"
 #include "SSDP_PRE_DATA.h"
+#include "SSDP_API.h"
+#include<vector>
 using std::cout;
 using std::endl;
+using std::vector;
+
+
+
+// static const string EnumStrings[] = { "start", "stop", "config" };
 
 
 CmdProcess::CmdProcess(){
@@ -15,7 +22,6 @@ CmdProcess::CmdProcess(){
     par->add<string>("property_name",'n',"Property Name", false);
     par->add<string>("property_value",'v',"Property Value",false);
     par->set_program_name("SSDP");
-
 }
 
 SSDP_Result CmdProcess::ReceiveCommand(const string& cmd){
@@ -25,8 +31,11 @@ SSDP_Result CmdProcess::ReceiveCommand(const string& cmd){
         return SSDP_ERROR;
     }
     //TODO 加上ID检测，和功能检测等
-    cout<<par->get<string>("APP_id")<<" needs to "<<par->get<string>("function")<<endl;
-
+    // cout<<par->get<string>("APP_id")<<" needs to "<<par->get<string>("function")<<endl;
+    if(par->get<string>("function") == "start"){
+        SSDP_Result res = SSDP_Start(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, par->get<string>("APP_name")));
+        return res;
+    }
     // switch(par->get<string>("function")){
     //     case "SSDP_InstantiateApp"
     // }

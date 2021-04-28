@@ -124,13 +124,21 @@ int main() {
     SSDP_show_cur_apps();
 
     // 1、读取设备配置文件，创建设备实例
-    int devid = SSDP_InstantiateDevice(0, "fpga1", "a.xml");
+    //TODO 应该改成扫描文件夹底下文件
+    int devid = SSDP_InstantiateDevice(0, "fpga1", "fpga1.xml");
     int devid1 = SSDP_InstantiateDevice(0, "dsp1", "a.xml");
     int devid2 = SSDP_InstantiateDevice(0, "dsp2", "a.xml");
+
+    //创建应用
     int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
 
-    // 2、启动和显控界面的连接，准备接收指令
     CmdProcess cmdprocesser;
+    // cmdprocesser.ReceiveCommand("asdf dsf");
+    cmdprocesser.ReceiveCommand("SSDP -s ground  -t framework -f start -a myapp1");
+
+
+    // 2、启动和显控界面的连接，准备接收指令
+    // CmdProcess cmdprocesser;
     Server *server = new Server(const_cast<char*>(IP), PORT);
     struct thread_params params;
     params.server = server;

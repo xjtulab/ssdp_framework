@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<device>
+    <name>dsp1</name>
+    <resource>100</resource>
+    <resourcetype>BYTE</resourcetype>
+</device>

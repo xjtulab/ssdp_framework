@@ -9,7 +9,6 @@ using std::string;
 class CmdProcess{
 private:
     cmdline::parser* par;
-
 public:
     CmdProcess();
     SSDP_Result ReceiveCommand(const string& cmd);
