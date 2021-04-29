@@ -10,6 +10,7 @@
 #include "SSDP_API.h"
 #include "SSDP_LOG.h"
 #include "commandprocess.h"
+#include <dirent.h>
 using std::cout;
 using std::endl;
 using std::cerr;
@@ -125,9 +126,23 @@ int main() {
 
     // 1、读取设备配置文件，创建设备实例
     //TODO 应该改成扫描文件夹底下文件
-    int devid = SSDP_InstantiateDevice(0, "fpga1", "fpga1.xml");
-    int devid1 = SSDP_InstantiateDevice(0, "dsp1", "a.xml");
-    int devid2 = SSDP_InstantiateDevice(0, "dsp2", "a.xml");
+    DIR *dirp;
+    struct dirent *direntp;
+    if((dirp = opendir("devices")) == NULL){
+        cout<<"device dir error!"<<endl;
+        exit(1);
+    }
+    while((direntp = readdir(dirp)) != NULL){
+        string fname = direntp ->d_name;
+        int pos;
+        if((pos = fname.find(".xml")) != string::npos){
+            SSDP_InstantiateDevice(SSDP_OE_HANDLE_ID, fname.substr(0, pos), "devices/"+fname);
+        }
+    }
+    closedir(dirp);
+    // int devid = SSDP_InstantiateDevice(0, "fpga1", "fpga1.xml");
+    // int devid1 = SSDP_InstantiateDevice(0, "dsp1", "a.xml");
+    // int devid2 = SSDP_InstantiateDevice(0, "dsp2", "a.xml");
 
     //创建应用
     int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");

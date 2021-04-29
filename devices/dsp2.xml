@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <device>
-    <name>fpga0</name>
+    <name>dsp2</name>
     <resource>100</resource>
-    <resourcetype>GATE</resourcetype>
+    <resourcetype>BYTE</resourcetype>
 </device>
