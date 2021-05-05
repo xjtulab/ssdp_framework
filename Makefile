@@ -1,13 +1,13 @@
 VPATH = include:src
 myhfile := $(inclde/wildcard *.h)
 
-# CC =$(ARM)g++
-CC = g++
+CC =/home/osrc/toolchain/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++
+# CC = g++
 ARM = arm-linux-gnueabihf-
 objects = src/SSDP_LOG.o src/SSDP_API.o src/commandprocess.o src/server.o
 
 run: main.o $(objects)
-	$(CC) -o run main.o $(objects) -ldl -lpthread 
+	$(CC) -o run main.o $(objects) lib/*.a  -ldl -lpthread
 
 main.o: main.cpp $(myhfile)
 	$(CC) -c main.cpp -I include 

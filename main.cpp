@@ -11,6 +11,11 @@
 #include "SSDP_LOG.h"
 #include "commandprocess.h"
 #include <dirent.h>
+#include "lib_test.h"
+extern "C" {
+#include "libmc3s029zesensorinfoget.h"
+#include "libmc3s028zecpldcfg.h"
+}
 using std::cout;
 using std::endl;
 using std::cerr;
@@ -52,6 +57,7 @@ void start_routine(struct thread_params *params)
     printf("client closed\n");
     close(client_sockfd);
 }
+
 
 
 int main() {
@@ -123,7 +129,8 @@ int main() {
         return 1;
     }
     SSDP_show_cur_apps();
-
+    test_sessor();
+    zecpldcfg_test();
     // 1、读取设备配置文件，创建设备实例
     //TODO 应该改成扫描文件夹底下文件
     DIR *dirp;

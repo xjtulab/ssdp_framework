@@ -49,6 +49,7 @@
         "ratio": "cpp",
         "mutex": "cpp",
         "thread": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "libmc3s028zecpldcfg.h": "c"
     }
 }
