@@ -12,6 +12,7 @@
 #include "rapidxml.hpp"
 #include "rapidxml_utils.hpp"
 #include "dsp.h"
+#include "fpga.h"
 using std::string;
 using std::map;
 using std::cout;
@@ -261,12 +262,14 @@ SSDP_HandleID SSDP_InstantiateDevice(SSDP_HandleID fromid, string handlename, st
     if(dev_type == "dsp"){
         // auto new_dev_tmp = std::make_shared<DeviceDSP>(handlename,  SSDP_GetNewHandleID());
         new_dev = new DeviceDSP(handlename,  SSDP_GetNewHandleID());
-        devicetable.insert(std::make_pair(new_dev->DEV_GetHandleID(), new_dev));
-        return new_dev->DEV_GetHandleID();
+    }else if(dev_type == "fpga"){
+        new_dev = new DeviceFPGA(handlename,  SSDP_GetNewHandleID());
     }
-    auto new_dev1 = std::make_shared<DeviceBase>(handlename, SSDP_GetNewHandleID());
-    devicetable.insert(std::make_pair(new_dev1->DEV_GetHandleID(), new_dev1));
+    devicetable.insert(std::make_pair(new_dev->DEV_GetHandleID(), new_dev));
     return new_dev->DEV_GetHandleID();
+    // auto new_dev1 = std::make_shared<DeviceBase>(handlename, SSDP_GetNewHandleID());
+    // devicetable.insert(std::make_pair(new_dev1->DEV_GetHandleID(), new_dev1));
+    // return new_dev->DEV_GetHandleID();
 }
 
 SSDP_Result SSDP_self_Init(){
