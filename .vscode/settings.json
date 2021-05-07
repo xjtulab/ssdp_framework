@@ -50,6 +50,9 @@
         "mutex": "cpp",
         "thread": "cpp",
         "cinttypes": "cpp",
-        "libmc3s028zecpldcfg.h": "c"
+        "libmc3s028zecpldcfg.h": "c",
+        "numeric": "cpp",
+        "random": "cpp",
+        "set": "cpp"
     }
 }

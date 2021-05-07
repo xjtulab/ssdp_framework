@@ -83,7 +83,7 @@ public:
     // virtual SSDP_Result DEV_SetISR() =0;
 
     //TODO 析构函数
-    ~DeviceBase(){}
+    virtual ~DeviceBase(){}
 };
 
 typedef DeviceBase* (*DEV_Instance_ptr)(string name, SSDP_HandleID id);

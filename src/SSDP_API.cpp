@@ -11,6 +11,7 @@
 #include <set>
 #include "rapidxml.hpp"
 #include "rapidxml_utils.hpp"
+#include "dsp.h"
 using std::string;
 using std::map;
 using std::cout;
@@ -250,8 +251,21 @@ SSDP_Result SSDP_show_cur_apps(){
 }
 
 SSDP_HandleID SSDP_InstantiateDevice(SSDP_HandleID fromid, string handlename, string config_file_path){
-    auto new_dev = std::make_shared<DeviceBase>(handlename, SSDP_GetNewHandleID());
-    devicetable.insert(std::make_pair(new_dev->DEV_GetHandleID(), new_dev));
+    //根据设备类型创建不同类型的对象
+    rapidxml::file<> fdoc(config_file_path.c_str());
+    rapidxml::xml_document<> doc;
+    doc.parse<0>(fdoc.data());
+    rapidxml::xml_node<> *device = doc.first_node();
+    string dev_type = device->first_node("devicetype")->value();
+    DeviceBase* new_dev;
+    if(dev_type == "dsp"){
+        // auto new_dev_tmp = std::make_shared<DeviceDSP>(handlename,  SSDP_GetNewHandleID());
+        new_dev = new DeviceDSP(handlename,  SSDP_GetNewHandleID());
+        devicetable.insert(std::make_pair(new_dev->DEV_GetHandleID(), new_dev));
+        return new_dev->DEV_GetHandleID();
+    }
+    auto new_dev1 = std::make_shared<DeviceBase>(handlename, SSDP_GetNewHandleID());
+    devicetable.insert(std::make_pair(new_dev1->DEV_GetHandleID(), new_dev1));
     return new_dev->DEV_GetHandleID();
 }
 

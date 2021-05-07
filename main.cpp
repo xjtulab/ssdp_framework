@@ -3,7 +3,7 @@
 //
 //#include "base_app.h"
 
-#include"server.h"
+#include"SSDPServer.hpp"
 #include<thread>
 #include <iostream>
 #include "SSDP.h"
@@ -11,56 +11,62 @@
 #include "SSDP_LOG.h"
 #include "commandprocess.h"
 #include <dirent.h>
-#include "lib_test.h"
-extern "C" {
-#include "libmc3s029zesensorinfoget.h"
-#include "libmc3s028zecpldcfg.h"
-}
+// #include "lib_test.h"
+// extern "C" {
+// #include "libmc3s029zesensorinfoget.h"
+// #include "libmc3s028zecpldcfg.h"
+// }
 using std::cout;
 using std::endl;
 using std::cerr;
 
-#define PORT 8080
-#define IP "192.168.1.111"
-CmdProcess cmdprocesser;
-void start_routine(struct thread_params *params);
+#define SSDP_SERVER_IP "192.168.43.109"
+#define SSDP_SERVER_PORT 8080
+char *IP = new char[16];
+int port;
 
-// 线程执行的函数参数
-struct thread_params
-{
-    int fd;
-    Server *server;
-};
+void recv_from_upper_pc(SSDPServer* server);
 
-void start_routine(struct thread_params *params)
-{
-    int client_sockfd = params->fd;
+void init(){
+    strcpy(IP, SSDP_SERVER_IP);
+    port = SSDP_SERVER_PORT;
+    SSDPServer::set_default_directory();
+}
 
-    while (true)
-    {
-        MesRecieved mes= params->server->do_recv(client_sockfd);
-        if (mes.flag == 0)
+void parse_args(int argc, char **argv){
+    int ch;
+    while((ch = getopt(argc, argv, "a:d:p:")) != -1){
+        switch (ch)
         {
-            /* code */
-            cout<<"recieve instructions: "<<mes.content<<endl;
-            cmdprocesser.ReceiveCommand(mes.content);
-        }else if (mes.flag == 1)
-        {
-            /* code */
-            cout<<"recieve file: path-> "<<mes.content<<endl;
+            case 'a':{
+                memcpy(IP, optarg, strlen(optarg));
+                IP[strlen(optarg)] = '\0';
+                break;
+            }
+            case 'd':{
+                SSDPServer::set_directory(optarg);
+                break;
+            }
+            case 'p':{
+                port = atoi(optarg);
+                break;
+            }
+            case '?':{
+                printf("-%c invalid option\n", (char)optopt);
+                printf("usage: ");
+                printf("./main [-a IP address] [-d file save directory] [-p port]\n");
+                exit(1);
+                break;
+            }
         }
-
-        string reply = "recieve file success";
-        params->server->do_send(client_sockfd, reply);
-
     }
-    printf("client closed\n");
-    close(client_sockfd);
 }
 
 
+// 线程执行的函数参数
 
-int main() {
+
+int main(int argc, char **argv) {
     // CmdProcess cmdprocesser;
     // Server *server = new Server(const_cast<char*>(IP), PORT);
     // struct thread_params params;
@@ -129,8 +135,11 @@ int main() {
         return 1;
     }
     SSDP_show_cur_apps();
-    test_sessor();
-    zecpldcfg_test();
+
+    //主板接口测试
+    // test_sessor();
+    // zecpldcfg_test();
+    // upgrade_test(argc, argv);
     // 1、读取设备配置文件，创建设备实例
     //TODO 应该改成扫描文件夹底下文件
     DIR *dirp;
@@ -147,49 +156,25 @@ int main() {
         }
     }
     closedir(dirp);
-    // int devid = SSDP_InstantiateDevice(0, "fpga1", "fpga1.xml");
-    // int devid1 = SSDP_InstantiateDevice(0, "dsp1", "a.xml");
-    // int devid2 = SSDP_InstantiateDevice(0, "dsp2", "a.xml");
-
     //创建应用
     int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
 
     CmdProcess cmdprocesser;
-    // cmdprocesser.ReceiveCommand("asdf dsf");
     cmdprocesser.ReceiveCommand("SSDP -s ground  -t framework -f start -a myapp1");
+    init();
+    parse_args(argc, argv);
+    SSDPServer server;
+    if(!server.setup(IP, port, true)){
+        exit(1);
+    }
+    // std::thread recv_thread(recv_from_upper_pc, &server);
+    // recv_thread.detach();
 
-
+    server.do_epoll();
+    return 1;
     // 2、启动和显控界面的连接，准备接收指令
     // CmdProcess cmdprocesser;
-    Server *server = new Server(const_cast<char*>(IP), PORT);
-    struct thread_params params;
-    params.server = server;
-    struct sockaddr_in client_sockaddr;
-    socklen_t length = sizeof(client_sockaddr);
-
-    if(server->setup()){
-        cout<<"network setup success"<<endl;
-    }
-
-    while (true)
-    {
-        params.fd = server->do_accept((struct sockaddr *)&client_sockaddr, &length);
-        if (params.fd < 0)
-        {
-            printf("accept error\n");
-            break;
-        }else{
-            printf("Accept a new client from fd:%d->%s:%d\n",params.fd,inet_ntoa(client_sockaddr.sin_addr),client_sockaddr.sin_port);
-        }
-        
-        thread data_read(start_routine, &params);
-        data_read.detach();
-    }
-    server->do_shutdown();
-    delete server;
-    server = NULL;
-    params.server = NULL;
-    return 0;
+   
     
     // string c;
     // cout<< SSDP_GetHandleName(0,4,c)<<endl;
