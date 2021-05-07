@@ -67,39 +67,9 @@ void parse_args(int argc, char **argv){
 
 
 int main(int argc, char **argv) {
-    // CmdProcess cmdprocesser;
-    // Server *server = new Server(const_cast<char*>(IP), PORT);
-    // struct thread_params params;
-    // params.server = server;
-    // struct sockaddr_in client_sockaddr;
-    // socklen_t length = sizeof(client_sockaddr);
-
-    // if(server->setup()){
-    //     cout<<"setup success"<<endl;
-    // }
-
-    // while (true)
-    // {
-
-    //     params.fd = server->do_accept((struct sockaddr *)&client_sockaddr, &length);
-    //     if (params.fd < 0)
-    //     {
-    //         printf("accept error\n");
-    //         break;
-    //     }else{
-    //         printf("Accept a new client from fd:%d->%s:%d\n",params.fd,inet_ntoa(client_sockaddr.sin_addr),client_sockaddr.sin_port);
-    //     }
-        
-    //     thread data_read(start_routine, &params);
-    //     data_read.detach();
-    // }
-    // server->do_shutdown();
-    // delete server;
-    // server = NULL;
-    // params.server = NULL;
-    // return 0;
-
-
+    #ifdef ARM_BUILD
+    cout<<"arm"<<endl;
+    #endif
     //TODO 框架启动流程设计
     /*
         1、读取设备配置文件，创建设备实例
