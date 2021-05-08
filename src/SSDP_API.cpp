@@ -13,7 +13,7 @@
 #include "rapidxml_utils.hpp"
 #include "dsp.h"
 #include "fpga.h"
-#define ARM_BUILD
+// #define ARM_BUILD
 #ifdef ARM_BUILD
 extern "C"{
     #include "libmc3s029zesensorinfoget.h"
@@ -384,6 +384,43 @@ SSDP_Result SSDP_self_Init(){
         res =SSDP_ERROR;
         cout<<"storage_board_zynq_core_status is not ok"<<endl;
     }
+    spdcpldop_release();
 #endif
-    return 0;
+    return res;
+}
+
+std::string SSDP_DeviceStatus(){
+    float storage_board_voltage1 = 0;
+    float storage_board_temperature1 = 0;
+    float voltage_data_tmp = 0;
+	float temperature_data_tmp = 0;
+#ifdef ARM_BUILD
+    //存储板状态
+    unsigned int* map_bram_ctrl_address;
+    map_bram_ctrl_address = spdcpldop_init();
+    storage_board_voltage1 = get_storage_board_voltage1(map_bram_ctrl_address);
+    storage_board_temperature1 = get_storage_board_temperature1(map_bram_ctrl_address);
+    spdcpldop_release();
+    //主控版状态
+    voltage_data_tmp = get_main_control_board_voltage1_vccaux();
+    temperature_data_tmp = get_main_control_board_temperature();
+#endif 
+    std::string res;
+    res = "<devices>"
+              "<device>"
+                  "<Id>maincontrol</Id>"
+                  "<vol>"+to_string(voltage_data_tmp)+"</vol>"
+                  "<temp>"+to_string(temperature_data_tmp)+"</temp>"
+              "</device>"
+          "<devices>"
+              "<device>"
+                  "<Id>storage</Id>"
+                  "<vol>"+to_string(storage_board_voltage1)+"</vol>"
+                  "<temp>"+to_string(storage_board_temperature1)+"</temp>"
+              "</device>";
+    for(auto pos = devicetable.begin(); pos != devicetable.end(); pos++ ){
+        res += pos->second->DEV_Status_Qeury();
+    }
+    res += "</devices>";
+    return res;
 }

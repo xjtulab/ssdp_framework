@@ -11,7 +11,9 @@ objects = src/SSDP_LOG.o src/SSDP_API.o src/commandprocess.o src/SSDPServer.o
 
 run: main.o $(objects)
 ifdef tar
-	$(ARMCC) -o run main.o $(objects) lib/*.a  -ldl -lpthread -D ARM_BUILD
+	$(ARMCC) --static -o run main.o $(objects) lib/*.a  -ldl -lpthread -D ARM_BUILD
+	cp run test
+	tar -czf test.tar.gz test
 else
 	$(CC) -o run main.o $(objects) -ldl -lpthread 
 endif 
@@ -31,4 +33,5 @@ endif
 .PHONY: clean
 clean:
 	rm run src/*.o *.o
-	rm tmp/*
+	rm test/run
+	rm test.tar.gz 

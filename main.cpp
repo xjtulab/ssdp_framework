@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
     int ssdp_init_result = SSDP_self_Init();
     if (ssdp_init_result != 0){
         cout<<"ssdp init failed"<<endl;
-        return 1;
+        // return 1;
     }
     SSDP_show_cur_apps();
 
@@ -126,6 +126,10 @@ int main(int argc, char **argv) {
     //创建应用
     int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
 
+    //测试设备状态回报
+    std::string stat = SSDP_DeviceStatus();
+    cout<<stat<<endl;
+    
     CmdProcess cmdprocesser;
     cmdprocesser.ReceiveCommand("SSDP -s ground  -t framework -f start -a myapp1");
     init();

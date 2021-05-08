@@ -54,6 +54,8 @@ public:
     };
     virtual SSDP_Result APP_Query (SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size) {};
     //设备独有功能
+    virtual std::string DEV_Status_Qeury() = 0;
+    virtual SSDP_Result DEV_Check() = 0;
     virtual SSDP_Result DEV_Open() {};
     virtual SSDP_Result DEV_Close() {};
     virtual SSDP_Result DEV_Load(string filename) {};
