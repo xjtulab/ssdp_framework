@@ -67,9 +67,6 @@ void parse_args(int argc, char **argv){
 
 
 int main(int argc, char **argv) {
-    #ifdef ARM_BUILD
-    cout<<"arm"<<endl;
-    #endif
     //TODO 框架启动流程设计
     /*
         1、读取设备配置文件，创建设备实例

@@ -13,9 +13,13 @@
 #include "rapidxml_utils.hpp"
 #include "dsp.h"
 #include "fpga.h"
-// #ifdef ARM_BUILD
-//     #include "libmc3s029zesensorinfoget.h"
-// #endif
+#define ARM_BUILD
+#ifdef ARM_BUILD
+extern "C"{
+    #include "libmc3s029zesensorinfoget.h"
+    #include "libmc3s028zecpldcfg.h"
+}
+#endif
 using std::string;
 using std::map;
 using std::cout;
@@ -288,5 +292,98 @@ SSDP_Result SSDP_self_Init(){
     app_functable.config = &SSDP_Configure;
     app_functable.query = &SSDP_Query;
     app_functable.abort = &SSDP_AbortApp;
+    SSDP_Result res = SSDP_OK;
+#ifdef ARM_BUILD
+//主控板状态检查
+    float  voltage_data = 0;
+    float temperature_data = 0;
+    if(!get_main_control_board_eth0_link_status()){
+        // res = SSDP_ERROR;
+        cout<<"eth0 link status error"<<endl;
+    }else{
+        cout<<"eth0 link status is ok"<<endl;
+    }
+    if(!get_main_control_board_eth1_link_status()){
+        // res = SSDP_ERROR;
+        cout<<"eth1 link status error"<<endl;
+    }else{
+        cout<<"eth1 link status is ok"<<endl;
+    }
+    if(!get_main_control_board_eth2_link_status()){
+        // res = SSDP_ERROR;
+        cout<<"eth2 link status error"<<endl;
+    }else{
+        cout<<"eth2 link status is ok"<<endl;
+    }
+    // if(!get_main_control_board_eth3_link_status()){
+    //     res = SSDP_ERROR;
+    //     cout<<"eth3 link status error"<<endl;
+    // }else{
+    //     cout<<"eth3 link status is ok"<<endl;
+    // }
+    // if(!get_main_control_board_sata_ready_status()){
+    //     res = SSDP_ERROR;
+    //     cout<<"sata ready status is not ok!"<<endl;
+    // }else{
+    //     cout<<"sata ready status is ok!"<<endl;
+    // }
+    if(!get_main_control_board_sata_link_status()){
+        res = SSDP_ERROR;
+        cout<<"sata link status is not ok"<<endl;
+    }else{
+        cout<<"sata link status is ok"<<endl;
+    }
+    if(!get_main_control_board_cdcm_status()){
+        res = SSDP_ERROR;
+        cout<<"cdcm status is not ok"<<endl;
+    }else{
+        cout<<"cdcm status is ok"<<endl;
+    }
+    if(!get_main_control_board_srio0_link_status()){
+        res = SSDP_ERROR;
+        cout<<"srio0 link status is not ok"<<endl;
+    }else{
+        cout<<"srio0 link status is ok"<<endl;
+    }
+    if(!get_main_control_board_srio1_link_status()){
+        res = SSDP_ERROR;
+        cout<<"srio1 link status is not ok"<<endl;
+    }else{
+        cout<<"srio1 link status is ok"<<endl;
+    }
+//存储板状态检查
+    unsigned int* map_bram_ctrl_address;
+    map_bram_ctrl_address = spdcpldop_init();
+    if(get_storage_board_zynq_srio_link_status(map_bram_ctrl_address)){
+        cout<<"storage_board_zynq_srio_link_status is ok"<<endl;
+    }else{
+        res = SSDP_ERROR;
+        cout<<"storage_board_zynq_srio_link_status is not ok"<<endl;
+    }
+    if(get_storage_board_fpga1_srio_link_status(map_bram_ctrl_address)){
+        cout<<"storage_board_fpga1_srio_link_status is ok"<<endl;
+    }else{
+        res = SSDP_ERROR;
+        cout<<"storage_board_fpga1_srio_link_status is not ok"<<endl;
+    }
+    if(get_storage_board_fpga2_srio_link_status(map_bram_ctrl_address)){
+        cout<<"storage_board_fpga2_srio_link_status is ok"<<endl;
+    }else{
+        res = SSDP_ERROR;
+         cout<<"storage_board_fpga2_srio_link_status is not ok"<<endl;
+    }
+    if(get_storage_board_zynq_ge_link_status(map_bram_ctrl_address)){
+        cout<<"storage_board_zynq_ge_link_status is ok"<<endl;
+    }else{
+        res = SSDP_ERROR;
+        cout<<"storage_board_zynq_ge_link_status is not ok"<<endl;
+    }
+    if(get_storage_board_zynq_core_status(map_bram_ctrl_address)){
+        cout<<"storage_board_zynq_core_status is ok"<<endl;
+    }else{
+        res =SSDP_ERROR;
+        cout<<"storage_board_zynq_core_status is not ok"<<endl;
+    }
+#endif
     return 0;
 }
