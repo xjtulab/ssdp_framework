@@ -7,7 +7,7 @@ ARMCC =/home/osrc/toolchain/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin/a
 #为x86
 CC = g++
 ARM = arm-linux-gnueabihf-
-objects = src/SSDP_LOG.o src/SSDP_API.o src/commandprocess.o src/SSDPServer.o DeviceDSP.o DeviceFPGA.o
+objects = src/SSDP_LOG.o src/SSDP_API.o src/commandprocess.o src/SSDPServer.o DeviceDSP.o DeviceFPGA.o src/DspPublisher.o src/HelloWorld.o
 # src/DspPublisher.o src/HelloWorld.o
 
 run: main.o $(objects)
@@ -16,7 +16,7 @@ ifdef tar
 	cp run test
 	tar -czf test.tar.gz test
 else
-	$(CC) -o run main.o $(objects) -ldl -lpthread 
+	$(CC) -o run main.o $(objects) -ldl -lpthread -lmicrocdr -lmicroxrcedds_client
 # -lmicrocdr -lmicroxrcedds_client
 endif 
 

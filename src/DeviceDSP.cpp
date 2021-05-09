@@ -16,6 +16,18 @@ DeviceDSP::DeviceDSP(string name, SSDP_HandleID id): DeviceBase(name, id){
     }else{
         cout<<"Warning: device not ready"<<endl;
     }
+    // pub = new DspPublisher("192.168.43.210", "2019", "HelloWorldTopic", 0xaabbccdd);
+}
+
+DeviceDSP::~DeviceDSP(){
+    cout<<"deleteing dsp device"<<endl;
+    // delete pub;
+}
+
+SSDP_Result DeviceDSP::DEV_Start(){
+    // bool res = pub->send_cmd("testtestet");
+    cout<<"dsp dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
+    // return res? SSDP_OK:SSDP_ERROR;
 }
 
 std::string DeviceDSP::DEV_Status_Qeury(){

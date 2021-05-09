@@ -423,3 +423,8 @@ std::string SSDP_DeviceStatus(){
     res += "</devices>";
     return res;
 }
+
+SSDP_Result SSDP_DeleteDevice(){
+    devicetable.clear();
+    apptable.clear();
+}

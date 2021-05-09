@@ -74,7 +74,9 @@ public:
     virtual SSDP_Result APP_Query (int comp_id,SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size) {};
 
     //TODO 析构函数
-    virtual ~AppBase(){}                                                           
+    virtual ~AppBase(){
+        cout<<"deleteing app "<<this->handle_name<<endl;
+    }                                                           
 };
 
 //应用创建函数

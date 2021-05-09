@@ -136,6 +136,9 @@ int main(int argc, char **argv) {
     
     CmdProcess cmdprocesser;
     cmdprocesser.ReceiveCommand("SSDP -s ground  -t framework -f start -a myapp1");
+    SSDP_DeleteDevice();
+
+    //等待接听指令
     init();
     parse_args(argc, argv);
     SSDPServer server;
