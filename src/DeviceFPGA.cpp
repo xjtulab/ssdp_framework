@@ -1,32 +1,20 @@
-#ifndef FPAG_H
-#define FPAG_H
-#include "base_device.h"
+#include "DeviceFPGA.h"
 #ifdef ARM_BUILD
 extern "C"{
     #include "libmc3s028zecpldcfg.h"
 }
 #endif
-
-class DeviceFPGA: public DeviceBase{
-public:
-    virtual std::string DEV_Status_Qeury();
-    virtual SSDP_Result DEV_Check();
-    DeviceFPGA(string name, SSDP_HandleID id): DeviceBase(name, id){
-        SSDP_Result DEV_OK =  DEV_Check();
-        if(DEV_OK == SSDP_OK){
-            cout<<"Device Check ok"<<endl;
-            state = DEVICE_READY;
-        }else{
-            cout<<"Warning: device not ready"<<endl;
-        }
-    }
-    virtual SSDP_Result DEV_Start() {
-        cout<<"fpga dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
-    }
-    
-};
-
 //重载函数实现
+
+DeviceFPGA::DeviceFPGA(string name, SSDP_HandleID id): DeviceBase(name, id){
+    SSDP_Result DEV_OK =  DEV_Check();
+    if(DEV_OK == SSDP_OK){
+        cout<<"Device Check ok"<<endl;
+        state = DEVICE_READY;
+    }else{
+        cout<<"Warning: device not ready"<<endl;
+    }
+}
 
 std::string DeviceFPGA::DEV_Status_Qeury(){
     float pretreatment_board_voltage1 = 0;
@@ -97,6 +85,3 @@ SSDP_Result DeviceFPGA::DEV_Check(){
 #endif
     return res;
 }
-
-
-#endif

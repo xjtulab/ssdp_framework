@@ -11,8 +11,8 @@
 #include <set>
 #include "rapidxml.hpp"
 #include "rapidxml_utils.hpp"
-#include "dsp.h"
-#include "fpga.h"
+#include "DeviceDSP.h"
+#include "DeviceFPGA.h"
 // #define ARM_BUILD
 #ifdef ARM_BUILD
 extern "C"{

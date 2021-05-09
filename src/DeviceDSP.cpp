@@ -1,6 +1,4 @@
-#ifndef DSP_H
-#define DSP_H
-#include "base_device.h"
+#include "DeviceDSP.h"
 // #define ARM_BUILD
 #ifdef ARM_BUILD
 extern "C"{
@@ -8,25 +6,17 @@ extern "C"{
 }
 #endif
 
-class DeviceDSP: public DeviceBase{
-public:
-    virtual std::string DEV_Status_Qeury();
-    virtual SSDP_Result DEV_Check();
-    DeviceDSP(string name, SSDP_HandleID id): DeviceBase(name, id){
-        SSDP_Result DEV_OK =  DEV_Check();
-        if(DEV_OK == SSDP_OK){
-            cout<<"Device Check ok"<<endl;
-            state = DEVICE_READY;
-        }else{
-            cout<<"Warning: device not ready"<<endl;
-        }
-    }
-    virtual SSDP_Result DEV_Start() {
-        cout<<"dsp dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
-    }
-};
-
 //重载函数实现
+
+DeviceDSP::DeviceDSP(string name, SSDP_HandleID id): DeviceBase(name, id){
+    SSDP_Result DEV_OK =  DEV_Check();
+    if(DEV_OK == SSDP_OK){
+        cout<<"Device Check ok"<<endl;
+        state = DEVICE_READY;
+    }else{
+        cout<<"Warning: device not ready"<<endl;
+    }
+}
 
 std::string DeviceDSP::DEV_Status_Qeury(){
     float signal_processing_board_voltage1 = 0;
@@ -127,5 +117,3 @@ SSDP_Result DeviceDSP::DEV_Check(){
 #endif
     return res;
 }
-
-#endif
