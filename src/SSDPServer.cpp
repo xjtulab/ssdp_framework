@@ -1,5 +1,6 @@
 
 #include "SSDPServer.hpp"
+#include "SSDP_API.h"
 
 std::string SSDPServer::directory;
 
@@ -131,6 +132,9 @@ void SSDPServer::handle_message(int fd){
             //TODO 文件处理流程
             printf("Recieve Configuration file: %s\n", mes.content.c_str());
             reply = "Recieve Configuration file: " + mes.content + " success!";
+        }else if(mes.flag == 2){
+            printf("Recieve Device Status Request\n");
+            reply = SSDP_DeviceStatus();
         }
         do_send(fd, reply);
     }
@@ -139,7 +143,7 @@ void SSDPServer::handle_message(int fd){
 MesRecieved SSDPServer::do_recv(const int& client_socketfd)
 {
     memset(recv_buf, 0, sizeof(recv_buf));
-    ssize_t length = recv(client_socketfd, recv_buf, 1, 0);
+    ssize_t length = recv(client_socketfd, recv_buf, 2, 0);
 
     exit_if(length < 0, "Recieve flag error: ");
     if(length == 0){
@@ -149,7 +153,12 @@ MesRecieved SSDPServer::do_recv(const int& client_socketfd)
     }
     // std::cout<<"-----------Recieve flag-------------------"<<std::endl;
 
-    short flag = (short) recv_buf[0];
+    // short flag = (short) recv_buf[0];
+    short flag = 0;
+    for(int i=0; i<2; i++){
+        flag = flag << 1;
+        flag += (short)recv_buf[i];
+    }
     if(flag == 0){
         return recvIns(client_socketfd);
     }else if(flag == 1){
@@ -172,6 +181,8 @@ MesRecieved SSDPServer::do_recv(const int& client_socketfd)
         }
         // std::cout<<"----------------filesize-----------------"<<filesize<<std::endl;
         return recvFile(client_socketfd, filename, filesize);
+    }else if(flag == 2){
+        return MesRecieved(2);
     }
     return MesRecieved(-1);
 }
@@ -224,5 +235,10 @@ MesRecieved SSDPServer::recvFile(const int& client_socketfd, std::string filenam
 
 void SSDPServer::do_send(const int& client_socketfd, std::string reply)
 {
+    size_t len = reply.size();
+    memset(send_buf, 0, sizeof(send_buf));
+    send_buf[0] = len>>8;
+    send_buf[1] = len;
+    send(client_socketfd, send_buf,2,0);
     send(client_socketfd, reply.c_str(), reply.size(), 0);
 }

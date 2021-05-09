@@ -412,7 +412,6 @@ std::string SSDP_DeviceStatus(){
                   "<vol>"+to_string(voltage_data_tmp)+"</vol>"
                   "<temp>"+to_string(temperature_data_tmp)+"</temp>"
               "</device>"
-          "<devices>"
               "<device>"
                   "<Id>storage</Id>"
                   "<vol>"+to_string(storage_board_voltage1)+"</vol>"

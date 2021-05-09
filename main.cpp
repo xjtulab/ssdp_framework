@@ -11,6 +11,8 @@
 #include "SSDP_LOG.h"
 #include "commandprocess.h"
 #include <dirent.h>
+
+// #include "DspPublisher.h"
 // #include "lib_test.h"
 // extern "C" {
 // #include "libmc3s029zesensorinfoget.h"
@@ -20,7 +22,7 @@ using std::cout;
 using std::endl;
 using std::cerr;
 
-#define SSDP_SERVER_IP "192.168.43.109"
+#define SSDP_SERVER_IP "192.168.43.36"
 #define SSDP_SERVER_PORT 8080
 char *IP = new char[16];
 int port;
@@ -126,6 +128,8 @@ int main(int argc, char **argv) {
     //创建应用
     int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
 
+    //测试dsp的dds
+    // DspPublisher dsp;
     //测试设备状态回报
     std::string stat = SSDP_DeviceStatus();
     cout<<stat<<endl;
