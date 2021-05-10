@@ -65,10 +65,13 @@ void parse_args(int argc, char **argv){
 }
 
 
-// 线程执行的函数参数
-
-
 int main(int argc, char **argv) {
+    // uint32_t a;
+    // string a  = "0X0FFFFFF0";   
+    // uint32_t nValude = 0;
+    // sscanf(a.c_str(), "%x", &nValude);
+    // printf("%d\r\n", nValude);
+    // return 1;
     //TODO 框架启动流程设计
     /*
         1、读取设备配置文件，创建设备实例

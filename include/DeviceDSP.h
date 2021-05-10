@@ -12,6 +12,7 @@ public:
     DeviceDSP(string name, SSDP_HandleID id);
     virtual SSDP_Result DEV_Start();
     virtual SSDP_Result DEV_Configure(string comp_id, SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie);
+    virtual void DEV_SetPub(string ip, string port, string topic_name, string session_key);
     ~DeviceDSP();
 };
 

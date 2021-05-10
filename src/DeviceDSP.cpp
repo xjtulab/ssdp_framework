@@ -16,7 +16,6 @@ DeviceDSP::DeviceDSP(string name, SSDP_HandleID id): DeviceBase(name, id){
     }else{
         cout<<"Warning: device not ready"<<endl;
     }
-    // pub = new DspPublisher("192.168.43.210", "2019", "HelloWorldTopic", 0xaabbccdd);
 }
 
 DeviceDSP::~DeviceDSP(){
@@ -134,4 +133,13 @@ SSDP_Result DeviceDSP::DEV_Check(){
         spdcpldop_release();
     #endif
     return res;
+}
+
+void DeviceDSP::DEV_SetPub(string ip, string port, string topic_name, string session_key){
+    cout<<ip<<" "<<" "<<port<<" "<<" "<<topic_name<<" "<<session_key<<endl; 
+    char* ip_tmp = (char*)ip.c_str();
+    char* port_tmp = (char*)port.c_str();
+    uint32_t nValude = 0;
+    sscanf(session_key.c_str(), "%x", &nValude);
+    pub = new DspPublisher(ip_tmp, port_tmp, topic_name, nValude);
 }
