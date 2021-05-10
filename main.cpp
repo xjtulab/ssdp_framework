@@ -134,6 +134,10 @@ int main(int argc, char **argv) {
     std::string stat = SSDP_DeviceStatus();
     cout<<stat<<endl;
     
+    //测试FPGA UPGRADE
+    SSDP_HandleID device_id = SSDP_HandleRequest(SSDP_OE_HANDLE_ID, "fpga1");
+    cout<<"device load "<<SSDP_LoadDevie(SSDP_OE_HANDLE_ID, device_id, "file_path")<<endl;
+
     CmdProcess cmdprocesser;
     cmdprocesser.ReceiveCommand("SSDP -s ground  -t framework -f start -a myapp1");
     SSDP_DeleteDevice();

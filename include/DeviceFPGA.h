@@ -11,6 +11,7 @@ public:
     virtual SSDP_Result DEV_Start() {
         cout<<"fpga dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
     }
+    virtual SSDP_Result DEV_Load(string filename);
     
 };
 

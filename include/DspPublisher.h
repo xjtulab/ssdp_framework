@@ -39,7 +39,7 @@ public:
     char datareader_xml[255];
 
     DspPublisher(char *ip, char *port, string topic_name, uint32_t session_key);
-    bool send_cmd(char *buf);
+    bool send_cmd(const char *buf);
 
     DspPublisher();
 

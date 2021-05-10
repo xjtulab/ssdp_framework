@@ -146,7 +146,7 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
     this->read_data_req = uxr_buffer_request_data(&session, reliable_out, datareader_id, reliable_in, &delivery_control);
 }
 
-bool DspPublisher::send_cmd(char *buf)
+bool DspPublisher::send_cmd(const char *buf)
 {
     strcpy(topic.message, buf);
     ucdrBuffer ub;

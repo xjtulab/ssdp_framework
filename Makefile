@@ -12,7 +12,8 @@ objects = src/SSDP_LOG.o src/SSDP_API.o src/commandprocess.o src/SSDPServer.o De
 
 run: main.o $(objects)
 ifdef tar
-	$(ARMCC) -o run main.o $(objects) lib/*.a -L /media/osrc/rootfs/usr/local/microcdr-1.2.0/lib/ -L /media/osrc/rootfs/usr/local/lib/  -ldl -lpthread -D ARM_BUILD -lmicrocdr -lmicroxrcedds_client 
+	$(ARMCC) -o run main.o $(objects)  -L arm_build/lib/ lib/*.a  -ldl -lpthread -D ARM_BUILD -lmicrocdr -lmicroxrcedds_client 
+	# lib/*.a
 	cp run test
 	tar -czf test.tar.gz test
 else
@@ -22,14 +23,14 @@ endif
 
 main.o: main.cpp $(myhfile)
 ifdef tar
-	$(ARMCC) -c main.cpp -I include -D ARM_BUILD  -I /media/osrc/rootfs/usr/local/include/ -I /media/osrc/rootfs/usr/local/microcdr-1.2.0/include/
+	$(ARMCC) -c main.cpp -I include -D ARM_BUILD  -I arm_build/include/
 else
 	$(CC) -c main.cpp -I include 
 endif
 
 $(objects):%.o:%.cpp
 ifdef tar
-	$(ARMCC) -c $< -o $@ -I include -D ARM_BUILD -I /media/osrc/rootfs/usr/local/include/ -I /media/osrc/rootfs/usr/local/microcdr-1.2.0/include/
+	$(ARMCC) -c $< -o $@ -I include -D ARM_BUILD -I arm_build/include/
 else
 	$(CC) -c $< -o $@ -I include 
 endif
