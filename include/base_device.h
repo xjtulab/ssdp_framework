@@ -4,6 +4,7 @@
 #include "SSDP_PRE_DATA.h"
 #include "SSDP.h"
 #include <iostream>
+#include "DspPublisher.h"
 using std::string;
 using namespace std;
 
@@ -23,6 +24,7 @@ protected:
     string handle_name;
     device_resource* resource;
     DeviceState state;
+    DspPublisher* pub;
     //TODO 设备是否有自己的属性?
 public:
     //构造函数
@@ -54,6 +56,7 @@ public:
     };
     virtual SSDP_Result APP_Query (SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size) {};
     //设备独有功能
+    virtual void DEV_SetPub(string ip, string port, string topic_name, string session_key) {};
     virtual std::string DEV_Status_Qeury() = 0;
     virtual SSDP_Result DEV_Check() = 0;
     virtual SSDP_Result DEV_Open() {};

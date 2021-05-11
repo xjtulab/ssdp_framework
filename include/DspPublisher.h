@@ -1,3 +1,5 @@
+#ifndef DSPPUBLISHER_H
+#define DSPPUBLISHER_H
 #include "HelloWorld.h"
 
 #include <uxr/client/client.h>
@@ -49,3 +51,4 @@ public:
         uxr_close_udp_transport(&transport);
     }
 };
+#endif

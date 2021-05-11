@@ -20,13 +20,13 @@ DeviceDSP::DeviceDSP(string name, SSDP_HandleID id): DeviceBase(name, id){
 
 DeviceDSP::~DeviceDSP(){
     cout<<"deleteing dsp device"<<endl;
-    // delete pub;
+    delete pub;
 }
 
 SSDP_Result DeviceDSP::DEV_Start(){
-    // bool res = pub->send_cmd("start");
+    bool res = pub->send_cmd("start");
     cout<<"dsp dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
-    // return res? SSDP_OK:SSDP_ERROR;
+    return res? SSDP_OK:SSDP_ERROR;
 }
 
 SSDP_Result DeviceDSP::DEV_Configure(string comp_id, SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie){

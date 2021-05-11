@@ -6,9 +6,9 @@
     <resource>100</resource>
     <resourcetype>BYTE</resourcetype>
     <ddsconfig>
-        <ip>192.168.1.10</ip>
+        <ip>10.119.84.190</ip>
         <port>2019</port>
-        <topicname>HelloWorldTopic</topicname>
-        <session_key>0xaabbccdd</session_key>
+        <topicname>Hello</topicname>
+        <session_key>0x12345678</session_key>
     </ddsconfig>
 </device>

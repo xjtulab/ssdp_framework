@@ -269,8 +269,12 @@ SSDP_HandleID SSDP_InstantiateDevice(SSDP_HandleID fromid, string handlename, st
     if(dev_type == "dsp"){
         // auto new_dev_tmp = std::make_shared<DeviceDSP>(handlename,  SSDP_GetNewHandleID());
         new_dev = new DeviceDSP(handlename,  SSDP_GetNewHandleID());
+        cout<<"dsp created"<<endl;
         rapidxml::xml_node<> *ddsconfig = device->first_node("ddsconfig");
-        dynamic_cast<DeviceDSP*>(new_dev)->DEV_SetPub(ddsconfig->first_node("ip")->value(), ddsconfig->first_node("port")->value(), ddsconfig->first_node("topicname")->value(), ddsconfig->first_node("session_key")->value()); 
+        cout<<"xml get"<<endl;
+        // dynamic_cast<DeviceDSP*>(new_dev)->DEV_SetPub(ddsconfig->first_node("ip")->value(), ddsconfig->first_node("port")->value(), ddsconfig->first_node("topicname")->value(), ddsconfig->first_node("session_key")->value()); 
+        new_dev->DEV_SetPub(ddsconfig->first_node("ip")->value(), ddsconfig->first_node("port")->value(), ddsconfig->first_node("topicname")->value(), ddsconfig->first_node("session_key")->value()); 
+        cout<<"dds configed"<<endl;
     }else if(dev_type == "fpga"){
         new_dev = new DeviceFPGA(handlename,  SSDP_GetNewHandleID());
     }
