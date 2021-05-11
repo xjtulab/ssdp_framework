@@ -28,7 +28,7 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
 
     this->count = 0;
     // Transport
-    uxrUDPPlatform udp_platform;
+    //uxrUDPPlatform udp_platform;
     //uxrTCPTransport transport;
     //uxrTCPPlatform tcp_platform;
     //if(!uxr_init_tcp_transport(&transport, &tcp_platform, UXR_IPv4, ip, port))
@@ -112,6 +112,7 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
                                    "</dds>";
 
     sprintf(datawriter_xml, datawriter_xml_1, topic_name.data());
+    printf(datawriter_xml);
     uint16_t datawriter_req = uxr_buffer_create_datawriter_xml(&session, reliable_out, datawriter_id, publisher_id, datawriter_xml, UXR_REPLACE);
     // datareader
     datareader_id = uxr_object_id(0x01, UXR_DATAREADER_ID);
@@ -155,7 +156,8 @@ bool DspPublisher::send_cmd(const char *buf)
     HelloWorld_serialize_topic(&ub, &topic);
 
     printf("Send topic: %s, id: %i\n", topic.message, topic.index);
-
+    uxr_run_session_time(&session,1000);
+    printf("data send\n");
     uint8_t read_data_status;
     bool connected = uxr_run_session_until_all_status(&session, -1, &read_data_req, &read_data_status, 1);
     return connected;

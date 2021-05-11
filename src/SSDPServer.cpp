@@ -144,6 +144,9 @@ void SSDPServer::handle_message(int fd){
         }else if(mes.flag == 2){
             printf("Recieve Device Status Request\n");
             reply = SSDP_DeviceStatus();
+        }else if(mes.flag == 3){
+            //TODO GET DEVICE LIST : DEIVCE1;DEVICE2
+            reply = SSDP_GetDeviceList();
         }
         do_send(fd, reply);
     }
@@ -152,7 +155,7 @@ void SSDPServer::handle_message(int fd){
 MesRecieved SSDPServer::do_recv(const int& client_socketfd)
 {
     memset(recv_buf, 0, sizeof(recv_buf));
-    ssize_t length = recv(client_socketfd, recv_buf, 2, 0);
+    ssize_t length = recv(client_socketfd, recv_buf, 4, 0);
 
     exit_if(length < 0, "Recieve flag error: ");
     if(length == 0){
@@ -164,7 +167,7 @@ MesRecieved SSDPServer::do_recv(const int& client_socketfd)
 
     // short flag = (short) recv_buf[0];
     short flag = 0;
-    for(int i=0; i<2; i++){
+    for(int i=0; i<4; i++){
         flag = flag << 1;
         flag += (short)recv_buf[i];
     }
@@ -192,6 +195,8 @@ MesRecieved SSDPServer::do_recv(const int& client_socketfd)
         return recvFile(client_socketfd, filename, filesize);
     }else if(flag == 2){
         return MesRecieved(2);
+    }else if(flag == 3){
+        return MesRecieved(3);
     }
     return MesRecieved(-1);
 }

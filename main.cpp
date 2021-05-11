@@ -127,6 +127,7 @@ int main(int argc, char **argv) {
     }
     closedir(dirp);
     //创建应用
+    // cout<<SSDP_GetDeviceList()<<endl;
     int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
 
     //测试dsp的dds
@@ -138,11 +139,10 @@ int main(int argc, char **argv) {
     //测试FPGA UPGRADE
     // SSDP_HandleID device_id = SSDP_HandleRequest(SSDP_OE_HANDLE_ID, "fpga1");
     // cout<<"device load "<<SSDP_LoadDevie(SSDP_OE_HANDLE_ID, device_id, "file_path")<<endl;
-
     CmdProcess cmdprocesser;
     cmdprocesser.ReceiveCommand("SSDP -s ground  -t framework -f start -a myapp1");
     // SSDP_Configure(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, "myapp1"), "BCH192_64800-DVBS2@9b2dc56", "Code Rate", "0x1000", 20);
-    SSDP_DeleteDevice();
+    // SSDP_DeleteDevice();
 
     //等待接听指令
     init();

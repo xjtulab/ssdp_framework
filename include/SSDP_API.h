@@ -29,6 +29,7 @@ SSDP_Result SSDP_self_Init();
 
 //设备相关API
 std::string SSDP_DeviceStatus();
+std::string SSDP_GetDeviceList();
 SSDP_Result SSDP_DeleteDevice();
 SSDP_HandleID SSDP_InstantiateDevice(SSDP_HandleID fromid, string handlename, string config_file_path);
 SSDP_Result SSDP_LoadDevie(SSDP_HandleID fromid, SSDP_HandleID toid, string file_path);

@@ -32,7 +32,7 @@ SSDP_Result CmdProcess::ReceiveCommand(const string& cmd){
     }
     SSDP_Result res = SSDP_ERROR;
     //TODO 加上ID检测，和功能检测等
-    // cout<<par->get<string>("APP_id")<<" needs to "<<par->get<string>("function")<<endl;
+    cout<<par->get<string>("APP_name")<<" needs to "<<par->get<string>("function")<<endl;
     if(par->get<string>("function") == "start"){
         res = SSDP_Start(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, par->get<string>("APP_name")));
     }else if(par->get<string>("function") == "config"){

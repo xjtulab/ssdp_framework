@@ -33,6 +33,7 @@ public:
     uxrStreamId reliable_out;
     uint16_t read_data_req;
     uxrUDPTransport transport;
+    uxrUDPPlatform udp_platform;
     uint8_t output_reliable_stream_buffer[BUFFER_SIZE];
     uint8_t input_reliable_stream_buffer[BUFFER_SIZE];
     char topic_xml_1[255];

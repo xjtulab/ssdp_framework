@@ -24,13 +24,15 @@ DeviceDSP::~DeviceDSP(){
 }
 
 SSDP_Result DeviceDSP::DEV_Start(){
-    bool res = pub->send_cmd("start");
     cout<<"dsp dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
+    #
+    bool res = pub->send_cmd("start");
     res = pub->send_cmd("config dsp1 CodeRate 0x10000");
     res = pub->send_cmd("stop");
     res = pub->send_cmd("query");
     res = pub->send_cmd("init");
     return res? SSDP_OK:SSDP_ERROR;
+    return SSDP_OK;
 }
 
 SSDP_Result DeviceDSP::DEV_Configure(string comp_id, SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie){

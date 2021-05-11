@@ -441,3 +441,13 @@ SSDP_Result SSDP_LoadDevie(SSDP_HandleID fromid, SSDP_HandleID toid, string file
     res = devicetable[toid]->DEV_Load(file_path);
     return res;
 }
+
+std::string SSDP_GetDeviceList(){
+    string res;
+    for(auto pos = devicetable.begin(); pos != devicetable.end(); pos++){
+        string tmp;
+        SSDP_GetHandleName(SSDP_OE_HANDLE_ID, pos->first, tmp);
+        res += tmp+";";
+    }
+    return res;
+}
