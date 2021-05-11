@@ -39,7 +39,8 @@
 					<type>345</type>
 				</info>
 			</resourceInfo>
-			<parameters>
+			<parameters/>
+			<!-- <parameters>
 				<parameter>
 					<name>codeRate</name>
 					<address>0x04</address>
@@ -50,7 +51,7 @@
 					<address>0x05</address>
 					<value>1/4</value>
 				</parameter>
-			</parameters>
+			</parameters> -->
 		</component>
 		<component>
 			<objId>QPSK-DVBS2@69a373fd</objId>
@@ -78,7 +79,7 @@
 				</parameter>
 			</parameters>
 		</component>
-		<component>
+		<!-- <component>
 			<objId>BCH192_64800-DVBS2@7574d4ad</objId>
 			<componenId>0x00010222:BCH192_64800-DVBS2</componenId>
 			<status>123456</status>
@@ -98,6 +99,6 @@
 					<value>1</value>
 				</parameter>
 			</parameters>
-		</component>
+		</component> -->
 	</components>
 </waveform>

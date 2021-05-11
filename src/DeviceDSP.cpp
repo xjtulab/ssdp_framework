@@ -26,14 +26,24 @@ DeviceDSP::~DeviceDSP(){
 SSDP_Result DeviceDSP::DEV_Start(){
     bool res = pub->send_cmd("start");
     cout<<"dsp dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
+    res = pub->send_cmd("config dsp1 CodeRate 0x10000");
+    res = pub->send_cmd("stop");
+    res = pub->send_cmd("query");
+    res = pub->send_cmd("init");
     return res? SSDP_OK:SSDP_ERROR;
 }
 
 SSDP_Result DeviceDSP::DEV_Configure(string comp_id, SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie){
+    cout<<"on dev "<<handle_name<<" comp: "<<comp_id<<" property: "<<name<<" is changing to: "<<value<<endl;
     std::string cmd = "config "+comp_id+" "+name+" "+value;
     // bool res = pub->send_cmd(cmd.c_str());
+    // res = pub->send_cmd("stop");
+    // res = pub->send_cmd("query");
+    // res = pub->send_cmd("init");
     cout<<"on dev "<<handle_name<<" comp: "<<comp_id<<" property: "<<name<<" is changing to: "<<value<<endl;
 }
+
+
 
 std::string DeviceDSP::DEV_Status_Qeury(){
     float signal_processing_board_voltage1 = 0;

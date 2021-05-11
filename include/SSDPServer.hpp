@@ -15,6 +15,7 @@
 #include<unistd.h>
 #include<limits.h>
 #include<stdlib.h>
+#include "commandprocess.h"
 #define MAX_FILENAME_LENGTH 255
 #define MAX_FILE_LENGTH_BYTE 8
 #define MAX_BUFFER_SIZE 1024
@@ -52,6 +53,8 @@ private:
     int serverPort;
     struct sockaddr_in server_sockaddr;
     // struct sockaddr_in client_sockaddr;
+    CmdProcess cmdprocesser;
+    
 
     char recv_buf[MAX_BUFFER_SIZE];
     char send_buf[MAX_BUFFER_SIZE];

@@ -1,6 +1,8 @@
 
 #include "SSDPServer.hpp"
 #include "SSDP_API.h"
+#include "commandprocess.h"
+#include "SSDP_PRE_DATA.h"
 
 std::string SSDPServer::directory;
 
@@ -22,7 +24,9 @@ void SSDPServer::set_directory(char *path){
     SSDPServer::directory = dir;    
 }
 
-SSDPServer::SSDPServer(){}
+SSDPServer::SSDPServer(){
+
+}
 SSDPServer::~SSDPServer()
 {
     close(server_socketfd);
@@ -125,8 +129,13 @@ void SSDPServer::handle_message(int fd){
     if(mes.flag >= 0){
         if(mes.flag == 0){
             //TODO 指令处理流程
+            SSDP_Result res = cmdprocesser.ReceiveCommand(mes.content);
             printf("Recieve Instruction: %s\n", mes.content.c_str());
+            if (SSDP_OK == res){
             reply = "Recieve Instruction: " + mes.content + " success!";
+            }else{
+                reply = "Command conduct error!";
+            }
 
         }else if(mes.flag == 1){
             //TODO 文件处理流程

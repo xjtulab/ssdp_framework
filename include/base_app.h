@@ -42,6 +42,7 @@ public:
     }
     //添加组件参数名/地址对
     SSDP_Result Add_Component_Parameter(string id_on_app, string name, string address){
+        cout<<"parameter added "<<name<<endl;
         component_list[id_on_app]->add_parameter(name, address);
         return SSDP_OK;
     }
@@ -67,6 +68,7 @@ public:
     virtual SSDP_Result APP_Configure(string comp_id,SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_size) {
         //需要输入设备id，组件在设备上的id？地址和参数
         //nanm就是地址，参数值还是参数值
+        cout<<"app config"<<endl;
         SSDP_Result res = ftable->config(handle_id, component_list[comp_id]->target_device, component_list[comp_id]->comp_id_on_device, 
             component_list[comp_id]->get_address(name), value, value_size);
         return res;

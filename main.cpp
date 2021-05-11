@@ -66,12 +66,8 @@ void parse_args(int argc, char **argv){
 
 
 int main(int argc, char **argv) {
-    // uint32_t a;
-    // string a  = "0X0FFFFFF0";   
-    // uint32_t nValude = 0;
-    // sscanf(a.c_str(), "%x", &nValude);
-    // printf("%d\r\n", nValude);
-    // return 1;
+
+    
     //TODO 框架启动流程设计
     /*
         1、读取设备配置文件，创建设备实例
@@ -107,7 +103,9 @@ int main(int argc, char **argv) {
         // return 1;
     }
     SSDP_show_cur_apps();
-
+    //日志测试
+    SSDP_Result res = SSDP_LogInit();
+    SSDP_Log(0,SSDP_GetErrorQueue(SSDP_WARNING),"sfasfd",3);
     //主板接口测试
     // test_sessor();
     // zecpldcfg_test();
@@ -143,6 +141,7 @@ int main(int argc, char **argv) {
 
     CmdProcess cmdprocesser;
     cmdprocesser.ReceiveCommand("SSDP -s ground  -t framework -f start -a myapp1");
+    // SSDP_Configure(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, "myapp1"), "BCH192_64800-DVBS2@9b2dc56", "Code Rate", "0x1000", 20);
     SSDP_DeleteDevice();
 
     //等待接听指令
@@ -164,9 +163,9 @@ int main(int argc, char **argv) {
     // string c;
     // cout<< SSDP_GetHandleName(0,4,c)<<endl;
     // cout<<c<<endl;
-    SSDP_Start(0, SSDP_HandleRequest(0, "myapp1"));
-    SSDP_Configure(0, SSDP_HandleRequest(0, "myapp1"), "BCH192_64800-DVBS2@9b2dc56", "abc", "dedf", 10);
-    cout<<"test end"<<endl;
+    // SSDP_Start(0, SSDP_HandleRequest(0, "myapp1"));
+    // SSDP_Configure(0, SSDP_HandleRequest(0, "myapp1"), "BCH192_64800-DVBS2@9b2dc56", "abc", "dedf", 10);
+    // cout<<"test end"<<endl;
     //int appid1 = SSDP_InstantiateApp(0,"myapp2","./app2.so");
     //SSDP_Start(0,appid);
     //SSDP_Stop(0,appid);

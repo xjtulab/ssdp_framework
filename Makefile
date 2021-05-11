@@ -19,7 +19,7 @@ ifdef tar
 	cp *.xml test
 	tar -czf test.tar.gz test
 else
-	$(CC) -o run main.o $(objects) -ldl -lpthread -lmicrocdr -lmicroxrcedds_client
+	$(CC) --static -o run main.o $(objects) -ldl -lpthread -lmicrocdr -lmicroxrcedds_client
 # -lmicrocdr -lmicroxrcedds_client
 endif 
 
@@ -40,5 +40,5 @@ endif
 .PHONY: clean
 clean:
 	rm run src/*.o *.o
-	rm test/run
+	rm -rf test/*
 	rm test.tar.gz 

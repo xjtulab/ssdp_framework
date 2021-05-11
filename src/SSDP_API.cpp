@@ -209,6 +209,7 @@ SSDP_Result SSDP_Read(SSDP_HandleID formid, SSDP_HandleID toid,int comp_id, SSDP
 
 SSDP_Result SSDP_Configure(SSDP_HandleID fromid, SSDP_HandleID toid,string comp_id, SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_size){
     if (apptable.count(toid) != 0){
+        cout<<"config"<<endl;
         apptable[toid]->APP_Configure(comp_id,name,value,value_size);
         return SSDP_OK;
     }
