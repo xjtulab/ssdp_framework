@@ -9,7 +9,7 @@ void on_topic(uxrSession *session, uxrObjectId object_id, uint16_t request_id, u
     (void)length;
     HelloWorld topic;
     HelloWorld_deserialize_topic(ub, &topic);
-    //    printf("Received topic: %s, id: %i\n", topic.message, topic.index);
+    printf("Received topic: %s, id: %i\n", topic.message, topic.index);
     uint32_t *count_ptr = (uint32_t *)args;
     (*count_ptr)++;
     if (topic.message[strlen(topic.message) - 1] == '\n')
@@ -71,7 +71,7 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
 
     const char *topic_xml_1_1 = "<dds>"
                                 "<topic>"
-                                "<name>%s1</name>"
+                                "<name>%s</name>"
                                 "<dataType>HelloWorld</dataType>"
                                 "</topic>"
                                 "</dds>";
@@ -80,15 +80,15 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
 
     uint16_t topic_req_1 = uxr_buffer_create_topic_xml(&session, reliable_out, topic_id_1, participant_id, topic_xml_1, UXR_REPLACE);
     // topic2
-    uxrObjectId topic_id_2 = uxr_object_id(0x02, UXR_TOPIC_ID);
-    const char *topic_xml_2_1 = "<dds>"
-                                "<topic>"
-                                "<name>%s2</name>"
-                                "<dataType>HelloWorld</dataType>"
-                                "</topic>"
-                                "</dds>";
-    sprintf(topic_xml_2, topic_xml_2_1, topic_name.data());
-    uint16_t topic_req_2 = uxr_buffer_create_topic_xml(&session, reliable_out, topic_id_2, participant_id, topic_xml_2, UXR_REPLACE);
+    // uxrObjectId topic_id_2 = uxr_object_id(0x02, UXR_TOPIC_ID);
+    // const char *topic_xml_2_1 = "<dds>"
+    //                             "<topic>"
+    //                             "<name>%s</name>"
+    //                             "<dataType>HelloWorld</dataType>"
+    //                             "</topic>"
+    //                             "</dds>";
+    // sprintf(topic_xml_2, topic_xml_2_1, topic_name.data());
+    // uint16_t topic_req_2 = uxr_buffer_create_topic_xml(&session, reliable_out, topic_id_2, participant_id, topic_xml_2, UXR_REPLACE);
 
     // pub
     uxrObjectId publisher_id = uxr_object_id(0x01, UXR_PUBLISHER_ID);
@@ -105,14 +105,16 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
                                    "<data_writer>"
                                    "<topic>"
                                    "<kind>NO_KEY</kind>"
-                                   "<name>%s1</name>"
+                                   "<name>%s</name>"
                                    "<dataType>HelloWorld</dataType>"
                                    "</topic>"
                                    "</data_writer>"
                                    "</dds>";
 
     sprintf(datawriter_xml, datawriter_xml_1, topic_name.data());
+    // printf(datawriter_xml, datawriter_xml_1, topic_name.data());
     printf(datawriter_xml);
+    printf("no end 1");
     uint16_t datawriter_req = uxr_buffer_create_datawriter_xml(&session, reliable_out, datawriter_id, publisher_id, datawriter_xml, UXR_REPLACE);
     // datareader
     datareader_id = uxr_object_id(0x01, UXR_DATAREADER_ID);
@@ -131,9 +133,9 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
     uint16_t datareader_req = uxr_buffer_create_datareader_xml(&session, reliable_out, datareader_id, subscriber_id, datareader_xml, UXR_REPLACE);
     // Send create entities message and wait its status
 
-    uint8_t status[7];
-    uint16_t requests[7] = {participant_req, topic_req_2, topic_req_1, subscriber_req, datareader_req, publisher_req, datawriter_req};
-    if (!uxr_run_session_until_all_status(&session, 1000, requests, status, 7))
+    uint8_t status[6];
+    uint16_t requests[6] = {participant_req,  topic_req_1, subscriber_req, datareader_req, publisher_req, datawriter_req};
+    if (!uxr_run_session_until_all_status(&session, 1000, requests, status, 6))
     {
         printf("Error at create entities: participant: %i topic: %i  publisher: %i darawriter: %i\n", status[0], status[1], status[2], status[3]);
         return;

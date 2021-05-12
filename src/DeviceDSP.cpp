@@ -20,18 +20,21 @@ DeviceDSP::DeviceDSP(string name, SSDP_HandleID id): DeviceBase(name, id){
 
 DeviceDSP::~DeviceDSP(){
     cout<<"deleteing dsp device"<<endl;
-    delete pub;
+    #ifdef ARM_BUILD
+        delete pub;
+    #endif
 }
 
 SSDP_Result DeviceDSP::DEV_Start(){
     cout<<"dsp dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
-    #
-    bool res = pub->send_cmd("start");
-    res = pub->send_cmd("config dsp1 CodeRate 0x10000");
-    res = pub->send_cmd("stop");
-    res = pub->send_cmd("query");
-    res = pub->send_cmd("init");
-    return res? SSDP_OK:SSDP_ERROR;
+    #ifdef ARM_BUILD
+        bool res = pub->send_cmd("start");
+        res = pub->send_cmd("config dsp1 CodeRate 0x10000");
+        res = pub->send_cmd("stop");
+        res = pub->send_cmd("query");
+        res = pub->send_cmd("init");
+        return res? SSDP_OK:SSDP_ERROR;
+    #endif
     return SSDP_OK;
 }
 
