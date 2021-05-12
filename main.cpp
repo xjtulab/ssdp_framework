@@ -126,8 +126,8 @@ int main(int argc, char **argv) {
     closedir(dirp);
     //创建应用
     // cout<<SSDP_GetDeviceList()<<endl;
-    int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
-
+    // int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
+    int appid = SSDP_InstantiateApp(0,"myapp2","myapp2.xml");
     //测试dsp的dds
     // DspPublisher dsp;
     //测试设备状态回报
@@ -140,10 +140,9 @@ int main(int argc, char **argv) {
     CmdProcess cmdprocesser;
     cout<<"---------------------------------------"<<endl;
     cout<<"--------------------testing dds v1.2.1---------------"<<endl;
-    cmdprocesser.ReceiveCommand("SSDP -s ground  -t framework -f start -a myapp1");
+    cmdprocesser.ReceiveCommand("SSDP -s ground -t framework -f start -a myapp2");
     // SSDP_Configure(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, "myapp1"), "BCH192_64800-DVBS2@9b2dc56", "Code Rate", "0x1000", 20);
     // SSDP_DeleteDevice();
-
     //等待接听指令
     init();
     parse_args(argc, argv);

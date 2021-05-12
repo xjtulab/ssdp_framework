@@ -114,7 +114,6 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
     sprintf(datawriter_xml, datawriter_xml_1, topic_name.data());
     // printf(datawriter_xml, datawriter_xml_1, topic_name.data());
     printf(datawriter_xml);
-    printf("no end 1");
     uint16_t datawriter_req = uxr_buffer_create_datawriter_xml(&session, reliable_out, datawriter_id, publisher_id, datawriter_xml, UXR_REPLACE);
     // datareader
     datareader_id = uxr_object_id(0x01, UXR_DATAREADER_ID);

@@ -13,6 +13,7 @@
 #include "rapidxml_utils.hpp"
 #include "DeviceDSP.h"
 #include "DeviceFPGA.h"
+#include "DeviceZED.h"
 // #define ARM_BUILD
 #ifdef ARM_BUILD
     extern "C"{
@@ -272,14 +273,18 @@ SSDP_HandleID SSDP_InstantiateDevice(SSDP_HandleID fromid, string handlename, st
         new_dev = new DeviceDSP(handlename,  SSDP_GetNewHandleID());
         cout<<"dsp created"<<endl;
         rapidxml::xml_node<> *ddsconfig = device->first_node("ddsconfig");
-        cout<<"xml get"<<endl;
         // dynamic_cast<DeviceDSP*>(new_dev)->DEV_SetPub(ddsconfig->first_node("ip")->value(), ddsconfig->first_node("port")->value(), ddsconfig->first_node("topicname")->value(), ddsconfig->first_node("session_key")->value()); 
         #ifdef ARM_BUILD
             new_dev->DEV_SetPub(ddsconfig->first_node("ip")->value(), ddsconfig->first_node("port")->value(), ddsconfig->first_node("topicname")->value(), ddsconfig->first_node("session_key")->value()); 
         #endif
-        cout<<"dds configed"<<endl;
     }else if(dev_type == "fpga"){
+        cout<<"fpga created"<<endl;
         new_dev = new DeviceFPGA(handlename,  SSDP_GetNewHandleID());
+    }else if(dev_type == "zed"){
+        cout<<"zed created"<<endl;
+        new_dev = new DeviceZED(handlename, SSDP_GetNewHandleID());
+        rapidxml::xml_node<> *net = device->first_node("net");
+        new_dev->DEV_SetPub(net->first_node("ip")->value(), net->first_node("port")->value()," ", " ");
     }
     devicetable.insert(std::make_pair(new_dev->DEV_GetHandleID(), new_dev));
     return new_dev->DEV_GetHandleID();
