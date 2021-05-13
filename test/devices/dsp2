@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<device>
+    <devicetype>dsp</devicetype>
+    <name>dsp2</name>
+    <resource>100</resource>
+    <resourcetype>BYTE</resourcetype>
+    <ddsconfig>
+        <ip>10.119.84.190</ip>
+        <port>8000</port>
+        <topicname>Hello</topicname>
+        <session_key>0x12345678</session_key>
+    </ddsconfig>
+</device>

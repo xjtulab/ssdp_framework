@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<waveform>
+	<name>myapp2</name>
+	<diagram>
+		<count>3</count>
+		<nodes>
+			<node>
+				<nodeId>BCH192_64800-DVBS2@9b2dc56</nodeId>
+				<componentId>0x00010000:BCH192_64800-DVBS2</componentId>
+				<inputs></inputs>
+				<outputs>gefmodel.ComponentModel@69a373fd</outputs>
+			</node>
+			<node>
+				<nodeId>QPSK-DVBS2@69a373fd</nodeId>
+				<componentId>0x00020000:QPSK-DVBS2</componentId>
+				<inputs>gefmodel.ComponentModel@58658f63</inputs>
+				<outputs>gefmodel.ComponentModel@7574d4ad</outputs>
+			</node>
+			<node>
+				<nodeId>BCH192_64800-DVBS2@7574d4ad</nodeId>
+				<componentId>0x00010222:BCH192_64800-DVBS2</componentId>
+				<inputs>gefmodel.ComponentModel@69a373fd</inputs>
+				<outputs></outputs>
+			</node>
+		</nodes>
+	</diagram>
+	<components>
+		<!-- <component>
+			<objId>BCH192_64800-DVBS2@9b2dc56</objId>
+			<componenId>0x00010000:BCH192_64800-DVBS2</componenId>
+			<status>12147483647</status>
+			<resourceInfo>
+				<info>
+					<category>FPGA</category>
+					<name>fpga1</name>
+					<codeLocation>E:\IDE\eclipse-rcp-2\FIL1</codeLocation>
+					<resourceUsed>30%</resourceUsed>
+					<type>345</type>
+				</info>
+			</resourceInfo>
+			<parameters>
+				<parameter>
+					<name>codeRate</name>
+					<address>0x04</address>
+					<value>64800</value>
+				</parameter>
+				<parameter>
+					<name>frameLength</name>
+					<address>0x05</address>
+					<value>1/4</value>
+				</parameter>
+			</parameters>
+		</component> -->
+		<component>
+			<objId>QPSK-DVBS2@69a373fd</objId>
+			<componenId>0x00020000:QPSK-DVBS2</componenId>
+			<status>02147480001</status>
+			<resourceInfo>
+				<info>
+					<category>zed</category>
+					<name>zed1</name>
+					<codeLocation>E:\IDE\eclipse-rcp-2\FILE2</codeLocation>
+					<resourceUsed>10%</resourceUsed>
+					<type>324</type>
+				</info>
+			</resourceInfo>
+			<parameters>
+				<parameter>
+					<name>Number of Constellation</name>
+					<address>0x04</address>
+					<value>16</value>
+				</parameter>
+				<parameter>
+					<name>Code Rate</name>
+					<address>0x05</address>
+					<value>1/2</value>
+				</parameter>
+			</parameters>
+		</component>
+		<!-- <component>
+			<objId>BCH192_64800-DVBS2@7574d4ad</objId>
+			<componenId>0x00010222:BCH192_64800-DVBS2</componenId>
+			<status>123456</status>
+			<resourceInfo>
+				<info>
+					<category>DSP</category>
+					<name>dsp2</name>
+					<codeLocation>CODE</codeLocation>
+					<resourceUsed>34%</resourceUsed>
+					<type>1312</type>
+				</info>
+			</resourceInfo>
+			<parameters>
+				<parameter>
+					<name>PARA</name>
+					<address>0x04</address>
+					<value>1</value>
+				</parameter>
+			</parameters>
+		</component> -->
+	</components>
+</waveform>

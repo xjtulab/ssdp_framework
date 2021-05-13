@@ -11,6 +11,7 @@
 #include "SSDP_LOG.h"
 #include "commandprocess.h"
 #include <dirent.h>
+#include "DspPublisher.h"
 
 // #include "DspPublisher.h"
 // #include "lib_test.h"
@@ -66,6 +67,9 @@ void parse_args(int argc, char **argv){
 
 
 int main(int argc, char **argv) {
+    // DspPublisher pub("10.119.84.193", "2018", "HelloWorldTopic", 0x12345678);
+    // pub.send_cmd("dsasfasfdas");
+    // return 1;
     //TODO 框架启动流程设计
     /*
         1、读取设备配置文件，创建设备实例
@@ -126,8 +130,8 @@ int main(int argc, char **argv) {
     closedir(dirp);
     //创建应用
     // cout<<SSDP_GetDeviceList()<<endl;
-    // int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
-    int appid = SSDP_InstantiateApp(0,"myapp2","myapp2.xml");
+    int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
+    // int appid = SSDP_InstantiateApp(0,"myapp2","myapp2.xml");
     //测试dsp的dds
     // DspPublisher dsp;
     //测试设备状态回报
@@ -139,8 +143,8 @@ int main(int argc, char **argv) {
     // cout<<"device load "<<SSDP_LoadDevie(SSDP_OE_HANDLE_ID, device_id, "file_path")<<endl;
     CmdProcess cmdprocesser;
     cout<<"---------------------------------------"<<endl;
-    cout<<"--------------------testing dds v1.2.1---------------"<<endl;
-    cmdprocesser.ReceiveCommand("SSDP -s ground -t framework -f start -a myapp2");
+    cout<<"--------------------testing dds v1.344---------------"<<endl;
+    cmdprocesser.ReceiveCommand("SSDP -s ground -t framework -f start -a myapp1");
     // SSDP_Configure(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, "myapp1"), "BCH192_64800-DVBS2@9b2dc56", "Code Rate", "0x1000", 20);
     // SSDP_DeleteDevice();
     //等待接听指令

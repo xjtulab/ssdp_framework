@@ -26,6 +26,21 @@ DeviceDSP::~DeviceDSP(){
 }
 
 SSDP_Result DeviceDSP::DEV_Start(){
+    // Write topics
+    bool connected = true;
+    uint32_t count = 0;
+    while(connected && count < max_topics)
+    {
+        HelloWorld topic = {++count, "SSDP FRAME!"};
+
+        ucdrBuffer ub;
+        uint32_t topic_size = HelloWorld_size_of_topic(&topic, 0);
+        uxr_prepare_output_stream(&session, reliable_out, datawriter_id, &ub, topic_size);
+        HelloWorld_serialize_topic(&ub, &topic);
+
+        printf("Send topic: %s, id: %i\n", topic.message, topic.index);
+        connected = uxr_run_session_time(&session, 1000);
+    }
     cout<<"dsp dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
     #ifdef ARM_BUILD
         bool res = pub->send_cmd("start");
@@ -150,11 +165,89 @@ SSDP_Result DeviceDSP::DEV_Check(){
     return res;
 }
 
-void DeviceDSP::DEV_SetPub(string ip, string port, string topic_name, string session_key){
-    cout<<ip<<" "<<" "<<port<<" "<<" "<<topic_name<<" "<<session_key<<endl; 
-    char* ip_tmp = (char*)ip.c_str();
-    char* port_tmp = (char*)port.c_str();
-    uint32_t nValude = 0;
-    sscanf(session_key.c_str(), "%x", &nValude);
-    pub = new DspPublisher(ip_tmp, port_tmp, topic_name, nValude);
+void DeviceDSP::DEV_SetPub(string ip1, string port1, string topic_name1, string session_key1){
+    cout<<ip1<<" "<<" "<<port1<<" "<<" "<<topic_name1<<" "<<session_key1<<endl; 
+    ip = (char*)ip1.c_str();
+    port = (char*)port1.c_str();
+    if(!uxr_init_udp_transport(&transport, &udp_platform, UXR_IPv4, ip, port))
+    {
+        printf("Error at create transport.\n");
+        return ;
+    }
+    uxr_init_session(&session, &transport.comm, 0xAAAABBBB);
+    if(!uxr_create_session(&session))
+    {
+        printf("Error at create session.\n");
+        return ;
+    }
+    reliable_out = uxr_create_output_reliable_stream(&session, output_reliable_stream_buffer, BUFFER_SIZE, STREAM_HISTORY);
+    uxr_create_input_reliable_stream(&session, input_reliable_stream_buffer, BUFFER_SIZE, STREAM_HISTORY);
+    // Create entities
+    participant_id = uxr_object_id(0x01, UXR_PARTICIPANT_ID);
+    participant_req = uxr_buffer_create_participant_xml(&session, reliable_out, participant_id, 0, participant_xml, UXR_REPLACE);
+
+    topic_id = uxr_object_id(0x01, UXR_TOPIC_ID);
+    string topic_xml = "<dds>"
+                            "<topic>"
+                                "<name>"+topic_name1+"</name>"
+                                "<dataType>HelloWorld</dataType>"
+                            "</topic>"
+                        "</dds>";
+    topic_req = uxr_buffer_create_topic_xml(&session, reliable_out, topic_id, participant_id, topic_xml.c_str(), UXR_REPLACE);
+
+    publisher_id = uxr_object_id(0x01, UXR_PUBLISHER_ID);
+    const char* publisher_xml = "";
+    publisher_req = uxr_buffer_create_publisher_xml(&session, reliable_out, publisher_id, participant_id, publisher_xml, UXR_REPLACE);
+
+    datawriter_id = uxr_object_id(0x01, UXR_DATAWRITER_ID);
+    string datawriter_xml = "<dds>"
+                                "<data_writer>"
+                                    "<topic>"
+                                        "<kind>NO_KEY</kind>"
+                                        "<name>"+topic_name1+"</name>"
+                                        "<dataType>HelloWorld</dataType>"
+                                    "</topic>"
+                                "</data_writer>"
+                            "</dds>";
+    datawriter_req = uxr_buffer_create_datawriter_xml(&session, reliable_out, datawriter_id, publisher_id, datawriter_xml.c_str(), UXR_REPLACE);
+
+    // Send create entities message and wait its status
+    requests[0] = participant_req;
+    requests[1] = topic_req;
+    requests[2] = publisher_req;
+    requests[3] = datawriter_req;
+    // uint16_t requests[4] = {participant_req, topic_req, publisher_req, datawriter_req};
+    if(!uxr_run_session_until_all_status(&session, 1000, requests, status, 4))
+    {
+        printf("Error at create entities: participant: %i topic: %i publisher: %i darawriter: %i\n", status[0], status[1], status[2], status[3]);
+        return ;
+    }
+
+    // Write topics
+    // bool connected = true;
+    // uint32_t count = 0;
+    // while(connected && count < max_topics)
+    // {
+    //     HelloWorld topic = {++count, "SSDP FRAME!"};
+
+    //     ucdrBuffer ub;
+    //     uint32_t topic_size = HelloWorld_size_of_topic(&topic, 0);
+    //     uxr_prepare_output_stream(&session, reliable_out, datawriter_id, &ub, topic_size);
+    //     HelloWorld_serialize_topic(&ub, &topic);
+
+    //     printf("Send topic: %s, id: %i\n", topic.message, topic.index);
+    //     connected = uxr_run_session_time(&session, 1000);
+    // }
+
+    // Delete resources
+    // uxr_delete_session(&session);
+    // uxr_close_udp_transport(&transport);
+
+    return ;
+
+    // char* ip_tmp = (char*)ip.c_str();
+    // char* port_tmp = (char*)port.c_str();
+    // uint32_t nValude = 0;
+    // sscanf(session_key.c_str(), "%x", &nValude);
+    // pub = new DspPublisher(ip_tmp, port_tmp, topic_name, nValude);
 }

@@ -110,7 +110,6 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
                                    "</topic>"
                                    "</data_writer>"
                                    "</dds>";
-
     sprintf(datawriter_xml, datawriter_xml_1, topic_name.data());
     // printf(datawriter_xml, datawriter_xml_1, topic_name.data());
     printf(datawriter_xml);
