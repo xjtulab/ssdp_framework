@@ -65,15 +65,15 @@ SSDP_Result DeviceDSP::DEV_Start(){
     // }
     cout<<"dsp dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
     #ifdef ARM_BUILD
-        bool res = pub->send_cmd("start");
-        sleep(1);
-        res = pub->send_cmd("config dsp1 CodeRate 0x10000");
-        sleep(1);
-        res = pub->send_cmd("stop");
-        sleep(1);
-        res = pub->send_cmd("query");
-        sleep(1);
-        res = pub->send_cmd("init");
+        bool res = pub->send_info("start",true);
+        // sleep(1);
+        res = pub->send_info("config dsp1 CodeRate 0x10000", true);
+        // sleep(1);
+        res = pub->send_info("stop", true);
+        // sleep(1);
+        res = pub->send_info("query", true);
+        // sleep(1);
+        res = pub->send_info("init", true);
         return res? SSDP_OK:SSDP_ERROR;
     #endif
     return SSDP_OK;
@@ -285,6 +285,6 @@ void DeviceDSP::DEV_SetPub(string ip, string port, string topic_name, string ses
     char* port_tmp = (char*)port.c_str();
     uint32_t nValude = 0;
     sscanf(session_key.c_str(), "%x", &nValude);
-    pub = new DspPublisher(ip_tmp, port_tmp, topic_name, nValude);
-    pub->send_cmd("EMPTY TEST");
+    pub = new DspPublisherTwo(ip_tmp, port_tmp, topic_name, nValude, nValude+1);
+    pub->send_info("EMPTY TEST",false);
 }

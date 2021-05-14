@@ -11,7 +11,7 @@
 #include "SSDP_LOG.h"
 #include "commandprocess.h"
 #include <dirent.h>
-#include "DspPublisher.h"
+#include "DspPublisherTwo.h"
 
 // #include "DspPublisher.h"
 // #include "lib_test.h"

@@ -4,7 +4,7 @@
 #include "SSDP_PRE_DATA.h"
 #include "SSDP.h"
 #include <iostream>
-#include "DspPublisher.h"
+#include "DspPublisherTwo.h"
 using std::string;
 using namespace std;
 
@@ -24,7 +24,7 @@ protected:
     string handle_name;
     device_resource* resource;
     DeviceState state;
-    DspPublisher* pub;
+    DspPublisherTwo* pub;
     //TODO 设备是否有自己的属性?
 public:
     //构造函数
