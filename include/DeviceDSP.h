@@ -18,7 +18,7 @@ private:
     //  = "10.119.84.193";
     char* port;
     //  = "2018";
-    uint32_t max_topics = 2018;
+    uint32_t max_topics = 4;
     uxrUDPTransport transport;
     uxrUDPPlatform udp_platform;
     uxrSession session;

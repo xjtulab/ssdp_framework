@@ -31,7 +31,23 @@ public:
     uxrObjectId datareader_id;
     uxrObjectId datawriter_id;
     uxrStreamId reliable_out;
+    uxrStreamId reliable_in;
+    uxrObjectId participant_id;
+    uint16_t participant_req;
+    uxrObjectId topic_id_1;
+    uint16_t topic_req_1;
+    uxrObjectId publisher_id;
+    uint16_t publisher_req;
+    uxrObjectId subscriber_id;
+    uint16_t subscriber_req;
     uint16_t read_data_req;
+    const char *publisher_xml = "";
+    const char *subscriber_xml = "";
+    uxrDeliveryControl delivery_control = {0};
+    uint16_t datawriter_req;
+    uint16_t datareader_req;
+    uint8_t status[6];
+    uint16_t requests[6];
     uxrUDPTransport transport;
     uxrUDPPlatform udp_platform;
     uint8_t output_reliable_stream_buffer[BUFFER_SIZE];
@@ -40,6 +56,7 @@ public:
     char topic_xml_2[255];
     char datawriter_xml[255];
     char datareader_xml[255];
+    bool first;
 
     DspPublisher(char *ip, char *port, string topic_name, uint32_t session_key);
     bool send_cmd(const char *buf);

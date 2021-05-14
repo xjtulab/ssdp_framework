@@ -25,7 +25,7 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
 {
     this->ip = ip;
     this->port = port;
-
+    this->first = true;
     this->count = 0;
     // Transport
     //uxrUDPPlatform udp_platform;
@@ -53,10 +53,10 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
     this->reliable_out = uxr_create_output_reliable_stream(&session, output_reliable_stream_buffer, BUFFER_SIZE, STREAM_HISTORY);
     //uxrStreamId reliable_out = uxr_create_output_best_effort_stream(&session, output_reliable_stream_buffer, BUFFER_SIZE);
     //uint8_t input_reliable_stream_buffer[BUFFER_SIZE];
-    uxrStreamId reliable_in = uxr_create_input_reliable_stream(&session, input_reliable_stream_buffer, BUFFER_SIZE, STREAM_HISTORY);
+    reliable_in = uxr_create_input_reliable_stream(&session, input_reliable_stream_buffer, BUFFER_SIZE, STREAM_HISTORY);
     //uxr_create_input_best_effort_stream(&session);
     // Create entities
-    uxrObjectId participant_id = uxr_object_id(0x01, UXR_PARTICIPANT_ID);
+    participant_id = uxr_object_id(0x01, UXR_PARTICIPANT_ID);
     const char *participant_xml = "<dds>"
                                   "<participant>"
                                   "<rtps>"
@@ -64,40 +64,39 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
                                   "</rtps>"
                                   "</participant>"
                                   "</dds>";
-    uint16_t participant_req = uxr_buffer_create_participant_xml(&session, reliable_out, participant_id, 0, participant_xml, UXR_REPLACE);
+    participant_req = uxr_buffer_create_participant_xml(&session, reliable_out, participant_id, 0, participant_xml, UXR_REPLACE);
 
     // topic1
-    uxrObjectId topic_id_1 = uxr_object_id(0x01, UXR_TOPIC_ID);
+    topic_id_1 = uxr_object_id(0x01, UXR_TOPIC_ID);
 
     const char *topic_xml_1_1 = "<dds>"
                                 "<topic>"
-                                "<name>%s</name>"
+                                "<name>%s1</name>"
                                 "<dataType>HelloWorld</dataType>"
                                 "</topic>"
                                 "</dds>";
 
     sprintf(topic_xml_1, topic_xml_1_1, topic_name.data());
 
-    uint16_t topic_req_1 = uxr_buffer_create_topic_xml(&session, reliable_out, topic_id_1, participant_id, topic_xml_1, UXR_REPLACE);
+    topic_req_1 = uxr_buffer_create_topic_xml(&session, reliable_out, topic_id_1, participant_id, topic_xml_1, UXR_REPLACE);
     // topic2
-    // uxrObjectId topic_id_2 = uxr_object_id(0x02, UXR_TOPIC_ID);
-    // const char *topic_xml_2_1 = "<dds>"
-    //                             "<topic>"
-    //                             "<name>%s</name>"
-    //                             "<dataType>HelloWorld</dataType>"
-    //                             "</topic>"
-    //                             "</dds>";
-    // sprintf(topic_xml_2, topic_xml_2_1, topic_name.data());
-    // uint16_t topic_req_2 = uxr_buffer_create_topic_xml(&session, reliable_out, topic_id_2, participant_id, topic_xml_2, UXR_REPLACE);
+    uxrObjectId topic_id_2 = uxr_object_id(0x02, UXR_TOPIC_ID);
+    const char *topic_xml_2_1 = "<dds>"
+                                "<topic>"
+                                "<name>%s2</name>"
+                                "<dataType>HelloWorld</dataType>"
+                                "</topic>"
+                                "</dds>";
+    sprintf(topic_xml_2, topic_xml_2_1, topic_name.data());
+    uint16_t topic_req_2 = uxr_buffer_create_topic_xml(&session, reliable_out, topic_id_2, participant_id, topic_xml_2, UXR_REPLACE);
 
     // pub
-    uxrObjectId publisher_id = uxr_object_id(0x01, UXR_PUBLISHER_ID);
-    const char *publisher_xml = "";
-    uint16_t publisher_req = uxr_buffer_create_publisher_xml(&session, reliable_out, publisher_id, participant_id, publisher_xml, UXR_REPLACE);
+    publisher_id = uxr_object_id(0x01, UXR_PUBLISHER_ID);
+    
+    publisher_req = uxr_buffer_create_publisher_xml(&session, reliable_out, publisher_id, participant_id, publisher_xml, UXR_REPLACE);
     // sub
-    uxrObjectId subscriber_id = uxr_object_id(0x01, UXR_SUBSCRIBER_ID);
-    const char *subscriber_xml = "";
-    uint16_t subscriber_req = uxr_buffer_create_subscriber_xml(&session, reliable_out, subscriber_id, participant_id, subscriber_xml, UXR_REPLACE);
+    subscriber_id = uxr_object_id(0x01, UXR_SUBSCRIBER_ID);
+    subscriber_req = uxr_buffer_create_subscriber_xml(&session, reliable_out, subscriber_id, participant_id, subscriber_xml, UXR_REPLACE);
 
     // datawriter
     datawriter_id = uxr_object_id(0x01, UXR_DATAWRITER_ID);
@@ -105,7 +104,7 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
                                    "<data_writer>"
                                    "<topic>"
                                    "<kind>NO_KEY</kind>"
-                                   "<name>%s</name>"
+                                   "<name>%s1</name>"
                                    "<dataType>HelloWorld</dataType>"
                                    "</topic>"
                                    "</data_writer>"
@@ -113,7 +112,7 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
     sprintf(datawriter_xml, datawriter_xml_1, topic_name.data());
     // printf(datawriter_xml, datawriter_xml_1, topic_name.data());
     printf(datawriter_xml);
-    uint16_t datawriter_req = uxr_buffer_create_datawriter_xml(&session, reliable_out, datawriter_id, publisher_id, datawriter_xml, UXR_REPLACE);
+    datawriter_req = uxr_buffer_create_datawriter_xml(&session, reliable_out, datawriter_id, publisher_id, datawriter_xml, UXR_REPLACE);
     // datareader
     datareader_id = uxr_object_id(0x01, UXR_DATAREADER_ID);
     const char *datareader_xml_1 = "<dds>"
@@ -128,11 +127,14 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
 
     sprintf(datareader_xml, datareader_xml_1, topic_name.data());
 
-    uint16_t datareader_req = uxr_buffer_create_datareader_xml(&session, reliable_out, datareader_id, subscriber_id, datareader_xml, UXR_REPLACE);
+    datareader_req = uxr_buffer_create_datareader_xml(&session, reliable_out, datareader_id, subscriber_id, datareader_xml, UXR_REPLACE);
     // Send create entities message and wait its status
-
-    uint8_t status[6];
-    uint16_t requests[6] = {participant_req,  topic_req_1, subscriber_req, datareader_req, publisher_req, datawriter_req};
+    requests[0] = participant_req;
+    requests[1] = topic_req_1;
+    requests[2] = subscriber_req;
+    requests[3] = datareader_req;
+    requests[4] = publisher_req;
+    requests[5] = datawriter_req;
     if (!uxr_run_session_until_all_status(&session, 1000, requests, status, 6))
     {
         printf("Error at create entities: participant: %i topic: %i  publisher: %i darawriter: %i\n", status[0], status[1], status[2], status[3]);
@@ -142,7 +144,6 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
     {
         printf("Success at create entities: participant: %i topic: %i publisher: %i darawriter: %i\n", status[0], status[1], status[2], status[3]);
     }
-    uxrDeliveryControl delivery_control = {0};
     delivery_control.max_samples = UXR_MAX_SAMPLES_UNLIMITED;
     this->read_data_req = uxr_buffer_request_data(&session, reliable_out, datareader_id, reliable_in, &delivery_control);
 }
@@ -159,6 +160,10 @@ bool DspPublisher::send_cmd(const char *buf)
     uxr_run_session_time(&session,1000);
     printf("data send\n");
     uint8_t read_data_status;
-    bool connected = uxr_run_session_until_all_status(&session, -1, &read_data_req, &read_data_status, 1);
+    int wait_time = this->first? 3000: -1;
+    if(this->first){
+        this->first = false;
+    }
+    bool connected = uxr_run_session_until_all_status(&session, wait_time, &read_data_req, &read_data_status, 1);
     return connected;
 }

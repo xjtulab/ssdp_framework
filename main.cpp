@@ -67,8 +67,13 @@ void parse_args(int argc, char **argv){
 
 
 int main(int argc, char **argv) {
-    // DspPublisher pub("10.119.84.193", "2018", "HelloWorldTopic", 0x12345678);
-    // pub.send_cmd("dsasfasfdas");
+    // DspPublisher pub("10.119.84.193", "2019", "HelloWorldTopic", 0x12345678);
+    // pub.send_cmd("1");
+    // pub.send_cmd("2");
+    // pub.send_cmd("3");
+    // pub.send_cmd("4");
+    // pub.send_cmd("5");
+    // pub.send_cmd("6");
     // return 1;
     //TODO 框架启动流程设计
     /*
@@ -146,7 +151,8 @@ int main(int argc, char **argv) {
     cout<<"--------------------testing dds v1.344---------------"<<endl;
     cmdprocesser.ReceiveCommand("SSDP -s ground -t framework -f start -a myapp1");
     // SSDP_Configure(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, "myapp1"), "BCH192_64800-DVBS2@9b2dc56", "Code Rate", "0x1000", 20);
-    // SSDP_DeleteDevice();
+    SSDP_DeleteDevice();
+    cout<<"end testing"<<endl;
     //等待接听指令
     init();
     parse_args(argc, argv);

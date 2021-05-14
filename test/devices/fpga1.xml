@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<device>
-    <devicetype>fpga</devicetype>
-    <name>fpga1</name>
-    <resource>100</resource>
-    <resourcetype>GATE</resourcetype>
-</device>
