@@ -39,6 +39,7 @@ endif
 
 .PHONY: clean
 clean:
+	# rm tmp/*
 	rm run src/*.o *.o
 	rm -rf test/*
 	rm test.tar.gz 

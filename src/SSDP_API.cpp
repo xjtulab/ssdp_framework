@@ -9,16 +9,16 @@
 #include <map>
 #include <memory>
 #include <set>
-#include "rapidxml.hpp"
-#include "rapidxml_utils.hpp"
-#include "DeviceDSP.h"
-#include "DeviceFPGA.h"
-#include "DeviceZED.h"
+#include "rapidxml/rapidxml.hpp"
+#include "rapidxml/rapidxml_utils.hpp"
+#include "devices/DeviceDSP.h"
+#include "devices/DeviceFPGA.h"
+#include "devices/DeviceZED.h"
 // #define ARM_BUILD
 #ifdef ARM_BUILD
     extern "C"{
-        #include "libmc3s029zesensorinfoget.h"
-        #include "libmc3s028zecpldcfg.h"
+        #include "58/libmc3s029zesensorinfoget.h"
+        #include "58/libmc3s028zecpldcfg.h"
     }
 #endif
 using std::string;

@@ -1,4 +1,4 @@
-#include "DeviceZED.h"
+#include "devices/DeviceZED.h"
 #include "zed_client.h"
 
 DeviceZED::DeviceZED(string name, SSDP_HandleID id): DeviceBase(name, id){

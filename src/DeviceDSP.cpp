@@ -1,9 +1,9 @@
-#include "DeviceDSP.h"
+#include "devices/DeviceDSP.h"
 #include <unistd.h>
 // #define ARM_BUILD
 #ifdef ARM_BUILD
     extern "C"{
-        #include "libmc3s028zecpldcfg.h"
+        #include "58/libmc3s028zecpldcfg.h"
     }
 #endif
 

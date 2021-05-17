@@ -53,6 +53,7 @@
         "libmc3s028zecpldcfg.h": "c",
         "numeric": "cpp",
         "random": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "unistd.h": "c"
     }
 }

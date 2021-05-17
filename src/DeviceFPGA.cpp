@@ -1,7 +1,7 @@
-#include "DeviceFPGA.h"
+#include "devices/DeviceFPGA.h"
 #ifdef ARM_BUILD
     extern "C"{
-        #include "libmc3s028zecpldcfg.h"
+        #include "58/libmc3s028zecpldcfg.h"
     }
 #endif
 
@@ -20,7 +20,7 @@ extern "C"{
     #include <getopt.h>             // Option parsing
     #include <errno.h>              // Error codes
 
-    #include "libaxidma.h"          // Interface ot the AXI DMA library
+    #include "58/libaxidma.h"          // Interface ot the AXI DMA library
 
     //设备upgrade用
     // Converts a tval struct to a double value of the time in seconds

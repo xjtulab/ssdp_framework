@@ -1,7 +1,7 @@
 #ifndef DEVICEDSP_H
 #define DEVICEDSP_H
 #include "base_device.h"
-#include "HelloWorld.h"
+#include "microdds/HelloWorld.h"
 
 #include <uxr/client/client.h>
 #include <ucdr/microcdr.h>

@@ -33,14 +33,14 @@ SSDP_Result SSDP_Log(SSDP_HandleID fromid, SSDP_HandleID targetid, SSDP_Message 
     }
     string log_str = std::to_string(fromid)+" "+targetid_str+" "+msg;
     logger->info(log_str);
-    std::cout<<fsin.use_count()<<std::endl;
+    // std::cout<<fsin.use_count()<<std::endl;
 
 }
 
 SSDP_Result SSDP_LogInit(){
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     //TODO 文件命名方式待确定
-    auto file_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>("tmp/logfile2", 1024*1024, 5, false);
+    auto file_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>("tmp/logfile", 1024*1024, 5, false);
     fsin = file_sink;
     spdlog::sinks_init_list sink_list = { file_sink, console_sink };
     logger = new spdlog::logger("multi_sink", sink_list.begin(), sink_list.end());
