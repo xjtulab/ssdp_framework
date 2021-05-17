@@ -216,7 +216,7 @@ SSDP_Result SSDP_Configure(SSDP_HandleID fromid, SSDP_HandleID toid,string comp_
     }
     else if(devicetable.count(toid) != 0){
         devicetable[toid]->DEV_Configure(comp_id, name, value, value.size());
-        return -1;
+        return SSDP_OK;
     }else{
         return SSDP_ERROR;
     }
@@ -280,6 +280,10 @@ SSDP_HandleID SSDP_InstantiateDevice(SSDP_HandleID fromid, string handlename, st
     }else if(dev_type == "fpga"){
         cout<<"fpga created"<<endl;
         new_dev = new DeviceFPGA(handlename,  SSDP_GetNewHandleID());
+        rapidxml::xml_node<> *ddsconfig = device->first_node("ddsconfig");
+        #ifdef ARM_BUILD
+            new_dev->DEV_SetPub(ddsconfig->first_node("ip")->value(), ddsconfig->first_node("port")->value(), ddsconfig->first_node("topicname")->value(), ddsconfig->first_node("session_key")->value()); 
+        #endif
     }else if(dev_type == "zed"){
         cout<<"zed created"<<endl;
         new_dev = new DeviceZED(handlename, SSDP_GetNewHandleID());

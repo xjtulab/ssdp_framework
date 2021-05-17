@@ -159,6 +159,45 @@ DeviceFPGA::DeviceFPGA(string name, SSDP_HandleID id): DeviceBase(name, id){
     }
 }
 
+DeviceFPGA::~DeviceFPGA(){
+    cout<<"deleting fpga dev "<<this->DEV_GetHandleName()<<endl;
+    #ifdef ARM_BUILD
+        delete fpgapub;
+    #endif
+}
+
+SSDP_Result DeviceFPGA::DEV_Start(){
+    cout<<"fpga dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
+    #ifdef ARM_BUILD
+        bool res = fpgapub->send_cmd("start");
+        return res? SSDP_OK:SSDP_ERROR;
+    #else  
+        return SSDP_OK;
+    #endif
+}
+
+SSDP_Result DeviceFPGA::DEV_Stop(){
+    cout<<"fpga dev "<<this->DEV_GetHandleName()<<" is stoping"<<endl;
+    #ifdef ARM_BUILD
+        bool res = fpgapub->send_cmd("stop");
+        return res? SSDP_OK:SSDP_ERROR;
+    #else
+        return SSDP_OK;
+    #endif
+}
+
+SSDP_Result DeviceFPGA::DEV_Configure(string comp_id, SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie){
+    cout<<"on dev "<<handle_name<<" comp: "<<comp_id<<" property: "<<name<<" is changing to: "<<value<<endl;
+    std::string cmd_str = "config "+comp_id+" "+name+" "+value;
+    char* cmd = (char*) cmd_str.c_str();
+    #ifdef ARM_BUILD   
+        bool res = fpgapub->send_cmd(cmd);
+        return res? SSDP_OK:SSDP_ERROR;
+    #else  
+        return SSDP_OK;
+    #endif
+}
+
 std::string DeviceFPGA::DEV_Status_Qeury(){
     float pretreatment_board_voltage1 = 0;
     float pretreatment_board_temperature1 = 0;
@@ -227,6 +266,16 @@ SSDP_Result DeviceFPGA::DEV_Check(){
         spdcpldop_release();
     #endif
     return res;
+}
+
+void DeviceFPGA::DEV_SetPub(string ip, string port, string topic_name, string session_key){
+    cout<<ip<<" "<<" "<<port<<" "<<" "<<topic_name<<" "<<session_key<<endl; 
+    char* ip_tmp = (char*)ip.c_str();
+    char* port_tmp = (char*)port.c_str();
+    uint32_t nValude = 0;
+    sscanf(session_key.c_str(), "%x", &nValude);
+    fpgapub = new FPGAPublisher(ip_tmp, port_tmp, topic_name, nValude);
+    fpgapub->send_cmd("EMPTY TEST");
 }
 
 SSDP_Result DeviceFPGA::DEV_Load(string filename){

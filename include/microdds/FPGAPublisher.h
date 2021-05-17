@@ -1,6 +1,6 @@
-#ifndef DSPPUBLISHER_H
-#define DSPPUBLISHER_H
-#include "HelloWorld.h"
+#ifndef FPGAPUBLISHER_H
+#define FPGAPUBLISHER_H
+#include "microdds/HelloWorld.h"
 
 #include <uxr/client/client.h>
 #include <ucdr/microcdr.h>
@@ -16,9 +16,9 @@ using namespace std;
 #define STREAM_HISTORY 8
 #define BUFFER_SIZE UXR_CONFIG_UDP_TRANSPORT_MTU *STREAM_HISTORY
 
-void on_topic(uxrSession *session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, struct ucdrBuffer *ub, uint16_t length, void *args);
+static void on_topic(uxrSession *session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, struct ucdrBuffer *ub, uint16_t length, void *args);
 
-class DspPublisher
+class FPGAPublisher
 {
 public:
     char *ip;
@@ -58,12 +58,12 @@ public:
     char datareader_xml[255];
     bool first;
 
-    DspPublisher(char *ip, char *port, string topic_name, uint32_t session_key);
+    FPGAPublisher(char *ip, char *port, string topic_name, uint32_t session_key);
     bool send_cmd(const char *buf);
 
-    DspPublisher();
+    FPGAPublisher();
 
-    ~DspPublisher()
+    ~FPGAPublisher()
     {
         uxr_delete_session(&session);
         uxr_close_udp_transport(&transport);

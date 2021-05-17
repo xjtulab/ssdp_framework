@@ -84,20 +84,20 @@ int main(int argc, char **argv) {
     //     logger.warn("Hel11lo, {}!", "World");
     //     i++;
     // }
-    SSDP_Result res = SSDP_LogInit();
-    int i = 0;
-    while(i<100000){
-        SSDP_Log(0,SSDP_GetErrorQueue(SSDP_WARNING),"sfasfd",3);
-        i++;
-    }
-    return 1;
+    // SSDP_Result res = SSDP_LogInit();
+    // int i = 0;
+    // while(i<100000){
+    //     SSDP_Log(0,SSDP_GetErrorQueue(SSDP_WARNING),"sfasfd",3);
+    //     i++;
+    // }
+    // return 1;
     //APP1TEST
     
     //系统的初始化
     int ssdp_init_result = SSDP_self_Init();
     if (ssdp_init_result != 0){
         cout<<"ssdp init failed"<<endl;
-        return 1;
+        // return 1;
     }
     SSDP_show_cur_apps();
     //日志测试

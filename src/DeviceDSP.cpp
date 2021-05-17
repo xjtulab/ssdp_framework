@@ -30,23 +30,33 @@ SSDP_Result DeviceDSP::DEV_Start(){
     cout<<"dsp dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
     #ifdef ARM_BUILD
         bool res = pub->send_info("start",true);
-        res = pub->send_info("config dsp1 CodeRate 0x10000", true);
-        res = pub->send_info("stop", true);
-        res = pub->send_info("query", true);
-        res = pub->send_info("init", true);
         return res? SSDP_OK:SSDP_ERROR;
+    #else
+        return SSDP_OK;
     #endif
-    return SSDP_OK;
+}
+
+SSDP_Result DeviceDSP::DEV_Stop(){
+    cout<<"dsp dev "<<this->DEV_GetHandleName()<<" is stoping"<<endl;
+    #ifdef ARM_BUILD
+        bool res = pub->send_info("stop",true);
+        return res? SSDP_OK:SSDP_ERROR;
+    #else
+        return SSDP_OK;
+    #endif
 }
 
 SSDP_Result DeviceDSP::DEV_Configure(string comp_id, SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie){
     cout<<"on dev "<<handle_name<<" comp: "<<comp_id<<" property: "<<name<<" is changing to: "<<value<<endl;
-    std::string cmd = "config "+comp_id+" "+name+" "+value;
-    // bool res = pub->send_cmd(cmd.c_str());
-    // res = pub->send_cmd("stop");
-    // res = pub->send_cmd("query");
-    // res = pub->send_cmd("init");
-    cout<<"on dev "<<handle_name<<" comp: "<<comp_id<<" property: "<<name<<" is changing to: "<<value<<endl;
+    std::string cmd_str = "config "+comp_id+" "+name+" "+value;
+    char* cmd = (char*)cmd_str.c_str();
+    #ifdef ARM_BUILD   
+        bool res = pub->send_info(cmd, true);
+        return res? SSDP_OK:SSDP_ERROR;
+    #else  
+        return SSDP_OK;
+    #endif
+
 }
 
 

@@ -1,6 +1,6 @@
-#include "DspPublisher.h"
+#include "microdds/FPGAPublisher.h"
 
-void on_topic(uxrSession *session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, struct ucdrBuffer *ub, uint16_t length, void *args)
+static void on_topic(uxrSession *session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, struct ucdrBuffer *ub, uint16_t length, void *args)
 {
     (void)session;
     (void)object_id;
@@ -17,11 +17,11 @@ void on_topic(uxrSession *session, uxrObjectId object_id, uint16_t request_id, u
     printf("recv_data : %s\n", topic.message);
 }
 
-DspPublisher::DspPublisher(){
-    printf("create dsp dds client\n");
+FPGAPublisher::FPGAPublisher(){
+    printf("create FPGA dds client\n");
 }
 
-DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t session_key)
+FPGAPublisher::FPGAPublisher(char *ip, char *port, string topic_name, uint32_t session_key)
 {
     this->ip = ip;
     this->port = port;
@@ -148,7 +148,7 @@ DspPublisher::DspPublisher(char *ip, char *port, string topic_name, uint32_t ses
     this->read_data_req = uxr_buffer_request_data(&session, reliable_out, datareader_id, reliable_in, &delivery_control);
 }
 
-bool DspPublisher::send_cmd(const char *buf)
+bool FPGAPublisher::send_cmd(const char *buf)
 {
     strcpy(topic.message, buf);
     ucdrBuffer ub;

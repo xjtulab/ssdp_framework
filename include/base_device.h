@@ -38,15 +38,12 @@ public:
     SSDP_HandleID DEV_GetHandleID(){ return handle_id;}
     const string& DEV_GetHandleName(){ return handle_name;}
 
-    //设备待实现接口
-    // virtual SSDP_Result DEV_Configure(int comp_id,SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie){
-    //     cout<<"comp "<<comp_id<<" is to be configed"<<endl;
-    // }
-
     virtual SSDP_Result DEV_Start() {
         cout<<"dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
     };
-    virtual SSDP_Result APP_Stop() {};
+    virtual SSDP_Result DEV_Stop() {
+        cout<<"dev "<<this->DEV_GetHandleName()<<" is stopping"<<endl;
+    };
     virtual SSDP_Result APP_Initialize() {};
     virtual SSDP_Result APP_ReleaseObject() {};
     virtual SSDP_Result APP_Write(SSDP_Message buffer, SSDP_Buffer_Size buffer_size) {};
@@ -61,7 +58,9 @@ public:
     virtual SSDP_Result DEV_Check() = 0;
     virtual SSDP_Result DEV_Open() {};
     virtual SSDP_Result DEV_Close() {};
-    virtual SSDP_Result DEV_Load(string filename) {};
+    virtual SSDP_Result DEV_Load(string filename) {
+        cout<<"device "<<this->DEV_GetHandleName()<<" is loading"<<endl;
+    }; 
     virtual SSDP_Result DEV_Flush() {};
     virtual SSDP_Result DEV_Reset() {};
     virtual SSDP_Result DEV_Unload() {};
