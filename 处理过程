@@ -7,6 +7,12 @@
 
 配置参数
 
+QPSK-DVBS2@69a373fd
+
+-f config -a wave1 -c QPSK-DVBS2@69a373fd -n gunjiang -v 0x00
+-f start -a wave1
+-f stop -a wave1
+
 波形停止
 
 

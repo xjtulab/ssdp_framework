@@ -159,12 +159,19 @@ SSDP_Result SSDP_Start(SSDP_HandleID formid, SSDP_HandleID toid){
 }
 
 SSDP_Result SSDP_Stop(SSDP_HandleID formid, SSDP_HandleID toid){
+    if(toid == -1){
+        cout<<"device not defined yet"<<endl;
+        return SSDP_OK;
+    }
     if (apptable.count(toid) != 0){
         apptable[toid]->APP_Stop();
-        return 0;
+        return SSDP_OK;
     }
-    else{
-        return -1;
+    else if(devicetable.count(toid) != 0){
+        devicetable[toid]->DEV_Stop();
+        return SSDP_OK;
+    }else{
+        return SSDP_ERROR;
     }
 }
 

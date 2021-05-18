@@ -2,13 +2,13 @@
 
 <device>
     <devicetype>dsp</devicetype>
-    <name>dsp2</name>
+    <name>dsp4</name>
     <resource>100</resource>
     <resourcetype>BYTE</resourcetype>
     <ddsconfig>
-        <ip>10.119.84.190</ip>
-        <port>8000</port>
-        <topicname>Hello</topicname>
-        <session_key>0x12345678</session_key>
+        <ip>10.119.84.193</ip>
+        <port>2019</port>
+        <topicname>TopicDSP4</topicname>
+        <session_key>0X44444444</session_key>
     </ddsconfig>
 </device>

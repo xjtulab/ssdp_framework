@@ -41,7 +41,7 @@ SSDP_Result CmdProcess::ReceiveCommand(const string& cmd){
     }else if(par->get<string>("function") == "stop"){
         res = SSDP_Stop(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, par->get<string>("APP_name")));
     }else if(par->get<string>("function") == "reconstruct"){
-        res = SSDP_LoadDevie(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, par->get<string>("APP_name")), "file_path");
+        res = SSDP_LoadDevie(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, par->get<string>("APP_name")), par->get<string>("property_value"));
     }else{
         cout<<"function doesn't exist"<<endl;
     }

@@ -38,6 +38,7 @@ public:
     //添加组件
     SSDP_Result Add_Component(string id_on_app, string filepath, SSDP_HandleID targetdevice, string id_on_device){
         component* ptr = new component(filepath,targetdevice, id_on_device);
+        cout<<"comp name: "<<id_on_app<<endl;
         component_list.insert(std::make_pair(id_on_app, ptr));
     }
     //添加组件参数名/地址对
@@ -60,7 +61,18 @@ public:
         }
         return res;
     };                                                                         
-    virtual SSDP_Result APP_Stop(){};
+    virtual SSDP_Result APP_Stop(){
+        SSDP_Result res = SSDP_OK;
+        auto iter = component_list.begin();
+        while(iter != component_list.end()){
+            //TODO 需要传输compi地址参数，修改组件空间的02地址？
+            if(!ftable->stop(handle_id, iter->second->target_device)){
+                res = SSDP_ERROR;
+            }
+            iter++;
+        }
+        return res;
+    };
     virtual SSDP_Result APP_Initialize(){};
     virtual SSDP_Result APP_ReleaseObject(){};
     virtual SSDP_Result APP_Write(int comp_id,SSDP_Message buffer, SSDP_Buffer_Size buffer_size) {};
