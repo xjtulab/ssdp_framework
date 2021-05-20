@@ -68,12 +68,12 @@
 			</resourceInfo>
 			<parameters>
 				<parameter>
-					<name>Number of Constellation</name>
+					<name>Number_of_Constellation</name>
 					<address>0x04</address>
 					<value>16</value>
 				</parameter>
 				<parameter>
-					<name>Code Rate</name>
+					<name><Code_ class=""></Code_>Rate</name>
 					<address>0x05</address>
 					<value>1/2</value>
 				</parameter>

@@ -6,8 +6,8 @@
     <resource>100</resource>
     <resourcetype>GATE</resourcetype>
     <ddsconfig>
-        <ip>10.119.84.193</ip>
-        <port>2019</port>
+        <ip>10.119.84.191</ip>
+        <port>2021</port>
         <topicname>FPGATOPIC</topicname>
         <session_key>0x12312312</session_key>
     </ddsconfig>

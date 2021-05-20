@@ -11,7 +11,7 @@ DeviceZED::~DeviceZED(){
 
 SSDP_Result DeviceZED::DEV_Start(){
     string cmd = "start 0x03 0x04 0x01";
-    cout<<"zed dev"<<this->DEV_GetHandleName()<<" is starting"<<endl;
+    cout<<"zed dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
     if(send(sockfd, cmd.c_str(), cmd.size(),0) <= 0){
         printf("write failed ... \n");
         return SSDP_ERROR;
@@ -19,7 +19,7 @@ SSDP_Result DeviceZED::DEV_Start(){
 }
 
 SSDP_Result DeviceZED::DEV_Stop(){
-    string cmd = "stop";
+    string cmd = "stop 0x03 0x04 0x00";
     cout<<"zed dev"<<this->DEV_GetHandleName()<<" is stoping"<<endl;
     if(send(sockfd, cmd.c_str(), cmd.size(),0) <= 0){
         printf("write failed ... \n");
@@ -28,7 +28,7 @@ SSDP_Result DeviceZED::DEV_Stop(){
 }
 
 SSDP_Result DeviceZED::DEV_Configure(string comp_id, SSDP_Property_Name name, SSDP_Property_Value value, SSDP_Buffer_Size value_szie){
-    string cmd = "config "+name+" "+value;
+    string cmd = "config "+comp_id+" "+name+" "+value;
     cout<<"zed dev"<<this->DEV_GetHandleName()<<" is configing"<<endl;
     if(send(sockfd, cmd.c_str(), cmd.size(),0) <= 0){
         printf("write failed ... \n");

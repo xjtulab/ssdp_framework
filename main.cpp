@@ -101,9 +101,9 @@ int main(int argc, char **argv) {
         // return 1;
     }
     //启动agent
-    system("sh /SSDP/dds/kill.sh");
-    system("/SSDP/dds/agent udp4 -p 2019 > /SSDP/dds/log.txt &");
-    sleep(1);
+    // system("sh /SSDP/dds/kill.sh");
+    // system("/SSDP/dds/agent udp4 -p 2019 > /SSDP/dds/log.txt &");
+    // sleep(1);
     SSDP_show_cur_apps();
     //日志测试
     // SSDP_Result res = SSDP_LogInit();
@@ -126,7 +126,7 @@ int main(int argc, char **argv) {
     closedir(dirp);
     //创建应用
     // cout<<SSDP_GetDeviceList()<<endl;
-    // int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
+    int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
     // int appid = SSDP_InstantiateApp(0,"wave1","wave1.xml");
 
     //测试设备状态回报
