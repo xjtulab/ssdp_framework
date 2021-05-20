@@ -170,3 +170,16 @@ void DeviceDSP::DEV_SetPub(string ip, string port, string topic_name, string ses
     pub = new DspPublisherTwo(ip_tmp, port_tmp, topic_name, nValude, nValude+1);
     pub->send_info("EMPTY TEST",false);
 }
+
+SSDP_Result  DeviceDSP::DEV_Load(string filename){
+    cout<<"dsp dev "<<this->DEV_GetHandleName()<<" is loading"<<endl;
+    // string cmd = "reconstruct "+filename;
+    std::string cmd_str = "reconstruct "+filename;
+    char* cmd = (char*)cmd_str.c_str();
+    #ifdef ARM_BUILD
+        bool res = pub->send_info(cmd,false);
+        return res? SSDP_OK:SSDP_ERROR;
+    #else
+        return SSDP_OK;
+    #endif 
+}

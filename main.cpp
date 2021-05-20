@@ -67,6 +67,7 @@ void parse_args(int argc, char **argv){
 
 
 int main(int argc, char **argv) {
+
     //TODO 框架启动流程设计
     /*
         1、读取设备配置文件，创建设备实例
@@ -99,6 +100,10 @@ int main(int argc, char **argv) {
         cout<<"ssdp init failed"<<endl;
         // return 1;
     }
+    //启动agent
+    system("sh /SSDP/dds/kill.sh");
+    system("/SSDP/dds/agent udp4 -p 2019 > /SSDP/dds/log.txt &");
+    sleep(1);
     SSDP_show_cur_apps();
     //日志测试
     // SSDP_Result res = SSDP_LogInit();
@@ -122,7 +127,7 @@ int main(int argc, char **argv) {
     //创建应用
     // cout<<SSDP_GetDeviceList()<<endl;
     // int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
-    int appid = SSDP_InstantiateApp(0,"wave1","wave1.xml");
+    // int appid = SSDP_InstantiateApp(0,"wave1","wave1.xml");
 
     //测试设备状态回报
     // std::string stat = SSDP_DeviceStatus();
@@ -137,6 +142,11 @@ int main(int argc, char **argv) {
     cout<<"---------------------------------------"<<endl;
     cout<<"--------------------testing tongxin v1---------------"<<endl;
     // cmdprocesser.ReceiveCommand("SSDP -s ground -t framework -f start -a myapp1");
+    // sleep(1);
+    // cmdprocesser.ReceiveCommand("SSDP -s ground -t framework -f query -a myapp1");
+    // sleep(1);
+    // cmdprocesser.ReceiveCommand("SSDP -s ground -t framework -f reconstruct -a dsp1 -v 2");
+    // sleep(100);
 
     // SSDP_Configure(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, "myapp1"), "BCH192_64800-DVBS2@9b2dc56", "Code Rate", "0x1000", 20);
     // SSDP_DeleteDevice();

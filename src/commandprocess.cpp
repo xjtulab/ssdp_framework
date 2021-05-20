@@ -42,7 +42,11 @@ SSDP_Result CmdProcess::ReceiveCommand(const string& cmd){
         res = SSDP_Stop(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, par->get<string>("APP_name")));
     }else if(par->get<string>("function") == "reconstruct"){
         res = SSDP_LoadDevie(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, par->get<string>("APP_name")), par->get<string>("property_value"));
-    }else{
+    }else if(par->get<string>("function") == "loadapp"){
+        string app_name = par->get<string>("APP_name");
+        int appid = SSDP_InstantiateApp(0, app_name, app_name+".xml");
+    }
+    else{
         cout<<"function doesn't exist"<<endl;
     }
     // switch(par->get<string>("function")){

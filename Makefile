@@ -17,6 +17,7 @@ ifdef tar
 	cp run test
 	cp -r devices test
 	cp *.xml test
+	cp dds_agent/* test
 	tar -czf test.tar.gz test
 else
 	$(CC) --static -o run main.o $(objects) -ldl -lpthread -lmicrocdr -lmicroxrcedds_client

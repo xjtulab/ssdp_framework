@@ -276,6 +276,7 @@ SSDP_HandleID SSDP_InstantiateDevice(SSDP_HandleID fromid, string handlename, st
     string dev_type = device->first_node("devicetype")->value();
     DeviceBase* new_dev;
     if(dev_type == "dsp"){
+        
         // auto new_dev_tmp = std::make_shared<DeviceDSP>(handlename,  SSDP_GetNewHandleID());
         new_dev = new DeviceDSP(handlename,  SSDP_GetNewHandleID());
         cout<<"dsp created"<<endl;
