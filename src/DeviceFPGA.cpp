@@ -169,7 +169,7 @@ DeviceFPGA::~DeviceFPGA(){
 SSDP_Result DeviceFPGA::DEV_Start(){
     cout<<"fpga dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
     #ifdef ARM_BUILD
-        bool res = fpgapub->send_cmd("start");
+        bool res = pub->send_info("start",true);
         return res? SSDP_OK:SSDP_ERROR;
     #else  
         return SSDP_OK;
@@ -179,7 +179,7 @@ SSDP_Result DeviceFPGA::DEV_Start(){
 SSDP_Result DeviceFPGA::DEV_Stop(){
     cout<<"fpga dev "<<this->DEV_GetHandleName()<<" is stoping"<<endl;
     #ifdef ARM_BUILD
-        bool res = fpgapub->send_cmd("stop");
+        bool res = pub->send_info("stop",true);
         return res? SSDP_OK:SSDP_ERROR;
     #else
         return SSDP_OK;
@@ -191,7 +191,7 @@ SSDP_Result DeviceFPGA::DEV_Configure(string comp_id, SSDP_Property_Name name, S
     std::string cmd_str = "config "+comp_id+" "+name+" "+value;
     char* cmd = (char*) cmd_str.c_str();
     #ifdef ARM_BUILD   
-        bool res = fpgapub->send_cmd(cmd);
+        bool res = pub->send_info(cmd, true);
         return res? SSDP_OK:SSDP_ERROR;
     #else  
         return SSDP_OK;
@@ -274,8 +274,8 @@ void DeviceFPGA::DEV_SetPub(string ip, string port, string topic_name, string se
     char* port_tmp = (char*)port.c_str();
     uint32_t nValude = 0;
     sscanf(session_key.c_str(), "%x", &nValude);
-    fpgapub = new FPGAPublisher(ip_tmp, port_tmp, topic_name, nValude);
-    fpgapub->send_cmd("EMPTY TEST");
+    pub = new DspPublisherTwo(ip_tmp, port_tmp, topic_name, nValude, nValude+1);
+    pub->send_info("EMPTY TEST", false);
 }
 
 SSDP_Result DeviceFPGA::DEV_Load(string filename){

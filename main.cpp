@@ -74,25 +74,6 @@ int main(int argc, char **argv) {
         2、启动和显控界面的连接，准备接收指令
         3、循环接收指令
     */
-
-    // auto file_logger = spdlog::rotating_logger_mt("file_logger", "tmp/myfilename", 1024 * 1024 * 5, 3);
-    // auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    // auto file_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>("tmp/logfile", 1024*1024, 5, false);
-    // spdlog::sinks_init_list sink_list = { file_sink, console_sink };
-    // spdlog::logger logger("multi_sink", sink_list.begin(), sink_list.end());
-    // int i =0;
-    // while (i< 10000){
-    //     logger.warn("Hel11lo, {}!", "World");
-    //     i++;
-    // }
-    // SSDP_Result res = SSDP_LogInit();
-    // int i = 0;
-    // while(i<100000){
-    //     SSDP_Log(0,SSDP_GetErrorQueue(SSDP_WARNING),"sfasfd",3);
-    //     i++;
-    // }
-    // return 1;
-    //APP1TEST
     
     //系统的初始化
     int ssdp_init_result = SSDP_self_Init();
@@ -101,9 +82,9 @@ int main(int argc, char **argv) {
         // return 1;
     }
     //启动agent
-    // system("sh /SSDP/dds/kill.sh");
-    // system("/SSDP/dds/agent udp4 -p 2019 > /SSDP/dds/log.txt &");
-    // sleep(1);
+    system("sh /SSDP/dds/kill.sh");
+    system("/SSDP/dds/agent udp4 -p 2019 > /SSDP/dds/log.txt &");
+    sleep(1);
     SSDP_show_cur_apps();
     //日志测试
     // SSDP_Result res = SSDP_LogInit();

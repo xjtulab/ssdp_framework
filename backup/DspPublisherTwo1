@@ -14,7 +14,7 @@ using namespace std;
 #define STREAM_HISTORY 8
 #define BUFFER_SIZE UXR_CONFIG_UDP_TRANSPORT_MTU *STREAM_HISTORY
 
-void on_topic(uxrSession *session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, struct ucdrBuffer *ub, uint16_t length, void *args);
+static void on_topic(uxrSession *session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, struct ucdrBuffer *ub, uint16_t length, void *args);
 
 class DspPublisherTwo
 {
@@ -22,7 +22,6 @@ private:
     string ip;
     string port;
     string topic_name;
-
     //session1
     uxrUDPTransport transport_1;
     uxrUDPPlatform udp_platform_1;
@@ -48,17 +47,11 @@ private:
     uint16_t read_data_req_2;
     uint32_t count2;
 
-    
-    
-    
-
 public:
     DspPublisherTwo(string ip, string port, string topic_name, uint32_t session_key_1, uint32_t session_key_2);
     bool init_dps_publisher(uint32_t session_key_1, uint32_t session_key_2);
     bool send_info(char *buf,bool recv);
     bool recv_info();
-    bool establish_connection();
-    bool recv_ready_info();
 
     ~DspPublisherTwo()
     {

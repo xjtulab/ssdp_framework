@@ -1,12 +1,13 @@
 #ifndef DEVICEFPAG_H
 #define DEVICEFPAG_H
 #include "base_device.h"
-#include "microdds/FPGAPublisher.h"
+#include "microdds/HelloWorld.h"
+
+#include <uxr/client/client.h>
+#include <ucdr/microcdr.h>
 
 
 class DeviceFPGA: public DeviceBase{
-private:
-    FPGAPublisher *fpgapub;
 public:
     virtual std::string DEV_Status_Qeury();
     virtual SSDP_Result DEV_Check();

@@ -1,6 +1,8 @@
 #include "microdds/DspPublisherTwo.h"
 
-static void on_topic(uxrSession *session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, struct ucdrBuffer *ub, uint16_t length, void *args)
+char recv_info_buf[255] = {'0'};
+
+void on_topic(uxrSession *session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, struct ucdrBuffer *ub, uint16_t length, void *args)
 {
     (void)session;
     (void)object_id;
@@ -14,6 +16,7 @@ static void on_topic(uxrSession *session, uxrObjectId object_id, uint16_t reques
     if (topic.message[strlen(topic.message) - 1] == '\n')
         topic.message[strlen(topic.message) - 1] = '\0';
     printf("recv_data : %s, id = %d \n", topic.message, topic.index);
+    strcpy(recv_info_buf, topic.message);
 }
 
 DspPublisherTwo::DspPublisherTwo(string ip, string port, string topic_name, uint32_t session_key_1, uint32_t session_key_2)
@@ -25,6 +28,7 @@ DspPublisherTwo::DspPublisherTwo(string ip, string port, string topic_name, uint
     this->topic_name = topic_name;
 
     init_dps_publisher(session_key_1, session_key_2);
+    establish_connection();
 }
 
 bool DspPublisherTwo::init_dps_publisher(uint32_t session_key_1, uint32_t session_key_2)
@@ -69,11 +73,12 @@ bool DspPublisherTwo::init_dps_publisher(uint32_t session_key_1, uint32_t sessio
 
     uxrObjectId topic_id_1 = uxr_object_id(0x01, UXR_TOPIC_ID);
     string topic_xml_1 = "<dds>"
-                              "<topic>"
-                              "<name>" + topic_name + "_1</name>"
-                              "<dataType>HelloWorld</dataType>"
-                              "</topic>"
-                              "</dds>";
+                         "<topic>"
+                         "<name>" +
+                         topic_name + "_1</name>"
+                                      "<dataType>HelloWorld</dataType>"
+                                      "</topic>"
+                                      "</dds>";
     uint16_t topic_req_1 = uxr_buffer_create_topic_xml(&session_1, reliable_out_1, topic_id_1, participant_id_1,
                                                        topic_xml_1.c_str(), UXR_REPLACE);
 
@@ -84,14 +89,15 @@ bool DspPublisherTwo::init_dps_publisher(uint32_t session_key_1, uint32_t sessio
 
     datawriter_id = uxr_object_id(0x01, UXR_DATAWRITER_ID);
     string datawriter_xml = "<dds>"
-                                 "<data_writer>"
-                                 "<topic>"
-                                 "<kind>NO_KEY</kind>"
-                                 "<name>"+ topic_name +"_1</name>"
-                                 "<dataType>HelloWorld</dataType>"
-                                 "</topic>"
-                                 "</data_writer>"
-                                 "</dds>";
+                            "<data_writer>"
+                            "<topic>"
+                            "<kind>NO_KEY</kind>"
+                            "<name>" +
+                            topic_name + "_1</name>"
+                                         "<dataType>HelloWorld</dataType>"
+                                         "</topic>"
+                                         "</data_writer>"
+                                         "</dds>";
     datawriter_req = uxr_buffer_create_datawriter_xml(&session_1, reliable_out_1, datawriter_id,
                                                       publisher_id, datawriter_xml.c_str(), UXR_REPLACE);
 
@@ -146,11 +152,12 @@ bool DspPublisherTwo::init_dps_publisher(uint32_t session_key_1, uint32_t sessio
 
     uxrObjectId topic_id_2 = uxr_object_id(0x01, UXR_TOPIC_ID);
     string topic_xml_2 = "<dds>"
-                              "<topic>"
-                              "<name>" + topic_name + "_2</name>"
-                              "<dataType>HelloWorld</dataType>"
-                              "</topic>"
-                              "</dds>";
+                         "<topic>"
+                         "<name>" +
+                         topic_name + "_2</name>"
+                                      "<dataType>HelloWorld</dataType>"
+                                      "</topic>"
+                                      "</dds>";
     uint16_t topic_req_2 = uxr_buffer_create_topic_xml(&session_2, reliable_out_2, topic_id_2, participant_id_2,
                                                        topic_xml_2.c_str(), UXR_REPLACE);
 
@@ -161,14 +168,15 @@ bool DspPublisherTwo::init_dps_publisher(uint32_t session_key_1, uint32_t sessio
 
     datareader_id = uxr_object_id(0x01, UXR_DATAREADER_ID);
     string datareader_xml = "<dds>"
-                                 "<data_reader>"
-                                 "<topic>"
-                                 "<kind>NO_KEY</kind>"
-                                 "<name>" + topic_name + "_2</name>"
-                                 "<dataType>HelloWorld</dataType>"
-                                 "</topic>"
-                                 "</data_reader>"
-                                 "</dds>";
+                            "<data_reader>"
+                            "<topic>"
+                            "<kind>NO_KEY</kind>"
+                            "<name>" +
+                            topic_name + "_2</name>"
+                                         "<dataType>HelloWorld</dataType>"
+                                         "</topic>"
+                                         "</data_reader>"
+                                         "</dds>";
     datareader_req = uxr_buffer_create_datareader_xml(&session_2, reliable_out_2, datareader_id,
                                                       subscriber_id, datareader_xml.c_str(), UXR_REPLACE);
 
@@ -202,11 +210,14 @@ bool DspPublisherTwo::send_info(char *buf, bool recv)
     uint32_t topic_size_1 = HelloWorld_size_of_topic(&topic, 0);
     uxr_prepare_output_stream(&session_1, reliable_out_1, datawriter_id, &ub, topic_size_1);
     HelloWorld_serialize_topic(&ub, &topic);
-    printf("send info: %s, id = %d\n",topic.message,topic.index);
+    printf("send info: %s, id = %d\n", topic.message, topic.index);
     bool connected = uxr_run_session_time(&session_1, 1000);
     printf("connected1: %d\n", connected);
     // Session 2 subscribe
-    if(recv){
+    if (!strcmp(buf, "reconstruct"))
+    {
+        connected &= establish_connection();
+    }else if(recv){
         connected &= recv_info();
     }
     return connected;
@@ -218,6 +229,20 @@ bool DspPublisherTwo::recv_info()
     bool connected = uxr_run_session_until_all_status(&session_2, -1, &read_data_req_2, &read_data_status, 1);
     printf("connected2: %d\n", connected);
     return connected;
+}
+
+bool DspPublisherTwo::establish_connection()
+{
+    uint8_t read_data_status;
+    bool connected = uxr_run_session_until_all_status(&session_2, -1, &read_data_req_2, &read_data_status, 1);
+    string recv_tmp = recv_info_buf;
+    if (connected && !strcmp(recv_tmp.substr(0,3).c_str(), "dsp"))
+    {
+        printf("%s\n", recv_info_buf);
+        send_info("connected ok", false);
+        return true;
+    }
+    return false;
 }
 
 // int main(
@@ -235,11 +260,11 @@ bool DspPublisherTwo::recv_info()
 //     char *port = argv[2];
 //     uint32_t max_topics = (args == 4) ? (uint32_t)atoi(argv[3]) : 1000;
 
-//     DspPublisherTwo dsp(ip,port,"HelloWorldTopic",0x11111111,0x22222222);
-
-//     dsp.send_info("empty",false);
-//     dsp.send_info("init",true);
-//     dsp.send_info("start",true);
-//     dsp.send_info("config",true);
-
+//     DspPublisherTwo dsp(ip, port, "HelloWorldTopic", 0x11111111, 0x22222222);
+//     dsp.establish_connection();
+//     dsp.send_info("init", true);
+//     dsp.send_info("start", true);
+//     dsp.send_info("config", true);
+//     dsp.send_info("reconstruct", false);
+    
 // }
