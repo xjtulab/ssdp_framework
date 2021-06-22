@@ -7,7 +7,7 @@
     <resourcetype>BYTE</resourcetype>
     <ddsconfig>
         <ip>10.119.84.191</ip>
-        <port>2021</port>
+        <port>2019</port>
         <topicname>HelloWorldTopic</topicname>
         <session_key>0x11111111</session_key>
     </ddsconfig>

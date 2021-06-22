@@ -23,7 +23,7 @@ using std::cout;
 using std::endl;
 using std::cerr;
 
-#define SSDP_SERVER_IP "192.168.43.36"
+#define SSDP_SERVER_IP "10.119.84.190"
 #define SSDP_SERVER_PORT 8080
 char *IP = new char[16];
 int port;
@@ -82,15 +82,11 @@ int main(int argc, char **argv) {
         // return 1;
     }
     //启动agent
-    system("sh /SSDP/dds/kill.sh");
-    system("/SSDP/dds/agent udp4 -p 2019 > /SSDP/dds/log.txt &");
-    sleep(1);
+    // system("sh /SSDP/dds/kill.sh");
+    // system("/SSDP/dds/agent udp4 -p 2019 > /SSDP/dds/log.txt &");
+    // sleep(1);
     SSDP_show_cur_apps();
-    //日志测试
-    // SSDP_Result res = SSDP_LogInit();
-    // SSDP_Log(0,SSDP_GetErrorQueue(SSDP_WARNING),"sfasfd",3);
     // 1、读取设备配置文件，创建设备实例
-    //TODO 应该改成扫描文件夹底下文件
     DIR *dirp;
     struct dirent *direntp;
     if((dirp = opendir("devices")) == NULL){
@@ -107,8 +103,8 @@ int main(int argc, char **argv) {
     closedir(dirp);
     //创建应用
     // cout<<SSDP_GetDeviceList()<<endl;
-    int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
-    // int appid = SSDP_InstantiateApp(0,"wave1","wave1.xml");
+    // int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
+    int appid = SSDP_InstantiateApp(0,"dianzhen_app1","dianzhen_app1.xml");
 
     //测试设备状态回报
     // std::string stat = SSDP_DeviceStatus();
@@ -120,11 +116,16 @@ int main(int argc, char **argv) {
 
     //准备指令解析器并测试
     CmdProcess cmdprocesser;
-    cout<<"---------------------------------------"<<endl;
-    cout<<"--------------------testing tongxin v1---------------"<<endl;
-    // cmdprocesser.ReceiveCommand("SSDP -s ground -t framework -f start -a myapp1");
-    // sleep(1);
-    // cmdprocesser.ReceiveCommand("SSDP -s ground -t framework -f query -a myapp1");
+    // cout<<"---------------------------------------"<<endl;
+    // cout<<"--------------------testing tongxin v1---------------"<<endl;
+    // sleep(10);
+    while(true){
+        cmdprocesser.ReceiveCommand("SSDP -s ground -t framework -f start -a dianzhen_app1");
+        sleep(10);
+    }
+    // int aaa;
+    // cin>>aaa;
+    // cmdprocesser.ReceiveCommand("SSDP -s ground -t framework -f stop -a dianzhen_app1");
     // sleep(1);
     // cmdprocesser.ReceiveCommand("SSDP -s ground -t framework -f reconstruct -a dsp1 -v 2");
     // sleep(100);

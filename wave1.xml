@@ -32,8 +32,8 @@
 			<status>02147480001</status>
 			<resourceInfo>
 				<info>
-					<category>zed</category>
-					<name>zed1</name>
+					<category>fpga</category>
+					<name>fpga1</name>
 					<codeLocation>E:\IDE\eclipse-rcp-2\FILE2</codeLocation>
 					<resourceUsed>10%</resourceUsed>
 					<type>324</type>
@@ -47,15 +47,14 @@
 				</parameter>
 			</parameters>
 		</component>
-		<components>
 		<component>
 			<objId>QPSK-DVBS2@69a373fd</objId>
 			<componenId>0x00020000:QPSK-DVBS2</componenId>
 			<status>02147480001</status>
 			<resourceInfo>
 				<info>
-					<category>zed</category>
-					<name>zed1</name>
+					<category>fpga</category>
+					<name>fpga1</name>
 					<codeLocation>E:\IDE\eclipse-rcp-2\FILE2</codeLocation>
 					<resourceUsed>10%</resourceUsed>
 					<type>324</type>
@@ -69,15 +68,14 @@
 				</parameter>
 			</parameters>
 		</component>
-		<components>
 		<component>
 			<objId>QPSK-DVBS2@69a373fd</objId>
 			<componenId>0x00020000:QPSK-DVBS2</componenId>
 			<status>02147480001</status>
 			<resourceInfo>
 				<info>
-					<category>zed</category>
-					<name>zed1</name>
+					<category>fpga</category>
+					<name>fpga1</name>
 					<codeLocation>E:\IDE\eclipse-rcp-2\FILE2</codeLocation>
 					<resourceUsed>10%</resourceUsed>
 					<type>324</type>
@@ -91,15 +89,14 @@
 				</parameter>
 			</parameters>
 		</component>
-		<components>
 		<component>
 			<objId>QPSK-DVBS2@69a373fd</objId>
 			<componenId>0x00020000:QPSK-DVBS2</componenId>
 			<status>02147480001</status>
 			<resourceInfo>
 				<info>
-					<category>zed</category>
-					<name>zed1</name>
+					<category>fpga</category>
+					<name>fpga1</name>
 					<codeLocation>E:\IDE\eclipse-rcp-2\FILE2</codeLocation>
 					<resourceUsed>10%</resourceUsed>
 					<type>324</type>
@@ -113,15 +110,14 @@
 				</parameter>
 			</parameters>
 		</component>
-		<components>
 		<component>
 			<objId>QPSK-DVBS2@69a373fd</objId>
 			<componenId>0x00020000:QPSK-DVBS2</componenId>
 			<status>02147480001</status>
 			<resourceInfo>
 				<info>
-					<category>zed</category>
-					<name>zed1</name>
+					<category>fpga</category>
+					<name>fpga1</name>
 					<codeLocation>E:\IDE\eclipse-rcp-2\FILE2</codeLocation>
 					<resourceUsed>10%</resourceUsed>
 					<type>324</type>

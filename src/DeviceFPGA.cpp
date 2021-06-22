@@ -162,7 +162,7 @@ DeviceFPGA::DeviceFPGA(string name, SSDP_HandleID id): DeviceBase(name, id){
 DeviceFPGA::~DeviceFPGA(){
     cout<<"deleting fpga dev "<<this->DEV_GetHandleName()<<endl;
     #ifdef ARM_BUILD
-        delete fpgapub;
+        delete pub;
     #endif
 }
 

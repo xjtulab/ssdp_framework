@@ -39,98 +39,100 @@
 	</diagram>
 	<components>
 		<component>
-			<objId>coding@79f82fc4</objId>
+			<objId>encode@6fb219dd</objId>
 			<componenId>0x00</componenId>
 			<resourceInfo>
 				<info>
-					<category>zed</category>
-					<codeLocation>zed1</codeLocation>
+					<category>fpga</category>
+					<codeLocation>fpga1</codeLocation>
 					<resourceUsed>12%</resourceUsed>
 					<type>zedboard</type>
-					<name>zed1</name>
-				</info>
-			</resourceInfo>
-			<parameters/>
-		</component>
-		<component>
-			<objId>framing@10efb806</objId>
-			<componenId>0x01</componenId>
-			<resourceInfo>
-				<info>
-					<category>zed</category>
-					<codeLocation>zed1</codeLocation>
-					<resourceUsed>12%</resourceUsed>
-					<name>zed1</name>
-					<type>zedboard</type>
+					<name>fpga1</name>
 				</info>
 			</resourceInfo>
 			<parameters>
 				<parameter>
-					<name>Delivery_mode</name>
+					<name>framelength</name>
 					<address>0x05</address>
-					<value>0x18</value>
-				</parameter>
-				<parameter>
-					<name>frame_length_control</name>
-					<address>0x06</address>
-					<value>0x00</value>
-				</parameter>
-				<parameter>
-					<name>pilot_control</name>
-					<address>0x07</address>
 					<value>0x00</value>
 				</parameter>
 			</parameters>
 		</component>
 		<component>
-			<objId>symbol_mapping@d60aa4</objId>
+			<objId>framing@7d75940</objId>
+			<componenId>0x01</componenId>
+			<resourceInfo>
+				<info>
+					<category>fpga</category>
+					<codeLocation>fpga1</codeLocation>
+					<resourceUsed>12%</resourceUsed>
+					<name>fpga1</name>
+					<type>fpga</type>
+				</info>
+			</resourceInfo>
+			<parameters>
+				<parameter>
+					<name>frequencyLength</name>
+					<address>0x06</address>
+					<value>0x00</value>
+				</parameter>
+			</parameters>
+		</component>
+		<component>
+			<objId>symbolMapping@1af6974c</objId>
 			<componenId>0x02</componenId>
 			<resourceInfo>
 				<info>
-					<category>zed</category>
-					<name>zed1</name>
-					<codeLocation>zed1</codeLocation>
+					<category>fpga</category>
+					<name>fpga1</name>
+					<codeLocation>fpga1</codeLocation>
 					<resourceUsed>11%</resourceUsed>
-					<type>zedboard</type>
+					<type>fpga</type>
 				</info>
 			</resourceInfo>
-			<parameters/>
+			<parameters>
+				<parameter>
+					<name>sendingMode</name>
+					<address>0x07</address>
+					<value>0x01</value>
+				</parameter>
+			</parameters>
 		</component>
 		<component>
-			<objId>test_mode@5b256ab5</objId>
+			<objId>testmode@2a9565d7</objId>
 			<componenId>0x03</componenId>
 			<resourceInfo>
 				<info>
-					<category>zed</category>
-					<name>zed1</name>
-					<codeLocation>zed1</codeLocation>
+					<category>fpga</category>
+					<name>fpga1</name>
+					<codeLocation>fpga1</codeLocation>
 					<resourceUsed>11%</resourceUsed>
-					<type>zedboard</type>
+					<type>fpga</type>
 				</info>
 			</resourceInfo>
 			<parameters>
 				<parameter>
 					<name>signal</name>
-					<address>0x05</address>
+					<address>0x04</address>
 					<value>0x00</value>
 				</parameter>
 			</parameters>
 		</component>
 		<component>
-			<objId>signal_forming@2c634c0</objId>
+			<objId>shapingfilter@21046afa</objId>
 			<componenId>0x04</componenId>
 			<resourceInfo>
 				<info>
-					<category>zed</category>
-					<name>zed1</name>
-					<codeLocation>zed1</codeLocation>
+					<category>fpga</category>
+					<name>fpga1</name>
+					<codeLocation>fpga1</codeLocation>
 					<resourceUsed>10%</resourceUsed>
-					<type>zedboard</type>
+					<type>fpga</type>
 				</info>
 			</resourceInfo>
 			<parameters>
 				<parameter>
-					<name>filter_control</name>
+					<name>gunjiang</name>
 					<address>0x03</address>
 					<value>0x00</value>
 				</parameter>
