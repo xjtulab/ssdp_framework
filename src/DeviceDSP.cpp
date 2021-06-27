@@ -178,6 +178,7 @@ SSDP_Result  DeviceDSP::DEV_Load(string filename){
     char* cmd = (char*)cmd_str.c_str();
     #ifdef ARM_BUILD
         bool res = pub->send_info(cmd,false);
+        pub->send_info("EMPTY TEST",false);
         return res? SSDP_OK:SSDP_ERROR;
     #else
         return SSDP_OK;

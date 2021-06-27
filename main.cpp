@@ -120,8 +120,23 @@ int main(int argc, char **argv) {
     // cout<<"--------------------testing tongxin v1---------------"<<endl;
     // sleep(10);
     while(true){
-        cmdprocesser.ReceiveCommand("SSDP -s ground -t framework -f start -a dianzhen_app1");
-        sleep(10);
+        cout<<"please enter command:"<<endl;
+        string cmd = "-f start -a dianzhen_app1";
+        string cmd1 = "-f config -a dianzhen_app1 -c processing@6edd4fe2 -n If_thres -v 0d01";
+        string cmd2 = "-f config -a dianzhen_app1 -c processing@6edd4fe2 -n thres -v 0d00000256";
+        string cmd3 = "-f reconstruct -a dsp1 -v 1";
+        int tmp;
+        cin >>tmp;
+        if(tmp > 2 && tmp <11){
+            cmd = cmd1;
+        }else if(tmp >20 && tmp <40){
+            cmd = cmd2;
+        }else if(tmp >40 && tmp <60){
+            cmd = cmd3;
+        } 
+        cout<<"cmd is:"<<" SSDP -s ground -t framework "+cmd<<endl;
+        cmdprocesser.ReceiveCommand("SSDP -s ground -t framework "+cmd);
+        // sleep(1);
     }
     // int aaa;
     // cin>>aaa;

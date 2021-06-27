@@ -22,7 +22,7 @@
 	<components>
 		<component>
 			<objId>processing@6edd4fe2</objId>
-			<componenId>0x:processing</componenId>
+			<componenId>0x01</componenId>
 			<resourceInfo>
 				<info>
 					<category>dsp</category>
@@ -69,9 +69,9 @@
 				</parameter>
 			</parameters>
 		</component>
-		<component>
+		<!-- <component>
 			<objId>route@3909a854</objId>
-			<componenId>0x02:route</componenId>
+			<componenId>0x02</componenId>
 			<resourceInfo>
 				<info>
 					<category>fpga</category>
@@ -81,6 +81,6 @@
 				</info>
 			</resourceInfo>
 			<parameters/>
-		</component>
+		</component> -->
 	</components>
 </waveform>

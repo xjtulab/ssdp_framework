@@ -1,5 +1,5 @@
 #include "microdds/DspPublisherTwo.h"
-
+#include <iostream>
 char recv_info_buf[255] = {'0'};
 
 void on_topic(uxrSession *session, uxrObjectId object_id, uint16_t request_id, uxrStreamId stream_id, struct ucdrBuffer *ub, uint16_t length, void *args)
@@ -214,10 +214,13 @@ bool DspPublisherTwo::send_info(char *buf, bool recv)
     bool connected = uxr_run_session_time(&session_1, 1000);
     printf("connected1: %d\n", connected);
     // Session 2 subscribe
-    if (!strcmp(buf, "reconstruct"))
+    string cmp = buf;
+    if (cmp.substr(0,4) == "reco")
     {
+        std::cout<<"reconstructing"<<std::endl;
         connected &= establish_connection();
     }else if(recv){
+        std::cout<<"regular message"<<std::endl;
         connected &= recv_info();
     }
     return connected;
@@ -236,6 +239,7 @@ bool DspPublisherTwo::establish_connection()
     uint8_t read_data_status;
     bool connected = uxr_run_session_until_all_status(&session_2, -1, &read_data_req_2, &read_data_status, 1);
     string recv_tmp = recv_info_buf;
+    std::cout<<"connecting"<<std::endl;
     if (connected && !strcmp(recv_tmp.substr(0,3).c_str(), "dsp"))
     {
         printf("%s\n", recv_info_buf);
