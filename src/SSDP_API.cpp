@@ -138,7 +138,7 @@ SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, strin
         comp = comp->next_sibling();
     }
     //TODO 添加每个设备重构的部分！！！！！！！！！！！！！！！！！！！！！
-
+    //遍历app对象的component_list找到目标设备和程序，调用SSDP_LoadDevie()接口依次上载程序，完成DDS的同步（接收dsp ready，发送connected ok，发送EMPTY TEST）
     //cout<<new_app.use_count()<<endl;
     //TODO 进行应用属性配置，启动等
     //new_app.use_count();

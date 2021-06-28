@@ -126,6 +126,7 @@ int main(int argc, char **argv) {
         string cmd2 = "-f config -a dianzhen_app1 -c processing@6edd4fe2 -n thres -v 0d00000256"; //30
         string cmd3 = "-f reconstruct -a dsp1 -v 1"; // 50
         string cmd5 = "-f stop -a dianzhen_app1"; // 130
+        string cmd6 = "-f reconstruct -a fpga1 -v 文件名"; //150
         string cmd;
         int tmp;
         cin >>tmp;
@@ -138,11 +139,13 @@ int main(int argc, char **argv) {
         }else if(tmp >60 && tmp <80){
             break;
         }else if(tmp <100 && tmp >80){
-            int appid = SSDP_InstantiateApp(0,"dianzhen_app1","dianzhen_app1.xml");
+            int appid = SSDP_InstantiateApp(0,"dianzhen_app1","dianzhen_app1.xml"); //本来属于load app
         }else if(tmp >100 && tmp <120){
             cmd = cmd4;
         }else if (tmp >120 && tmp <140){
             cmd = cmd5;
+        }else if(tmp > 140 && tmp < 160){
+            cmd = cmd6;
         }
         cout<<"cmd is:"<<" SSDP -s ground -t framework "+cmd<<endl;
         cmdprocesser.ReceiveCommand("SSDP -s ground -t framework "+cmd);
