@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<device>
+    <devicetype>fpga</devicetype>
+    <name>fpga1</name>
+    <resource>100</resource>
+    <resourcetype>GATE</resourcetype>
+    <ddsconfig>
+        <ip>10.119.84.191</ip>
+        <port>2019</port>
+        <topicname>FPGATOPIC</topicname>
+        <session_key>0x12312312</session_key>
+    </ddsconfig>
+</device>

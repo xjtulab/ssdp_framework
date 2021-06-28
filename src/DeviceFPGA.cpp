@@ -279,6 +279,9 @@ void DeviceFPGA::DEV_SetPub(string ip, string port, string topic_name, string se
 }
 
 SSDP_Result DeviceFPGA::DEV_Load(string filename){
+    //可能是session key重复的问题，可以在这个位置加一个
+    // pub->send_info("reconstruct",false);
+    // 让fpga在收到这个指令后，释放掉session 资源
     SSDP_Result rc = SSDP_OK;
     #ifdef ARM_BUILD
     char *input_path;
@@ -343,6 +346,9 @@ SSDP_Result DeviceFPGA::DEV_Load(string filename){
         axidma_destroy(axidma_dev);
     close_input:
         assert(close(trans.input_fd) == 0);
+    //补充同步的部分
+    pub->establish_connection();
+    pub->send_info("EMPTY TEST",false);
     #endif
 ret:
     return rc;

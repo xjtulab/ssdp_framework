@@ -29,7 +29,7 @@ using std::set;
 
 //变量区
 
-//apptable存放启动的应用对象
+//apptable存放启动的应用对象，key是handleid（一个数字），value是（base_APP的指针)
 map<SSDP_HandleID, std::shared_ptr<AppBase>> apptable;
 //devicetable存放设备对象
 map<SSDP_HandleID, std::shared_ptr<DeviceBase>> devicetable;
@@ -112,6 +112,7 @@ bool SSDP_IsOK(SSDP_Result result){
 
 //创建应用实例
 SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, string filepath ){
+    //TODO 有存在同名app时先检查删除掉
     //TODO 解析配置文件，读取comp列表，并添加comp
     rapidxml::file<> fdoc(filepath.c_str());
     rapidxml::xml_document<> doc;
@@ -125,7 +126,7 @@ SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, strin
         // cout<<comp->first_node("objId")->value()<<endl;
         SSDP_HandleID dev_id =  SSDP_HandleRequest(fromid, comp->first_node("resourceInfo")->first_node("info")->first_node("name")->value());
         cout<<"dev_id: "<<dev_id<<endl;
-        new_app->Add_Component(comp->first_node("objId")->value(), comp->first_node("resourceInfo")->first_node("info")->first_node("codeLocation")->value(), \
+        new_app->Add_Component(comp->first_node("objId")->value(), comp->first_node("resourceInfo")->first_node("info")->first_node("name")->value(), \
             dev_id, comp->first_node("componenId")->value());
         //依次添加参数名/地址对
         rapidxml::xml_node<> *parameter = comp->first_node("parameters")->first_node("parameter");
@@ -133,8 +134,11 @@ SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, strin
             new_app->Add_Component_Parameter(comp->first_node("objId")->value(), parameter->first_node("name")->value(), parameter->first_node("address")->value());
             parameter = parameter->next_sibling();
         }
+
         comp = comp->next_sibling();
     }
+    //TODO 添加每个设备重构的部分！！！！！！！！！！！！！！！！！！！！！
+
     //cout<<new_app.use_count()<<endl;
     //TODO 进行应用属性配置，启动等
     //new_app.use_count();
