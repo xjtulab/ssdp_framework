@@ -419,11 +419,52 @@ SSDP_Result SSDP_self_Init(){
     return res;
 }
 
+// std::string SSDP_DeviceStatus(){
+//     float storage_board_voltage1 = 0;
+//     float storage_board_temperature1 = 0;
+//     float voltage_data_tmp = 0;
+// 	float temperature_data_tmp = 0;
+//     #ifdef ARM_BUILD
+//         //存储板状态
+//         unsigned int* map_bram_ctrl_address;
+//         map_bram_ctrl_address = spdcpldop_init();
+//         storage_board_voltage1 = get_storage_board_voltage1(map_bram_ctrl_address);
+//         storage_board_temperature1 = get_storage_board_temperature1(map_bram_ctrl_address);
+//         spdcpldop_release();
+//         //主控版状态
+//         voltage_data_tmp = get_main_control_board_voltage1_vccaux();
+//         temperature_data_tmp = get_main_control_board_temperature();
+//     #endif 
+//     std::string res;
+//     res = "<devices>"
+//               "<device>"
+//                   "<Id>maincontrol</Id>"
+//                   "<vol>"+to_string(voltage_data_tmp)+"</vol>"
+//                   "<temp>"+to_string(temperature_data_tmp)+"</temp>"
+//               "</device>"
+//               "<device>"
+//                   "<Id>storage</Id>"
+//                   "<vol>"+to_string(storage_board_voltage1)+"</vol>"
+//                   "<temp>"+to_string(storage_board_temperature1)+"</temp>"
+//               "</device>";
+//     for(auto pos = devicetable.begin(); pos != devicetable.end(); pos++ ){
+//         res += pos->second->DEV_Status_Qeury();
+//     }
+//     res += "</devices>";
+//     return res;
+// }
+
 std::string SSDP_DeviceStatus(){
     float storage_board_voltage1 = 0;
     float storage_board_temperature1 = 0;
     float voltage_data_tmp = 0;
 	float temperature_data_tmp = 0;
+    unsigned long total_memory = 0;
+    unsigned long free_memory = 0;
+    float memory_usage = 0.0;
+    int cpu_usage = 0;
+    vector<bool> signal_processing_board_dsp1to4AndFPGA_upgrade_complete_status{false, false, false, false, false};
+    vector<int> signal_processing_board_dsp1to4AndFPGA_upgrade_complete_time{0, 0, 0, 0, 0};
     #ifdef ARM_BUILD
         //存储板状态
         unsigned int* map_bram_ctrl_address;
@@ -434,6 +475,21 @@ std::string SSDP_DeviceStatus(){
         //主控版状态
         voltage_data_tmp = get_main_control_board_voltage1_vccaux();
         temperature_data_tmp = get_main_control_board_temperature();
+        total_memory = get_main_control_board_total_memory();
+        free_memory = get_main_control_board_free_memory();
+        memory_usage = (total_memory-free_memory) / total_memory;
+        cpu_usage = get_main_control_board_cpu_usage();
+        //2021.6.29加入信号处理板重构状态和时间
+        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_status[0] = get_signal_processing_board_dsp1_upgrade_complete_status(map_bram_ctrl_address);
+        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_status[1] = get_signal_processing_board_dsp2_upgrade_complete_status(map_bram_ctrl_address);
+        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_status[2] = get_signal_processing_board_dsp3_upgrade_complete_status(map_bram_ctrl_address);
+        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_status[3] = get_signal_processing_board_dsp4_upgrade_complete_status(map_bram_ctrl_address);
+        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_status[4] = get_pretreatment_board_upgrade_complete_status(map_bram_ctrl_address);
+        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_time[0] = get_signal_processing_board_dsp1_upgrade_complete_time(map_bram_ctrl_address);
+        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_time[1] = get_signal_processing_board_dsp2_upgrade_complete_time(map_bram_ctrl_address);
+        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_time[2] = get_signal_processing_board_dsp3_upgrade_complete_time(map_bram_ctrl_address);
+        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_time[3] = get_signal_processing_board_dsp4_upgrade_complete_time(map_bram_ctrl_address);
+        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_time[4] = get_pretreatment_board_upgrade_complete_time(map_bram_ctrl_address);
     #endif 
     std::string res;
     res = "<devices>"
@@ -441,18 +497,28 @@ std::string SSDP_DeviceStatus(){
                   "<Id>maincontrol</Id>"
                   "<vol>"+to_string(voltage_data_tmp)+"</vol>"
                   "<temp>"+to_string(temperature_data_tmp)+"</temp>"
+                  "<mem>"+to_string(memory_usage)+"</mem>"
+                  "<cpu>"+to_string(cpu_usage)+"</cpu>"
               "</device>"
               "<device>"
                   "<Id>storage</Id>"
                   "<vol>"+to_string(storage_board_voltage1)+"</vol>"
                   "<temp>"+to_string(storage_board_temperature1)+"</temp>"
               "</device>";
-    for(auto pos = devicetable.begin(); pos != devicetable.end(); pos++ ){
-        res += pos->second->DEV_Status_Qeury();
+    {//调用函数得到的字符串和循环里的拼接
+        int index = 0;
+        for(auto pos = devicetable.begin(); pos != devicetable.end(); pos++, index++){
+            res += pos->second->DEV_Status_Qeury();
+            res +=      "<sta>"+to_string(signal_processing_board_dsp1to4AndFPGA_upgrade_complete_status[index])+"</sta>"
+                        "<time>"+to_string(signal_processing_board_dsp1to4AndFPGA_upgrade_complete_time[index])+"</time>"
+                    "</device>";   
+        }
+        res += "</devices>";
     }
-    res += "</devices>";
+    
     return res;
 }
+
 
 SSDP_Result SSDP_DeleteDevice(){
     devicetable.clear();

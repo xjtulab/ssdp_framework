@@ -43,5 +43,8 @@ bool get_main_control_board_sata_link_status();
 bool get_main_control_board_cdcm_status();
 bool get_main_control_board_srio0_link_status();
 bool get_main_control_board_srio1_link_status();
+unsigned long get_main_control_board_total_memory();
+unsigned long get_main_control_board_free_memory();
+int get_main_control_board_cpu_usage();
 
 #endif /* LIBMC3S029ZESENSORINFOGET_H_ */

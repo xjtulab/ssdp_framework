@@ -211,8 +211,8 @@ std::string DeviceFPGA::DEV_Status_Qeury(){
     std::string res = "<device>"
 		                "<Id>fpga</Id>"
 		                "<vol>"+std::to_string(pretreatment_board_voltage1)+"</vol>"
-                        "<temp>"+std::to_string(pretreatment_board_temperature1)+"</temp>"
-                       "</device>";
+                        "<temp>"+std::to_string(pretreatment_board_temperature1)+"</temp>";
+                       //"</device>";
     return res;
 }
 
