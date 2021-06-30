@@ -74,8 +74,8 @@ std::string DeviceDSP::DEV_Status_Qeury(){
     std::string res = "<device>"
 		                  "<Id>dsp</Id>"
 		                  "<vol>"+std::to_string(signal_processing_board_voltage1)+"</vol>"
-                          "<temp>"+std::to_string(signal_processing_board_temperature1)+"</temp>"
-                       "</device>";
+                          "<temp>"+std::to_string(signal_processing_board_temperature1)+"</temp>";
+                       //"</device>";
     return res;
 }
 

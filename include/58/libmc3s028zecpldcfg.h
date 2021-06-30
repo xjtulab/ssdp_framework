@@ -61,6 +61,8 @@ float get_pretreatment_board_voltage8(unsigned int* base_address);
 bool pretreatment_board_reset(unsigned int* base_address);
 bool pretreatment_board_set(unsigned int* base_address);
 bool get_pretreatment_board_reset_status(unsigned int* base_address);
+bool get_pretreatment_board_upgrade_complete_status(unsigned int* base_address);
+int get_pretreatment_board_upgrade_complete_time(unsigned int* base_address);
 float get_pretreatment_board_temperature1(unsigned int* base_address);
 float get_pretreatment_board_temperature2(unsigned int* base_address);
 bool get_pretreatment_board_fiber1_link_status(unsigned int* base_address);
@@ -103,6 +105,14 @@ bool get_signal_processing_board_dsp1_core_status(unsigned int* base_address);
 bool get_signal_processing_board_dsp2_core_status(unsigned int* base_address);
 bool get_signal_processing_board_dsp3_core_status(unsigned int* base_address);
 bool get_signal_processing_board_dsp4_core_status(unsigned int* base_address);
+bool get_signal_processing_board_dsp1_upgrade_complete_status(unsigned int* base_address);
+bool get_signal_processing_board_dsp2_upgrade_complete_status(unsigned int* base_address);
+bool get_signal_processing_board_dsp3_upgrade_complete_status(unsigned int* base_address);
+bool get_signal_processing_board_dsp4_upgrade_complete_status(unsigned int* base_address);
+int get_signal_processing_board_dsp1_upgrade_complete_time(unsigned int* base_address);
+int get_signal_processing_board_dsp2_upgrade_complete_time(unsigned int* base_address);
+int get_signal_processing_board_dsp3_upgrade_complete_time(unsigned int* base_address);
+int get_signal_processing_board_dsp4_upgrade_complete_time(unsigned int* base_address);
 /****signal processing board operation interface end*****/
 
 
