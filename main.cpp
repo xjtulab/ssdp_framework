@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
     //创建应用
     // cout<<SSDP_GetDeviceList()<<endl;
     // int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
-    int appid = SSDP_InstantiateApp(0,"dianzhen_app1","dianzhen_app1.xml");
+    int appid = SSDP_InstantiateApp(0,"elec_reco","elec_reco.xml");
 
     //测试设备状态回报
     // std::string stat = SSDP_DeviceStatus();
@@ -115,42 +115,42 @@ int main(int argc, char **argv) {
     // cout<<"device load "<<SSDP_LoadDevie(SSDP_OE_HANDLE_ID, device_id, "file_path")<<endl;
 
     //准备指令解析器并测试
-    CmdProcess cmdprocesser;
+    // CmdProcess cmdprocesser;
     // cout<<"---------------------------------------"<<endl;
     // cout<<"--------------------testing tongxin v1---------------"<<endl;
     // sleep(10);
-    while(true){
-        cout<<"please enter command:"<<endl;
-        string cmd4 = "-f start -a dianzhen_app1";  //110
-        string cmd1 = "-f config -a dianzhen_app1 -c processing@6edd4fe2 -n If_thres -v 0d01"; // 5 
-        string cmd2 = "-f config -a dianzhen_app1 -c processing@6edd4fe2 -n thres -v 0d00000256"; //30
-        string cmd3 = "-f reconstruct -a dsp1 -v 1"; // 50
-        string cmd5 = "-f stop -a dianzhen_app1"; // 130
-        string cmd6 = "-f reconstruct -a fpga1 -v 文件名"; //150
-        string cmd;
-        int tmp;
-        cin >>tmp;
-        if(tmp > 0 && tmp <10){
-            cmd = cmd1; //config
-        }else if(tmp >20 && tmp <40){
-            cmd = cmd2; // 
-        }else if(tmp >40 && tmp <60){
-            cmd = cmd3;
-        }else if(tmp >60 && tmp <80){
-            break;
-        }else if(tmp <100 && tmp >80){
-            int appid = SSDP_InstantiateApp(0,"dianzhen_app1","dianzhen_app1.xml"); //本来属于load app
-        }else if(tmp >100 && tmp <120){
-            cmd = cmd4;
-        }else if (tmp >120 && tmp <140){
-            cmd = cmd5;
-        }else if(tmp > 140 && tmp < 160){
-            cmd = cmd6;
-        }
-        cout<<"cmd is:"<<" SSDP -s ground -t framework "+cmd<<endl;
-        cmdprocesser.ReceiveCommand("SSDP -s ground -t framework "+cmd);
-        // sleep(1);
-    }
+    // while(true){
+    //     cout<<"please enter command:"<<endl;
+    //     string cmd4 = "-f start -a dianzhen_app1";  //110
+    //     string cmd1 = "-f config -a dianzhen_app1 -c processing@6edd4fe2 -n If_thres -v 0d01"; // 5 
+    //     string cmd2 = "-f config -a dianzhen_app1 -c processing@6edd4fe2 -n thres -v 0d00000256"; //30
+    //     string cmd3 = "-f reconstruct -a dsp1 -v 1"; // 50
+    //     string cmd5 = "-f stop -a dianzhen_app1"; // 130
+    //     string cmd6 = "-f reconstruct -a fpga1 -v 文件名"; //150
+    //     string cmd;
+    //     int tmp;
+    //     cin >>tmp;
+    //     if(tmp > 0 && tmp <10){
+    //         cmd = cmd1; //config
+    //     }else if(tmp >20 && tmp <40){
+    //         cmd = cmd2; // 
+    //     }else if(tmp >40 && tmp <60){
+    //         cmd = cmd3;
+    //     }else if(tmp >60 && tmp <80){
+    //         break;
+    //     }else if(tmp <100 && tmp >80){
+    //         int appid = SSDP_InstantiateApp(0,"dianzhen_app1","dianzhen_app1.xml"); //本来属于load app
+    //     }else if(tmp >100 && tmp <120){
+    //         cmd = cmd4;
+    //     }else if (tmp >120 && tmp <140){
+    //         cmd = cmd5;
+    //     }else if(tmp > 140 && tmp < 160){
+    //         cmd = cmd6;
+    //     }
+    //     cout<<"cmd is:"<<" SSDP -s ground -t framework "+cmd<<endl;
+    //     cmdprocesser.ReceiveCommand("SSDP -s ground -t framework "+cmd);
+    //     // sleep(1);
+    // }
     // int aaa;
     // cin>>aaa;
     // cmdprocesser.ReceiveCommand("SSDP -s ground -t framework -f stop -a dianzhen_app1");
