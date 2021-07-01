@@ -275,80 +275,82 @@ void DeviceFPGA::DEV_SetPub(string ip, string port, string topic_name, string se
     uint32_t nValude = 0;
     sscanf(session_key.c_str(), "%x", &nValude);
     pub = new DspPublisherTwo(ip_tmp, port_tmp, topic_name, nValude, nValude+1);
-    pub->send_info("EMPTY TEST", false);
+    // pub->send_info("EMPTY TEST", false);
 }
 
-SSDP_Result DeviceFPGA::DEV_Load(string filename){
+SSDP_Result DeviceFPGA::DEV_Load(string filename, bool ifNewCode){
     //可能是session key重复的问题，可以在这个位置加一个
     // pub->send_info("reconstruct",false);
     // 让fpga在收到这个指令后，释放掉session 资源
     SSDP_Result rc = SSDP_OK;
     #ifdef ARM_BUILD
-    char *input_path;
-    axidma_dev_t axidma_dev;
-    struct stat input_stat;
-    struct dma_transfer trans;
-    const array_t *tx_chans;
-    
-    // Parse the input arguments
-    memset(&trans, 0, sizeof(trans));
+    if(ifNewCode){
+        char *input_path;
+        axidma_dev_t axidma_dev;
+        struct stat input_stat;
+        struct dma_transfer trans;
+        const array_t *tx_chans;
+        
+        // Parse the input arguments
+        memset(&trans, 0, sizeof(trans));
 
-    input_path = (char*)filename.c_str();
+        input_path = (char*)filename.c_str();
 
-    // Try opening the input and output images
-    trans.input_fd = open(input_path, O_RDONLY);
-    if (trans.input_fd < 0) {
-        perror("Error opening input file");
-        rc = SSDP_ERROR;
-        goto ret;
+        // Try opening the input and output images
+        trans.input_fd = open(input_path, O_RDONLY);
+        if (trans.input_fd < 0) {
+            perror("Error opening input file");
+            rc = SSDP_ERROR;
+            goto ret;
+        }
+
+        // Initialize the AXIDMA device
+        axidma_dev = axidma_init("/dev/axidmaupgrade");
+        if (axidma_dev == NULL) {
+            fprintf(stderr, "Error: Failed to initialize the AXI DMA device.\n");
+            rc = SSDP_ERROR;
+            goto close_input;
+        }
+
+        // Get the size of the input file
+        if (fstat(trans.input_fd, &input_stat) < 0) {
+            perror("Unable to get file statistics");
+            rc = SSDP_ERROR;
+            goto destroy_axidma;
+        }
+
+        // If the output size was not specified by the user, set it to the default
+        trans.input_size = input_stat.st_size;
+
+        // Get the tx and rx channels if they're not already specified
+        tx_chans = axidma_get_dma_tx(axidma_dev);
+        if (tx_chans->len < 1) {
+            fprintf(stderr, "Error: No transmit channels were found.\n");
+            rc = -ENODEV;
+            goto destroy_axidma;
+        }
+
+        /* If the user didn't specify the channels, we assume that the transmit and
+        * receive channels are the lowest numbered ones. */
+        trans.input_channel = tx_chans->data[0];
+
+        printf("AXI DMA File Transfer Info:\n");
+        printf("\tTransmit Channel: %d\n", trans.input_channel);
+        printf("\tInput File Size: %d byte\n", trans.input_size);
+        printf("\tInput File Size: %.2f MiB\n", BYTE_TO_MIB(trans.input_size));
+
+        // Transfer the file over the AXI DMA
+        rc = transfer_file(axidma_dev, &trans);
+        rc = (rc < 0) ? -rc : 0;
+
+        destroy_axidma:
+            axidma_destroy(axidma_dev);
+        close_input:
+            assert(close(trans.input_fd) == 0);
+        //补充同步的部分
     }
-
-    // Initialize the AXIDMA device
-    axidma_dev = axidma_init("/dev/axidmaupgrade");
-    if (axidma_dev == NULL) {
-        fprintf(stderr, "Error: Failed to initialize the AXI DMA device.\n");
-        rc = SSDP_ERROR;
-        goto close_input;
-    }
-
-    // Get the size of the input file
-    if (fstat(trans.input_fd, &input_stat) < 0) {
-        perror("Unable to get file statistics");
-        rc = SSDP_ERROR;
-        goto destroy_axidma;
-    }
-
-    // If the output size was not specified by the user, set it to the default
-    trans.input_size = input_stat.st_size;
-
-    // Get the tx and rx channels if they're not already specified
-    tx_chans = axidma_get_dma_tx(axidma_dev);
-    if (tx_chans->len < 1) {
-        fprintf(stderr, "Error: No transmit channels were found.\n");
-        rc = -ENODEV;
-        goto destroy_axidma;
-    }
-
-    /* If the user didn't specify the channels, we assume that the transmit and
-     * receive channels are the lowest numbered ones. */
-    trans.input_channel = tx_chans->data[0];
-
-    printf("AXI DMA File Transfer Info:\n");
-    printf("\tTransmit Channel: %d\n", trans.input_channel);
-    printf("\tInput File Size: %d byte\n", trans.input_size);
-    printf("\tInput File Size: %.2f MiB\n", BYTE_TO_MIB(trans.input_size));
-
-    // Transfer the file over the AXI DMA
-    rc = transfer_file(axidma_dev, &trans);
-    rc = (rc < 0) ? -rc : 0;
-
-    destroy_axidma:
-        axidma_destroy(axidma_dev);
-    close_input:
-        assert(close(trans.input_fd) == 0);
-    //补充同步的部分
     pub->establish_connection();
-    pub->send_info("EMPTY TEST",false);
+    // pub->send_info("EMPTY TEST",false);
     #endif
 ret:
     return rc;

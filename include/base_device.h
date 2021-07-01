@@ -58,7 +58,7 @@ public:
     virtual SSDP_Result DEV_Check() = 0;
     virtual SSDP_Result DEV_Open() {};
     virtual SSDP_Result DEV_Close() {};
-    virtual SSDP_Result DEV_Load(string filename) {
+    virtual SSDP_Result DEV_Load(string filename, bool ifNewCode) {
         cout<<"device "<<this->DEV_GetHandleName()<<" is loading"<<endl;
     }; 
     virtual SSDP_Result DEV_Flush() {};

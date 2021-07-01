@@ -38,7 +38,7 @@ public:
     //添加组件
     SSDP_Result Add_Component(string id_on_app, string filepath, SSDP_HandleID targetdevice, string id_on_device){
         component* ptr = new component(filepath,targetdevice, id_on_device);
-        cout<<"comp name: "<<id_on_app<<endl;
+        cout<<"add comp name: "<<id_on_app<<endl;
         component_list.insert(std::make_pair(id_on_app, ptr));
     }
     //添加组件参数名/地址对

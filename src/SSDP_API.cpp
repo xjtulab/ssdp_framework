@@ -128,6 +128,8 @@ SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, strin
         cout<<"dev_id: "<<dev_id<<endl;
         new_app->Add_Component(comp->first_node("objId")->value(), comp->first_node("resourceInfo")->first_node("info")->first_node("name")->value(), \
             dev_id, comp->first_node("componenId")->value());
+        //重构设备或同步设备
+        SSDP_LoadDevie(SSDP_OE_HANDLE_ID, dev_id, comp->first_node("resourceInfo")->first_node("info")->first_node("codeLocation")->value());
         //依次添加参数名/地址对
         rapidxml::xml_node<> *parameter = comp->first_node("parameters")->first_node("parameter");
         while(parameter){
@@ -137,6 +139,10 @@ SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, strin
 
         comp = comp->next_sibling();
     }
+
+    //重构设备
+    
+
     //TODO 添加每个设备重构的部分！！！！！！！！！！！！！！！！！！！！！
     //遍历app对象的component_list找到目标设备和程序，调用SSDP_LoadDevie()接口依次上载程序，完成DDS的同步（接收dsp ready，发送connected ok，发送EMPTY TEST）
     //有几个设备就调用几次SSDP_LoadDevie函数，参数是设备的id和codeloacation。
@@ -551,7 +557,7 @@ SSDP_Result SSDP_DeleteDevice(){
 
 SSDP_Result SSDP_LoadDevie(SSDP_HandleID fromid, SSDP_HandleID toid, string file_path){
     SSDP_Result res;
-    res = devicetable[toid]->DEV_Load(file_path);
+    res = devicetable[toid]->DEV_Load(file_path, false);
     return res;
 }
 

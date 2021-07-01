@@ -28,7 +28,7 @@ DspPublisherTwo::DspPublisherTwo(string ip, string port, string topic_name, uint
     this->topic_name = topic_name;
 
     init_dps_publisher(session_key_1, session_key_2);
-    establish_connection();
+    // establish_connection();
 }
 
 bool DspPublisherTwo::init_dps_publisher(uint32_t session_key_1, uint32_t session_key_2)
@@ -236,14 +236,15 @@ bool DspPublisherTwo::recv_info()
 
 bool DspPublisherTwo::establish_connection()
 {
+    std::cout<<"connecting to device......"<<std::endl;
     uint8_t read_data_status;
     bool connected = uxr_run_session_until_all_status(&session_2, -1, &read_data_req_2, &read_data_status, 1);
     string recv_tmp = recv_info_buf;
-    std::cout<<"connecting"<<std::endl;
     if (connected && !strcmp(recv_tmp.substr(0,3).c_str(), "dsp"))
     {
         printf("%s\n", recv_info_buf);
         send_info("connected ok", false);
+        send_info("EMPTY TEST", false);
         return true;
     }
     return false;
