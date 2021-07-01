@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
     //创建应用
     // cout<<SSDP_GetDeviceList()<<endl;
     // int appid = SSDP_InstantiateApp(0,"myapp1","myapp1.xml");
-    int appid = SSDP_InstantiateApp(0,"elec_reco","elec_reco.xml");
+    // int appid = SSDP_InstantiateApp(0,"elec_reco","elec_reco.xml");
 
     //测试设备状态回报
     // std::string stat = SSDP_DeviceStatus();
@@ -162,14 +162,17 @@ int main(int argc, char **argv) {
     // SSDP_DeleteDevice();
     // cout<<"end testing"<<endl;
     //等待接听指令
-    init();
-    parse_args(argc, argv);
-    SSDPServer server;
-    if(!server.setup(IP, port, true)){
-        exit(1);
-    }
+    // init();
+    // parse_args(argc, argv);
+    // SSDPServer server;
+    // if(!server.setup(IP, port, true)){
+    //     exit(1);
+    // }
 
-    server.do_epoll();
+    // server.do_epoll();
+    std::string reply;
+    reply = SSDP_DeviceStatus();
+    std::cout<<reply<<std::endl;
     return 1;
    
     return 0;
