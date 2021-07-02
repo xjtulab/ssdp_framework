@@ -557,7 +557,7 @@ SSDP_Result SSDP_DeleteDevice(){
 
 SSDP_Result SSDP_LoadDevie(SSDP_HandleID fromid, SSDP_HandleID toid, string file_path){
     SSDP_Result res;
-    res = devicetable[toid]->DEV_Load(file_path, false);
+    res = devicetable[toid]->DEV_Load(file_path, true);
     return res;
 }
 
