@@ -26,7 +26,7 @@ DeviceDSP::~DeviceDSP(){
     #endif
 }
 
-SSDP_Result DeviceDSP::DEV_Start(){
+SSDP_Result DeviceDSP::DEV_Start(string appName){
     cout<<"dsp dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
     #ifdef ARM_BUILD
         bool res = pub->send_info("start",true);

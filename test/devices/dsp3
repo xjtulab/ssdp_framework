@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<device>
+    <devicetype>dsp</devicetype>
+    <name>dsp3</name>
+    <resource>100</resource>
+    <resourcetype>BYTE</resourcetype>
+    <ddsconfig>
+        <ip>10.119.84.190</ip>
+        <port>2019</port>
+        <topicname>TopicDSP3</topicname>
+        <session_key>0x33333333</session_key>
+    </ddsconfig>
+</device>
