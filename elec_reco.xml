@@ -27,8 +27,8 @@
 				<info>
 					<category>fpga</category>
 					<name>fpga1</name>
-					<codeLocation>10%</codeLocation>
-					<resourceUsed>/</resourceUsed>
+					<codeLocation>/opt/upgrade/V13_MB_SGMII_elec.bit</codeLocation>
+					<resourceUsed>10%</resourceUsed>
 				</info>
 			</resourceInfo>
 			<parameters/>

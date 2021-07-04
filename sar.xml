@@ -33,7 +33,7 @@
 				<info>
 					<category>fpga</category>
 					<name>fpga1</name>
-					<codeLocation>2</codeLocation>
+					<codeLocation>/opt/upgrade/V13_MB_SGMII_SAR.bit</codeLocation>
 					<resourceUsed>/</resourceUsed>
 				</info>
 			</resourceInfo>
@@ -78,7 +78,7 @@
 				</parameter>
 			</parameters>
 		</component>
-		<!-- <component>
+		<component>
 			<objId>sar_signalprocess2@38732372</objId>
 			<componenId>0x05</componenId>
 			<resourceInfo>
@@ -116,6 +116,6 @@
 					<value>256 </value>
 				</parameter>
 			</parameters>
-		</component> -->
+		</component>
 	</components>
 </waveform>
