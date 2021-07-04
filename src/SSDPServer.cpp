@@ -157,8 +157,8 @@ MesRecieved SSDPServer::do_recv(const int& client_socketfd)
     memset(recv_buf, 0, sizeof(recv_buf));
     ssize_t length = recv(client_socketfd, recv_buf, 4, 0);
 
-    exit_if(length < 0, "Recieve flag error: ");
-    if(length == 0){
+    // exit_if(length < 0, "Recieve flag error: ");
+    if(length <= 0){
         del_event(client_socketfd, EPOLLIN);
         close(client_socketfd);
         return MesRecieved(-1);

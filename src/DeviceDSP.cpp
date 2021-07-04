@@ -64,18 +64,45 @@ SSDP_Result DeviceDSP::DEV_Configure(string comp_id, SSDP_Property_Name name, SS
 std::string DeviceDSP::DEV_Status_Qeury(){
     float signal_processing_board_voltage1 = 0;
     float signal_processing_board_temperature1 = 0;
+    bool get_signal_processing_board_dsp_upgrade_complete_status = false;
+    int  get_signal_processing_board_dsp_upgrade_complete_time = 0;
+    char num = handle_name[handle_name.size()-1];
     #ifdef ARM_BUILD
         unsigned int* map_bram_ctrl_address;
         map_bram_ctrl_address = spdcpldop_init();
+        switch (num)
+        {
+            case '1':
+                /* code */
+                get_signal_processing_board_dsp_upgrade_complete_status = get_signal_processing_board_dsp1_upgrade_complete_status(map_bram_ctrl_address);
+                get_signal_processing_board_dsp_upgrade_complete_time = get_signal_processing_board_dsp1_upgrade_complete_time(map_bram_ctrl_address);
+                break;
+            case '2':
+                get_signal_processing_board_dsp_upgrade_complete_status = get_signal_processing_board_dsp2_upgrade_complete_status(map_bram_ctrl_address);
+                get_signal_processing_board_dsp_upgrade_complete_time = get_signal_processing_board_dsp2_upgrade_complete_time(map_bram_ctrl_address);
+                break;
+            case '3':
+                get_signal_processing_board_dsp_upgrade_complete_status = get_signal_processing_board_dsp3_upgrade_complete_status(map_bram_ctrl_address);
+                get_signal_processing_board_dsp_upgrade_complete_time = get_signal_processing_board_dsp3_upgrade_complete_time(map_bram_ctrl_address); 
+                break;
+            case '4':
+                get_signal_processing_board_dsp_upgrade_complete_status = get_signal_processing_board_dsp4_upgrade_complete_status(map_bram_ctrl_address);
+                get_signal_processing_board_dsp_upgrade_complete_time = get_signal_processing_board_dsp4_upgrade_complete_time(map_bram_ctrl_address);
+                break;
+            default:
+                break;
+        }
         signal_processing_board_voltage1 = get_signal_processing_board_voltage1(map_bram_ctrl_address);
         signal_processing_board_temperature1 = get_signal_processing_board_temperature1(map_bram_ctrl_address);
         spdcpldop_release();
     #endif
     std::string res = "<device>"
-		                  "<Id>dsp</Id>"
+		                  "<Id>" + handle_name + "</Id>"
 		                  "<vol>"+std::to_string(signal_processing_board_voltage1)+"</vol>"
-                          "<temp>"+std::to_string(signal_processing_board_temperature1)+"</temp>";
-                       //"</device>";
+                          "<temp>"+std::to_string(signal_processing_board_temperature1)+"</temp>"
+                          "<sta>"+std::to_string(get_signal_processing_board_dsp_upgrade_complete_status)+"</sta>"
+                          "<time>"+std::to_string(get_signal_processing_board_dsp_upgrade_complete_time)+"</time>"
+                       "</device>";
     return res;
 }
 

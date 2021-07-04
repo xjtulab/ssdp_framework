@@ -470,8 +470,8 @@ std::string SSDP_DeviceStatus(){
     unsigned long free_memory = 0;
     float memory_usage = 0.0;
     int cpu_usage = 0;
-    vector<bool> signal_processing_board_dsp1to4AndFPGA_upgrade_complete_status(5, false);
-    vector<int> signal_processing_board_dsp1to4AndFPGA_upgrade_complete_time(5, 0);
+    // vector<bool> signal_processing_board_dsp1to4AndFPGA_upgrade_complete_status(5, false);
+    // vector<int> signal_processing_board_dsp1to4AndFPGA_upgrade_complete_time(5, 0);
     std::cout<<"before get interface!"<<std::endl;
     #ifdef ARM_BUILD
         //存储板状态
@@ -479,9 +479,7 @@ std::string SSDP_DeviceStatus(){
         map_bram_ctrl_address = spdcpldop_init();
         storage_board_voltage1 = get_storage_board_voltage1(map_bram_ctrl_address);
         storage_board_temperature1 = get_storage_board_temperature1(map_bram_ctrl_address);
-        
-        std::cout<<"storage status"<<std::endl;
-        
+                
         //主控版状态
         voltage_data_tmp = get_main_control_board_voltage1_vccaux();
         temperature_data_tmp = get_main_control_board_temperature();
@@ -489,37 +487,10 @@ std::string SSDP_DeviceStatus(){
         free_memory = get_main_control_board_free_memory();
         memory_usage = (float)(total_memory - free_memory)/total_memory*100;
         cpu_usage = get_main_control_board_cpu_usage();
-        std::cout<<"maincontrol status"<<std::endl;
         printf("cpu usage %u%\n", cpu_usage);
         printf("memory usage is %0.2f%\n", memory_usage);
         //2021.6.29加入信号处理板重构状态和时间
-        // bool signal_processing_board_dsp1_upgrade_complete_status;
-        // signal_processing_board_dsp1_upgrade_complete_status = get_signal_processing_board_dsp1_upgrade_complete_status(map_bram_ctrl_address);
-        // printf("signal_processing_board_dsp1_upgrade_complete_status: 0x%x\n", signal_processing_board_dsp1_upgrade_complete_status);
-
-        // bool signal_processing_board_dsp2_upgrade_complete_status;
-        // signal_processing_board_dsp2_upgrade_complete_status = get_signal_processing_board_dsp2_upgrade_complete_status(map_bram_ctrl_address);
-        // printf("signal_processing_board_dsp2_upgrade_complete_status: 0x%x\n", signal_processing_board_dsp2_upgrade_complete_status);
-
-        // bool signal_processing_board_dsp3_upgrade_complete_status;
-        // signal_processing_board_dsp3_upgrade_complete_status = get_signal_processing_board_dsp3_upgrade_complete_status(map_bram_ctrl_address);
-        // printf("signal_processing_board_dsp3_upgrade_complete_status: 0x%x\n", signal_processing_board_dsp3_upgrade_complete_status);
-
-        // bool signal_processing_board_dsp4_upgrade_complete_status;
-        // signal_processing_board_dsp4_upgrade_complete_status = get_signal_processing_board_dsp4_upgrade_complete_status(map_bram_ctrl_address);
-        // printf("signal_processing_board_dsp4_upgrade_complete_status: 0x%x\n", signal_processing_board_dsp4_upgrade_complete_status);
-        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_status[0] = get_signal_processing_board_dsp1_upgrade_complete_status(map_bram_ctrl_address);
-        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_status[1] = get_signal_processing_board_dsp2_upgrade_complete_status(map_bram_ctrl_address);
-        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_status[2] = get_signal_processing_board_dsp3_upgrade_complete_status(map_bram_ctrl_address);
-        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_status[3] = get_signal_processing_board_dsp4_upgrade_complete_status(map_bram_ctrl_address);
-        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_status[4] = get_pretreatment_board_upgrade_complete_status(map_bram_ctrl_address);
-        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_time[0] = get_signal_processing_board_dsp1_upgrade_complete_time(map_bram_ctrl_address);
-        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_time[1] = get_signal_processing_board_dsp2_upgrade_complete_time(map_bram_ctrl_address);
-        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_time[2] = get_signal_processing_board_dsp3_upgrade_complete_time(map_bram_ctrl_address);
-        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_time[3] = get_signal_processing_board_dsp4_upgrade_complete_time(map_bram_ctrl_address);
-        signal_processing_board_dsp1to4AndFPGA_upgrade_complete_time[4] = get_pretreatment_board_upgrade_complete_time(map_bram_ctrl_address);
-        std::cout<<"signal board"<<std::endl;
-        printf("signal_processing_board_dsp1_upgrade_complete_status: 0x%x\n", signal_processing_board_dsp1to4AndFPGA_upgrade_complete_status[0]);
+        
         spdcpldop_release();
     #endif 
     std::string res;
@@ -536,16 +507,12 @@ std::string SSDP_DeviceStatus(){
                   "<vol>"+to_string(storage_board_voltage1)+"</vol>"
                   "<temp>"+to_string(storage_board_temperature1)+"</temp>"
               "</device>";
-    {//调用函数得到的字符串和循环里的拼接
-        int index = 0;
-        for(auto pos = devicetable.begin(); pos != devicetable.end(); pos++, index++){
-            res += pos->second->DEV_Status_Qeury();
-            res +=      "<sta>"+to_string(signal_processing_board_dsp1to4AndFPGA_upgrade_complete_status[index])+"</sta>"
-                        "<time>"+to_string(signal_processing_board_dsp1to4AndFPGA_upgrade_complete_time[index])+"</time>"
-                    "</device>";   
-        }
-        res += "</devices>";
-    }    
+    //调用函数得到的字符串和循环里的拼接
+    for(auto pos = devicetable.begin(); pos != devicetable.end(); pos++){
+        res += pos->second->DEV_Status_Qeury(); 
+    }
+    res += "</devices>";
+       
     return res;
 }
 

@@ -201,18 +201,24 @@ SSDP_Result DeviceFPGA::DEV_Configure(string comp_id, SSDP_Property_Name name, S
 std::string DeviceFPGA::DEV_Status_Qeury(){
     float pretreatment_board_voltage1 = 0;
     float pretreatment_board_temperature1 = 0;
+    bool pretreatment_board_upgrade_complete_status = false;
+    int pretreatment_board_upgrade_complete_time = 0;
     #ifdef ARM_BUILD
         unsigned int* map_bram_ctrl_address;
         map_bram_ctrl_address = spdcpldop_init();
         pretreatment_board_voltage1 = get_pretreatment_board_voltage1(map_bram_ctrl_address);
         pretreatment_board_temperature1 = get_pretreatment_board_temperature1(map_bram_ctrl_address);
+        pretreatment_board_upgrade_complete_status = get_pretreatment_board_upgrade_complete_status(map_bram_ctrl_address);
+        pretreatment_board_upgrade_complete_time = get_pretreatment_board_upgrade_complete_time(map_bram_ctrl_address);
         spdcpldop_release();
     #endif
     std::string res = "<device>"
-		                "<Id>fpga</Id>"
-		                "<vol>"+std::to_string(pretreatment_board_voltage1)+"</vol>"
-                        "<temp>"+std::to_string(pretreatment_board_temperature1)+"</temp>";
-                       //"</device>";
+                            "<Id>fpga</Id>"
+                            "<vol>"+std::to_string(pretreatment_board_voltage1)+"</vol>"
+                            "<temp>"+std::to_string(pretreatment_board_temperature1)+"</temp>"
+                            "<sta>"+std::to_string(pretreatment_board_upgrade_complete_status)+"</sta>"
+                            "<time>"+std::to_string(pretreatment_board_upgrade_complete_time)+"</time>"
+                       "</device>";
     return res;
 }
 
