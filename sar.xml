@@ -78,7 +78,7 @@
 				</parameter>
 			</parameters>
 		</component>
-		<component>
+		<!-- <component>
 			<objId>sar_signalprocess2@38732372</objId>
 			<componenId>0x05</componenId>
 			<resourceInfo>
@@ -116,6 +116,6 @@
 					<value>256 </value>
 				</parameter>
 			</parameters>
-		</component>
+		</component> -->
 	</components>
 </waveform>

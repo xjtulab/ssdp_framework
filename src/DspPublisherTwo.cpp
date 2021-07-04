@@ -214,13 +214,16 @@ bool DspPublisherTwo::send_info(char *buf, bool recv)
     bool connected = uxr_run_session_time(&session_1, 1000);
     printf("connected1: %d\n", connected);
     // Session 2 subscribe
-    string cmp = buf;
-    if (cmp.substr(0,4) == "reco")
-    {
-        std::cout<<"reconstructing"<<std::endl;
-        connected &= establish_connection();
-    }else if(recv){
-        std::cout<<"regular message"<<std::endl;
+    // string cmp = buf;
+    // if (cmp.substr(0,4) == "reco")
+    // {
+    //     std::cout<<"reconstructing"<<std::endl;
+    //     connected &= establish_connection();
+    // }else if(recv){
+    //     std::cout<<"regular message"<<std::endl;
+    //     connected &= recv_info();
+    // }
+    if(recv){
         connected &= recv_info();
     }
     return connected;
