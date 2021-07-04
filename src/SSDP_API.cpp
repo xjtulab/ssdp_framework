@@ -113,6 +113,7 @@ bool SSDP_IsOK(SSDP_Result result){
 //创建应用实例
 SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, string filepath ){
     //TODO 有存在同名app时先检查删除掉
+    cout<<"app nums: "<<apptable.size()<<endl;
     //TODO 解析配置文件，读取comp列表，并添加comp
     rapidxml::file<> fdoc(filepath.c_str());
     rapidxml::xml_document<> doc;
