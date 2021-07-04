@@ -38,7 +38,7 @@ public:
     SSDP_HandleID DEV_GetHandleID(){ return handle_id;}
     const string& DEV_GetHandleName(){ return handle_name;}
 
-    virtual SSDP_Result DEV_Start() {
+    virtual SSDP_Result DEV_Start(string appName) {
         cout<<"dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
     };
     virtual SSDP_Result DEV_Stop() {

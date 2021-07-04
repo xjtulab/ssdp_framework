@@ -166,10 +166,12 @@ DeviceFPGA::~DeviceFPGA(){
     #endif
 }
 
-SSDP_Result DeviceFPGA::DEV_Start(){
+SSDP_Result DeviceFPGA::DEV_Start(string appName){
     cout<<"fpga dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
     #ifdef ARM_BUILD
-        bool res = pub->send_info("start",true);
+        string cmd_str = "start "+appName;
+        char* cmd = (char*) cmd_str.c_str();
+        bool res = pub->send_info(cmd ,true);
         return res? SSDP_OK:SSDP_ERROR;
     #else  
         return SSDP_OK;

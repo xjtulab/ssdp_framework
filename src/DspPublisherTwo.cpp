@@ -237,6 +237,24 @@ bool DspPublisherTwo::recv_info()
     return connected;
 }
 
+bool DspPublisherTwo::recv_info_noblock()
+{
+    uint8_t read_data_status;
+    bool connected = uxr_run_session_until_all_status(&session_2, 3000, &read_data_req_2, &read_data_status, 1);
+    printf("connected2: %d\n", connected);
+    return connected;
+}
+
+
+
+void DspPublisherTwo::recv_ready_info(){
+    string str = recv_info_buf;
+    bool con = false;
+    do{
+        con = recv_info_noblock();
+    }while(con && str.find("ready") != string::npos);
+}
+
 bool DspPublisherTwo::establish_connection()
 {
     std::cout<<"connecting to device......"<<std::endl;

@@ -163,7 +163,9 @@ SSDP_Result SSDP_Start(SSDP_HandleID formid, SSDP_HandleID toid){
         return SSDP_OK;
     }
     else if(devicetable.count(toid) != 0){
-        devicetable[toid]->DEV_Start();
+        string appName;
+        SSDP_Result res = SSDP_GetHandleName(SSDP_OE_HANDLE_ID, formid, appName);
+        devicetable[toid]->DEV_Start(appName);
         return SSDP_OK;
     }else{
         return SSDP_ERROR;
