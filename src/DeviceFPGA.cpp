@@ -178,12 +178,24 @@ SSDP_Result DeviceFPGA::DEV_Start(string appName){
     #endif
 }
 
-SSDP_Result DeviceFPGA::DEV_Stop(){
+SSDP_Result DeviceFPGA::DEV_Stop(string appName){
     cout<<"fpga dev "<<this->DEV_GetHandleName()<<" is stoping"<<endl;
     #ifdef ARM_BUILD
-        bool res = pub->send_info("stop",true);
+        string cmd_str = "stop "+appName;
+        char* cmd = (char*) cmd_str.c_str();
+        bool res = pub->send_info(cmd,true);
         return res? SSDP_OK:SSDP_ERROR;
     #else
+        return SSDP_OK;
+    #endif
+}
+
+SSDP_Result DeviceFPGA::DEV_Write(string msg){
+    char* send_msg = (char*) msg.c_str();
+    #ifdef ARM_BUILD
+        bool res = pub->send_info(send_msg, true);
+        return res? SSDP_OK:SSDP_ERROR;
+    #else  
         return SSDP_OK;
     #endif
 }

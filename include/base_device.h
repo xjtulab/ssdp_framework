@@ -41,9 +41,11 @@ public:
     virtual SSDP_Result DEV_Start(string appName) {
         cout<<"dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
     };
-    virtual SSDP_Result DEV_Stop() {
+    virtual SSDP_Result DEV_Stop(string appName) {
         cout<<"dev "<<this->DEV_GetHandleName()<<" is stopping"<<endl;
     };
+    //添加向设备发送指令的功能
+    virtual SSDP_Result DEV_Write(string msg){};
     virtual SSDP_Result APP_Initialize() {};
     virtual SSDP_Result APP_ReleaseObject() {};
     virtual SSDP_Result APP_Write(SSDP_Message buffer, SSDP_Buffer_Size buffer_size) {};

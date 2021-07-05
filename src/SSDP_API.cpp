@@ -182,7 +182,9 @@ SSDP_Result SSDP_Stop(SSDP_HandleID formid, SSDP_HandleID toid){
         return SSDP_OK;
     }
     else if(devicetable.count(toid) != 0){
-        devicetable[toid]->DEV_Stop();
+        string appName;
+        SSDP_Result res = SSDP_GetHandleName(SSDP_OE_HANDLE_ID, formid, appName);
+        devicetable[toid]->DEV_Stop(appName);
         return SSDP_OK;
     }else{
         return SSDP_ERROR;
@@ -527,7 +529,7 @@ SSDP_Result SSDP_DeleteDevice(){
 
 SSDP_Result SSDP_LoadDevie(SSDP_HandleID fromid, SSDP_HandleID toid, string file_path){
     SSDP_Result res;
-    res = devicetable[toid]->DEV_Load(file_path, true);
+    res = devicetable[toid]->DEV_Load(file_path, false);
     return res;
 }
 

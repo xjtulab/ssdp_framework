@@ -36,7 +36,7 @@ SSDP_Result DeviceDSP::DEV_Start(string appName){
     #endif
 }
 
-SSDP_Result DeviceDSP::DEV_Stop(){
+SSDP_Result DeviceDSP::DEV_Stop(string appName){
     cout<<"dsp dev "<<this->DEV_GetHandleName()<<" is stoping"<<endl;
     #ifdef ARM_BUILD
         bool res = pub->send_info("stop",true);
