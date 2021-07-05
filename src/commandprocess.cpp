@@ -41,7 +41,7 @@ SSDP_Result CmdProcess::ReceiveCommand(const string& cmd){
     }else if(par->get<string>("function") == "stop"){
         res = SSDP_Stop(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, par->get<string>("APP_name")));
     }else if(par->get<string>("function") == "reconstruct"){
-        res = SSDP_LoadDevie(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, par->get<string>("APP_name")), par->get<string>("property_value"));
+        res = SSDP_LoadDevie(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, par->get<string>("APP_name")), par->get<string>("property_value"), true);
     }else if(par->get<string>("function") == "loadapp"){
         string app_name = par->get<string>("APP_name");
         int appid = SSDP_InstantiateApp(0, app_name, app_name+".xml");

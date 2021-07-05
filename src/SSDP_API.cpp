@@ -130,7 +130,7 @@ SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, strin
         new_app->Add_Component(comp->first_node("objId")->value(), comp->first_node("resourceInfo")->first_node("info")->first_node("name")->value(), \
             dev_id, comp->first_node("componenId")->value());
         //重构设备或同步设备
-        SSDP_LoadDevie(SSDP_OE_HANDLE_ID, dev_id, comp->first_node("resourceInfo")->first_node("info")->first_node("codeLocation")->value());
+        SSDP_LoadDevie(SSDP_OE_HANDLE_ID, dev_id, comp->first_node("resourceInfo")->first_node("info")->first_node("codeLocation")->value(), false);
         //依次添加参数名/地址对
         rapidxml::xml_node<> *parameter = comp->first_node("parameters")->first_node("parameter");
         while(parameter){
@@ -527,9 +527,9 @@ SSDP_Result SSDP_DeleteDevice(){
     apptable.clear();
 }
 
-SSDP_Result SSDP_LoadDevie(SSDP_HandleID fromid, SSDP_HandleID toid, string file_path){
+SSDP_Result SSDP_LoadDevie(SSDP_HandleID fromid, SSDP_HandleID toid, string file_path, bool newCode){
     SSDP_Result res;
-    res = devicetable[toid]->DEV_Load(file_path, false);
+    res = devicetable[toid]->DEV_Load(file_path, newCode);
     return res;
 }
 
