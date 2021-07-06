@@ -100,16 +100,16 @@ extern "C"{
     static int transfer_file(axidma_dev_t dev, struct dma_transfer *trans)
     {
         int rc;
-        //struct dma_transfer trans_cmd;
+        struct dma_transfer trans_cmd;
 
-        //trans_cmd.input_buf = axidma_malloc(dev, 4);
+        trans_cmd.input_buf = axidma_malloc(dev, 4);
 
         // Allocate a buffer for the input file, and read it into the buffer
         trans->input_buf = axidma_malloc(dev, trans->input_size);
         if (trans->input_buf == NULL) {
             fprintf(stderr, "Failed to allocate the input buffer.\n");
             rc = -ENOMEM;
-            goto ret;
+            return rc;
         }
         rc = robust_read(trans->input_fd, (char*)trans->input_buf, trans->input_size);
         if (rc < 0) {
@@ -118,7 +118,7 @@ extern "C"{
             return rc;
         }
 
-        /*unsigned int upgrade_cmd = 0xA5A55A5A;
+        unsigned int upgrade_cmd = 0xA5A55A5A;
         memcpy(trans_cmd.input_buf, (void *)&upgrade_cmd, 4);
 
         rc = axidma_oneway_transfer(dev, trans->input_channel, trans_cmd.input_buf, 4, true);
@@ -127,7 +127,7 @@ extern "C"{
             goto free_input_buf;
         }
 
-        usleep(1);*/
+        usleep(1);
 
         // Perform the transfer
         // Perform the main transaction
