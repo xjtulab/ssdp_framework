@@ -233,7 +233,7 @@ bool DspPublisherTwo::recv_info()
 {
     uint8_t read_data_status;
     bool connected = uxr_run_session_until_all_status(&session_2, -1, &read_data_req_2, &read_data_status, 1);
-    printf("connected2: %d\n", connected);
+    //printf("connected2: %d\n", connected);
     return connected;
 }
 
@@ -247,11 +247,14 @@ bool DspPublisherTwo::recv_info_noblock()
 
 
 
-void DspPublisherTwo::recv_ready_info(){
-    string str = recv_info_buf;
+void DspPublisherTwo::recv_info_ready(){
+    string str;
     bool con = false;
     do{
-        con = recv_info_noblock();
+        str = recv_info_buf;
+        uint8_t read_data_status;
+        con = uxr_run_session_until_all_status(&session_2, 100, &read_data_req_2, &read_data_status, 1);
+        
     }while(con && str.find("ready") != string::npos);
 }
 
@@ -261,7 +264,8 @@ bool DspPublisherTwo::establish_connection()
     uint8_t read_data_status;
     bool connected = uxr_run_session_until_all_status(&session_2, -1, &read_data_req_2, &read_data_status, 1);
     string recv_tmp = recv_info_buf;
-    if (connected && !strcmp(recv_tmp.substr(0,3).c_str(), "dsp"))
+
+    if (connected && (strncmp(recv_info_buf, "dsp",3) == 0 || strncmp(recv_info_buf, "fpga",4) == 0))
     {
         printf("%s\n", recv_info_buf);
         send_info("connected ok", false);

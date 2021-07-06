@@ -59,7 +59,7 @@ public:
     bool recv_info();
     bool recv_info_noblock();
     bool establish_connection();
-    void recv_ready_info();
+    void recv_info_ready();
 
     ~DspPublisherTwo()
     {
