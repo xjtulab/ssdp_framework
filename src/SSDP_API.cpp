@@ -318,6 +318,7 @@ SSDP_HandleID SSDP_InstantiateDevice(SSDP_HandleID fromid, string handlename, st
 }
 
 SSDP_Result SSDP_self_Init(){
+    app_functable.handleRequest = &SSDP_HandleRequest;
     app_functable.instan = &SSDP_InstantiateApp;
     app_functable.start = &SSDP_Start;
     app_functable.stop = &SSDP_Stop;
@@ -537,4 +538,22 @@ std::string SSDP_GetDeviceList(){
         res += tmp+";";
     }
     return res;
+}
+
+SSDP_Result SSDP_SwitchSar(SSDP_HandleID fromid, SSDP_HandleID toid){
+    if(toid == -1){
+        cout<<"app not defined yet"<<endl;
+        return SSDP_OK;
+    }
+    if (apptable.count(toid) != 0){
+        //停止雷达在原先位置的运行
+        apptable[toid]->APP_Stop();
+        //更换设备位置
+        apptable[toid]->Sar_switch();
+        //发送dsp重构指令
+    
+        //发送fpgaswitch指令
+        SSDP_HandleID fpga = SSDP_HandleRequest(SSDP_OE_HANDLE_ID, "fpga1");
+        return SSDP_OK;
+    }
 }

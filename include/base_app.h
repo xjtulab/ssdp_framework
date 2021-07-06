@@ -47,6 +47,23 @@ public:
         component_list[id_on_app]->add_parameter(name, address);
         return SSDP_OK;
     }
+
+    //切换sar中的dsp组件位置
+    void Sar_switch(){
+        auto iter = component_list.begin();
+        while(iter != component_list.end()){
+            iter++;
+            if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp1")){
+                iter->second->target_device = ftable->handleRequest(handle_id, "dsp3");
+            }else if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp2")){
+                iter->second->target_device = ftable->handleRequest(handle_id, "dsp4");
+            }else if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp3")){
+                iter->second->target_device = ftable->handleRequest(handle_id, "dsp1");
+            }else if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp4")){
+                iter->second->target_device = ftable->handleRequest(handle_id, "dsp2");
+            }
+        }
+    }
     
     //应用待实现接口
     virtual SSDP_Result APP_Start(){
@@ -86,7 +103,6 @@ public:
         return res;
     };
     virtual SSDP_Result APP_Query (int comp_id,SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size) {};
-
     //TODO 析构函数
     virtual ~AppBase(){
         cout<<"deleteing app "<<this->handle_name<<endl;
