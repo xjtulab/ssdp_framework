@@ -26,7 +26,7 @@ DeviceDSP::~DeviceDSP(){
     #endif
 }
 
-SSDP_Result DeviceDSP::DEV_Start(){
+SSDP_Result DeviceDSP::DEV_Start(string appName){
     cout<<"dsp dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
     #ifdef ARM_BUILD
         bool res = pub->send_info("start",true);
@@ -36,7 +36,7 @@ SSDP_Result DeviceDSP::DEV_Start(){
     #endif
 }
 
-SSDP_Result DeviceDSP::DEV_Stop(){
+SSDP_Result DeviceDSP::DEV_Stop(string appName){
     cout<<"dsp dev "<<this->DEV_GetHandleName()<<" is stoping"<<endl;
     #ifdef ARM_BUILD
         bool res = pub->send_info("stop",true);
@@ -210,6 +210,7 @@ SSDP_Result  DeviceDSP::DEV_Load(string filename, bool ifNewCode){
             res = pub->send_info(cmd,false);
         }
         pub->establish_connection();
+         pub->recv_info_ready();
         // pub->send_info("EMPTY TEST",false);
         return res? SSDP_OK:SSDP_ERROR;
     #else

@@ -57,8 +57,9 @@ public:
     bool init_dps_publisher(uint32_t session_key_1, uint32_t session_key_2);
     bool send_info(char *buf,bool recv);
     bool recv_info();
+    bool recv_info_noblock();
     bool establish_connection();
-    bool recv_ready_info();
+    void recv_info_ready();
 
     ~DspPublisherTwo()
     {

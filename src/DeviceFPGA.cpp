@@ -100,16 +100,16 @@ extern "C"{
     static int transfer_file(axidma_dev_t dev, struct dma_transfer *trans)
     {
         int rc;
-        //struct dma_transfer trans_cmd;
+        struct dma_transfer trans_cmd;
 
-        //trans_cmd.input_buf = axidma_malloc(dev, 4);
+        trans_cmd.input_buf = axidma_malloc(dev, 4);
 
         // Allocate a buffer for the input file, and read it into the buffer
         trans->input_buf = axidma_malloc(dev, trans->input_size);
         if (trans->input_buf == NULL) {
             fprintf(stderr, "Failed to allocate the input buffer.\n");
             rc = -ENOMEM;
-            goto ret;
+            return rc;
         }
         rc = robust_read(trans->input_fd, (char*)trans->input_buf, trans->input_size);
         if (rc < 0) {
@@ -118,7 +118,7 @@ extern "C"{
             return rc;
         }
 
-        /*unsigned int upgrade_cmd = 0xA5A55A5A;
+        unsigned int upgrade_cmd = 0xFFEEEEFF;
         memcpy(trans_cmd.input_buf, (void *)&upgrade_cmd, 4);
 
         rc = axidma_oneway_transfer(dev, trans->input_channel, trans_cmd.input_buf, 4, true);
@@ -127,7 +127,7 @@ extern "C"{
             goto free_input_buf;
         }
 
-        usleep(1);*/
+        usleep(10000);
 
         // Perform the transfer
         // Perform the main transaction
@@ -142,18 +142,49 @@ extern "C"{
 
     free_input_buf:
         axidma_free(dev, trans->input_buf, trans->input_size);
+        axidma_free(dev, trans_cmd.input_buf, 4);
     ret:
         return rc;
     }
 }
+
+axidma_dev_t axidma_dev_tmp;
+const array_t *tx_chans;
+
+static int FPGA_upgrade_init()
+{
+    int rc = 0;
+    // Initialize the AXIDMA device
+    axidma_dev_tmp = axidma_init("/dev/axidmaupgrade");
+    if (axidma_dev_tmp == NULL) {
+        printf("Error: Failed to initialize the AXI DMA device.\n");
+        rc = SSDP_ERROR;
+        axidma_destroy(axidma_dev_tmp);
+    }
+
+    // Get the tx and rx channels if they're not already specified
+    tx_chans = axidma_get_dma_tx(axidma_dev_tmp);
+    if (tx_chans->len < 1) {
+        printf("Error: No transmit channels were found.\n");
+        rc = -ENODEV;
+        axidma_destroy(axidma_dev_tmp);
+    }
+    return rc;
+
+}
 #endif
+
 
 //重载函数实现
 DeviceFPGA::DeviceFPGA(string name, SSDP_HandleID id): DeviceBase(name, id){
     SSDP_Result DEV_OK =  DEV_Check();
+    printf("begin init FPGA DEV!!\n");
+    int rc = FPGA_upgrade_init();
+    printf("init FPGA DEV!!\n");
     if(DEV_OK == SSDP_OK){
         cout<<"Device Check ok"<<endl;
         state = DEVICE_READY;
+        
     }else{
         cout<<"Warning: device not ready"<<endl;
     }
@@ -166,22 +197,36 @@ DeviceFPGA::~DeviceFPGA(){
     #endif
 }
 
-SSDP_Result DeviceFPGA::DEV_Start(){
+SSDP_Result DeviceFPGA::DEV_Start(string appName){
     cout<<"fpga dev "<<this->DEV_GetHandleName()<<" is starting"<<endl;
     #ifdef ARM_BUILD
-        bool res = pub->send_info("start",true);
+        string cmd_str = "start_"+appName;
+        char* cmd = (char*) cmd_str.c_str();
+        bool res = pub->send_info(cmd ,true);
         return res? SSDP_OK:SSDP_ERROR;
     #else  
         return SSDP_OK;
     #endif
 }
 
-SSDP_Result DeviceFPGA::DEV_Stop(){
+SSDP_Result DeviceFPGA::DEV_Stop(string appName){
     cout<<"fpga dev "<<this->DEV_GetHandleName()<<" is stoping"<<endl;
     #ifdef ARM_BUILD
-        bool res = pub->send_info("stop",true);
+        string cmd_str = "stop_"+appName;
+        char* cmd = (char*) cmd_str.c_str();
+        bool res = pub->send_info(cmd,true);
         return res? SSDP_OK:SSDP_ERROR;
     #else
+        return SSDP_OK;
+    #endif
+}
+
+SSDP_Result DeviceFPGA::DEV_Write(string msg){
+    char* send_msg = (char*) msg.c_str();
+    #ifdef ARM_BUILD
+        bool res = pub->send_info(send_msg, true);
+        return res? SSDP_OK:SSDP_ERROR;
+    #else  
         return SSDP_OK;
     #endif
 }
@@ -292,11 +337,11 @@ SSDP_Result DeviceFPGA::DEV_Load(string filename, bool ifNewCode){
     #ifdef ARM_BUILD
     if(ifNewCode){
         char *input_path;
-        axidma_dev_t axidma_dev;
+        //axidma_dev_t axidma_dev;
         struct stat input_stat;
         struct dma_transfer trans;
-        const array_t *tx_chans;
-        
+        //const array_t *tx_chans;
+        printf("load FPGA bits\n");
         // Parse the input arguments
         memset(&trans, 0, sizeof(trans));
 
@@ -310,31 +355,15 @@ SSDP_Result DeviceFPGA::DEV_Load(string filename, bool ifNewCode){
             goto ret;
         }
 
-        // Initialize the AXIDMA device
-        axidma_dev = axidma_init("/dev/axidmaupgrade");
-        if (axidma_dev == NULL) {
-            fprintf(stderr, "Error: Failed to initialize the AXI DMA device.\n");
-            rc = SSDP_ERROR;
-            goto close_input;
-        }
-
-        // Get the size of the input file
+         // Get the size of the input file
         if (fstat(trans.input_fd, &input_stat) < 0) {
             perror("Unable to get file statistics");
             rc = SSDP_ERROR;
-            goto destroy_axidma;
+            axidma_destroy(axidma_dev_tmp);
         }
 
         // If the output size was not specified by the user, set it to the default
         trans.input_size = input_stat.st_size;
-
-        // Get the tx and rx channels if they're not already specified
-        tx_chans = axidma_get_dma_tx(axidma_dev);
-        if (tx_chans->len < 1) {
-            fprintf(stderr, "Error: No transmit channels were found.\n");
-            rc = -ENODEV;
-            goto destroy_axidma;
-        }
 
         /* If the user didn't specify the channels, we assume that the transmit and
         * receive channels are the lowest numbered ones. */
@@ -346,13 +375,10 @@ SSDP_Result DeviceFPGA::DEV_Load(string filename, bool ifNewCode){
         printf("\tInput File Size: %.2f MiB\n", BYTE_TO_MIB(trans.input_size));
 
         // Transfer the file over the AXI DMA
-        rc = transfer_file(axidma_dev, &trans);
+        rc = transfer_file(axidma_dev_tmp, &trans);
         rc = (rc < 0) ? -rc : 0;
 
-        destroy_axidma:
-            axidma_destroy(axidma_dev);
-        close_input:
-            assert(close(trans.input_fd) == 0);
+        assert(close(trans.input_fd) == 0);
         //补充同步的部分
     }
     pub->establish_connection();

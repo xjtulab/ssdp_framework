@@ -130,7 +130,7 @@ SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, strin
         new_app->Add_Component(comp->first_node("objId")->value(), comp->first_node("resourceInfo")->first_node("info")->first_node("name")->value(), \
             dev_id, comp->first_node("componenId")->value());
         //重构设备或同步设备
-        SSDP_LoadDevie(SSDP_OE_HANDLE_ID, dev_id, comp->first_node("resourceInfo")->first_node("info")->first_node("codeLocation")->value(), false);
+        SSDP_LoadDevie(SSDP_OE_HANDLE_ID, dev_id, comp->first_node("resourceInfo")->first_node("info")->first_node("codeLocation")->value(), true);
         //依次添加参数名/地址对
         rapidxml::xml_node<> *parameter = comp->first_node("parameters")->first_node("parameter");
         while(parameter){
@@ -163,7 +163,9 @@ SSDP_Result SSDP_Start(SSDP_HandleID formid, SSDP_HandleID toid){
         return SSDP_OK;
     }
     else if(devicetable.count(toid) != 0){
-        devicetable[toid]->DEV_Start();
+        string appName;
+        SSDP_Result res = SSDP_GetHandleName(SSDP_OE_HANDLE_ID, formid, appName);
+        devicetable[toid]->DEV_Start(appName);
         return SSDP_OK;
     }else{
         return SSDP_ERROR;
@@ -180,7 +182,9 @@ SSDP_Result SSDP_Stop(SSDP_HandleID formid, SSDP_HandleID toid){
         return SSDP_OK;
     }
     else if(devicetable.count(toid) != 0){
-        devicetable[toid]->DEV_Stop();
+        string appName;
+        SSDP_Result res = SSDP_GetHandleName(SSDP_OE_HANDLE_ID, formid, appName);
+        devicetable[toid]->DEV_Stop(appName);
         return SSDP_OK;
     }else{
         return SSDP_ERROR;

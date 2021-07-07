@@ -20,19 +20,19 @@
 		</nodes>
 	</diagram>
 	<components>
-		<!-- <component>
+		<component>
 			<objId>Recon_preprocess@58d4238e</objId>
 			<componenId>0x01</componenId>
 			<resourceInfo>
 				<info>
 					<category>fpga</category>
 					<name>fpga1</name>
-					<codeLocation>/opt/upgrade/V13_MB_SGMII_elec.bit</codeLocation>
+					<codeLocation>/opt/upgrade/V13_MB_SGMII_ELEC.bit</codeLocation>
 					<resourceUsed>10%</resourceUsed>
 				</info>
 			</resourceInfo>
 			<parameters/>
-		</component> -->
+		</component>
 		<component>
 			<objId>Recon_signalprocess@7b8ea1db</objId>
 			<componenId>0x02</componenId>
