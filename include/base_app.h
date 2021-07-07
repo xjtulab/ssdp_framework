@@ -52,15 +52,32 @@ public:
     void Sar_switch(){
         auto iter = component_list.begin();
         while(iter != component_list.end()){
-            iter++;
             if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp1")){
+                //设备是dsp就修改位置，并重构
                 iter->second->target_device = ftable->handleRequest(handle_id, "dsp3");
+                ftable->loadDevice(handle_id, iter->second->target_device, iter->second->file_path, true);
+                iter++;
+                continue;
             }else if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp2")){
                 iter->second->target_device = ftable->handleRequest(handle_id, "dsp4");
+                ftable->loadDevice(handle_id, iter->second->target_device, iter->second->file_path, true);
+                iter++;
+                continue;
             }else if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp3")){
                 iter->second->target_device = ftable->handleRequest(handle_id, "dsp1");
+                ftable->loadDevice(handle_id, iter->second->target_device, iter->second->file_path, true);
+                iter++;
+                continue;
             }else if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp4")){
                 iter->second->target_device = ftable->handleRequest(handle_id, "dsp2");
+                ftable->loadDevice(handle_id, iter->second->target_device, iter->second->file_path, true);
+                iter++;
+                continue;
+            }else if(iter->second->target_device == ftable->handleRequest(handle_id, "fpga1")){
+                //设备是fpga就发送重构指令
+                ftable->write(handle_id, iter->second->target_device, 0, "switch",6);
+                iter++;
+                continue;
             }
         }
     }

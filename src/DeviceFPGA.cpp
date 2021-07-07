@@ -179,7 +179,9 @@ static int FPGA_upgrade_init()
 DeviceFPGA::DeviceFPGA(string name, SSDP_HandleID id): DeviceBase(name, id){
     SSDP_Result DEV_OK =  DEV_Check();
     printf("begin init FPGA DEV!!\n");
-    int rc = FPGA_upgrade_init();
+    #ifdef ARM_BUILD
+        int rc = FPGA_upgrade_init();
+    #endif
     printf("init FPGA DEV!!\n");
     if(DEV_OK == SSDP_OK){
         cout<<"Device Check ok"<<endl;
