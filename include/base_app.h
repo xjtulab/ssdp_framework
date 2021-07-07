@@ -47,6 +47,40 @@ public:
         component_list[id_on_app]->add_parameter(name, address);
         return SSDP_OK;
     }
+
+    //切换sar中的dsp组件位置
+    void Sar_switch(){
+        auto iter = component_list.begin();
+        while(iter != component_list.end()){
+            if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp1")){
+                //设备是dsp就修改位置，并重构
+                iter->second->target_device = ftable->handleRequest(handle_id, "dsp3");
+                ftable->loadDevice(handle_id, iter->second->target_device, iter->second->file_path, true);
+                iter++;
+                continue;
+            }else if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp2")){
+                iter->second->target_device = ftable->handleRequest(handle_id, "dsp4");
+                ftable->loadDevice(handle_id, iter->second->target_device, iter->second->file_path, true);
+                iter++;
+                continue;
+            }else if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp3")){
+                iter->second->target_device = ftable->handleRequest(handle_id, "dsp1");
+                ftable->loadDevice(handle_id, iter->second->target_device, iter->second->file_path, true);
+                iter++;
+                continue;
+            }else if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp4")){
+                iter->second->target_device = ftable->handleRequest(handle_id, "dsp2");
+                ftable->loadDevice(handle_id, iter->second->target_device, iter->second->file_path, true);
+                iter++;
+                continue;
+            }else if(iter->second->target_device == ftable->handleRequest(handle_id, "fpga1")){
+                //设备是fpga就发送重构指令
+                ftable->write(handle_id, iter->second->target_device, 0, "switch",6);
+                iter++;
+                continue;
+            }
+        }
+    }
     
     //应用待实现接口
     virtual SSDP_Result APP_Start(){
@@ -86,7 +120,6 @@ public:
         return res;
     };
     virtual SSDP_Result APP_Query (int comp_id,SSDP_Property_Name name, SSDP_Property_Value& value, SSDP_Buffer_Size value_size) {};
-
     //TODO 析构函数
     virtual ~AppBase(){
         cout<<"deleteing app "<<this->handle_name<<endl;

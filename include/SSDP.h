@@ -8,6 +8,7 @@
 #include "SSDP_PRE_DATA.h"
 using std::string;
 // APP控制函数指针
+typedef SSDP_HandleID (*SSDP_HandleRequest_ptr) (SSDP_HandleID fromid, const string& targetname);
 typedef SSDP_HandleID (*SSDP_InstantiateApp_ptr) (SSDP_HandleID fromid, string handlename, string filepath );
 typedef SSDP_Result (*SSDP_Start_ptr) (SSDP_HandleID fromid,SSDP_HandleID toid );
 typedef SSDP_Result (*SSDP_Stop_ptr) (SSDP_HandleID fromid,SSDP_HandleID toid );
@@ -21,9 +22,11 @@ typedef SSDP_Result (*SSDP_Configure_ptr) (SSDP_HandleID fromid, SSDP_HandleID t
 typedef SSDP_Result (*SSDP_Query_ptr) (SSDP_HandleID fromid, SSDP_HandleID toid,int comp_id, string name, string& value, SSDP_Buffer_Size value_size);
 typedef SSDP_Result (*SSDP_AbortApp_ptr) (SSDP_HandleID fromid, SSDP_HandleID toid);
 typedef bool (*SSDP_IsOK_ptr) (SSDP_Result result);
-
+typedef SSDP_Result (*SSDP_LoadDevie_ptr)(SSDP_HandleID fromid, SSDP_HandleID toid, string file_path, bool newCode);
 //APP控制函数表
 struct ssdp_app_functable{
+    SSDP_HandleRequest_ptr handleRequest;
+    SSDP_LoadDevie_ptr loadDevice;
     SSDP_IsOK_ptr isOK;
     SSDP_InstantiateApp_ptr instan;
     SSDP_Start_ptr start;

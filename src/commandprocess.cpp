@@ -45,6 +45,8 @@ SSDP_Result CmdProcess::ReceiveCommand(const string& cmd){
     }else if(par->get<string>("function") == "loadapp"){
         string app_name = par->get<string>("APP_name");
         int appid = SSDP_InstantiateApp(0, app_name, app_name+".xml");
+    }else if(par->get<string>("function") == "switch"){
+        res = SSDP_SwitchSar(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, par->get<string>("APP_name")));
     }
     else{
         cout<<"function doesn't exist"<<endl;
