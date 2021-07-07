@@ -233,7 +233,7 @@ bool DspPublisherTwo::recv_info()
 {
     uint8_t read_data_status;
     bool connected = uxr_run_session_until_all_status(&session_2, -1, &read_data_req_2, &read_data_status, 1);
-    //printf("connected2: %d\n", connected);
+    printf("connected2: %d\n", connected);
     return connected;
 }
 
@@ -241,7 +241,6 @@ bool DspPublisherTwo::recv_info_noblock()
 {
     uint8_t read_data_status;
     bool connected = uxr_run_session_until_all_status(&session_2, 3000, &read_data_req_2, &read_data_status, 1);
-    printf("connected2: %d\n", connected);
     return connected;
 }
 
@@ -252,8 +251,7 @@ void DspPublisherTwo::recv_info_ready(){
     bool con = false;
     do{
         str = recv_info_buf;
-        uint8_t read_data_status;
-        con = uxr_run_session_until_all_status(&session_2, 100, &read_data_req_2, &read_data_status, 1);
+        con = recv_info_noblock();
         
     }while(con && str.find("ready") != string::npos);
 }

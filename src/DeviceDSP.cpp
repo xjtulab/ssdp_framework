@@ -210,7 +210,7 @@ SSDP_Result  DeviceDSP::DEV_Load(string filename, bool ifNewCode){
             res = pub->send_info(cmd,false);
         }
         pub->establish_connection();
-         pub->recv_info_ready();
+        //  pub->recv_info_ready();
         // pub->send_info("EMPTY TEST",false);
         return res? SSDP_OK:SSDP_ERROR;
     #else
