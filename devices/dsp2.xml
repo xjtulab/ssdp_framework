@@ -8,7 +8,7 @@
     <ddsconfig>
         <ip>10.119.84.190</ip>
         <port>2019</port>
-        <topicname>DSPTOPIC</topicname>
+        <topicname>DSP1TOPIC</topicname>
         <session_key>0x22222222</session_key>
     </ddsconfig>
 </device>

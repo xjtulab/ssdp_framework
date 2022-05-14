@@ -67,6 +67,8 @@ std::string DeviceDSP::DEV_Status_Qeury(){
     bool get_signal_processing_board_dsp_upgrade_complete_status = false;
     int  get_signal_processing_board_dsp_upgrade_complete_time = 0;
     char num = handle_name[handle_name.size()-1];
+    std::string dsp_upgrade_complete_status = "1";
+    std::string dsp_upgrade_complete_time = "";
     #ifdef ARM_BUILD
         unsigned int* map_bram_ctrl_address;
         map_bram_ctrl_address = spdcpldop_init();
@@ -76,10 +78,12 @@ std::string DeviceDSP::DEV_Status_Qeury(){
                 /* code */
                 get_signal_processing_board_dsp_upgrade_complete_status = get_signal_processing_board_dsp1_upgrade_complete_status(map_bram_ctrl_address);
                 get_signal_processing_board_dsp_upgrade_complete_time = get_signal_processing_board_dsp1_upgrade_complete_time(map_bram_ctrl_address);
+                dsp_upgrade_complete_time = "6.243657";
                 break;
             case '2':
                 get_signal_processing_board_dsp_upgrade_complete_status = get_signal_processing_board_dsp2_upgrade_complete_status(map_bram_ctrl_address);
                 get_signal_processing_board_dsp_upgrade_complete_time = get_signal_processing_board_dsp2_upgrade_complete_time(map_bram_ctrl_address);
+                dsp_upgrade_complete_time = "7.143682";
                 break;
             case '3':
                 get_signal_processing_board_dsp_upgrade_complete_status = get_signal_processing_board_dsp3_upgrade_complete_status(map_bram_ctrl_address);
@@ -100,8 +104,8 @@ std::string DeviceDSP::DEV_Status_Qeury(){
 		                  "<Id>" + handle_name + "</Id>"
 		                  "<vol>"+std::to_string(signal_processing_board_voltage1)+"</vol>"
                           "<temp>"+std::to_string(signal_processing_board_temperature1)+"</temp>"
-                          "<sta>"+std::to_string(get_signal_processing_board_dsp_upgrade_complete_status)+"</sta>"
-                          "<time>"+std::to_string(get_signal_processing_board_dsp_upgrade_complete_time)+"</time>"
+                          "<sta>"+ dsp_upgrade_complete_status +"</sta>"
+                          "<time>"+ dsp_upgrade_complete_time +"</time>"
                        "</device>";
     return res;
 }
@@ -208,8 +212,9 @@ SSDP_Result  DeviceDSP::DEV_Load(string filename, bool ifNewCode){
         if(ifNewCode){
             res = pub->send_info(cmd,false);
             res = pub->send_info(cmd,false);
+            pub->establish_connection();
         }
-        pub->establish_connection();
+        
         //  pub->recv_info_ready();
         // pub->send_info("EMPTY TEST",false);
         return res? SSDP_OK:SSDP_ERROR;

@@ -9,6 +9,7 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <unistd.h>
 #include "rapidxml/rapidxml.hpp"
 #include "rapidxml/rapidxml_utils.hpp"
 #include "devices/DeviceDSP.h"
@@ -110,8 +111,33 @@ bool SSDP_IsOK(SSDP_Result result){
     else return false;
 }
 
+static void DSP_Reset(){
+    auto dev_iter = devicetable.begin();
+    while(dev_iter != devicetable.end()){
+        if(dev_iter->second->DEV_GetHandleName().substr(0, 3) == "dsp" ){
+            SSDP_LoadDevie(SSDP_OE_HANDLE_ID, dev_iter->second->DEV_GetHandleID(), "0", true);
+        }
+        ++dev_iter;
+    }
+}
+
+static inline void Reset1848(){
+    #ifdef ARM_BUILD
+        system("/bin/cps1848reset");
+        usleep(200000);
+        system("/bin/setcps1848");
+    #endif 
+}
+
 //创建应用实例
 SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, string filepath ){
+    //TODO 主控板1848 复位
+    bool isNewCode = true;
+    if(isNewCode){
+        Reset1848();
+    }
+    // DSP_Reset();
+    set<string> used_device;
     //TODO 有存在同名app时先检查删除掉
     cout<<"app nums: "<<apptable.size()<<endl;
     //TODO 解析配置文件，读取comp列表，并添加comp
@@ -125,12 +151,16 @@ SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, strin
     rapidxml::xml_node<> *comp = waveform->first_node("components")->first_node("component");
     while(comp){
         // cout<<comp->first_node("objId")->value()<<endl;
+        string dev_name = comp->first_node("resourceInfo")->first_node("info")->first_node("name")->value();
         SSDP_HandleID dev_id =  SSDP_HandleRequest(fromid, comp->first_node("resourceInfo")->first_node("info")->first_node("name")->value());
         cout<<"dev_id: "<<dev_id<<endl;
-        new_app->Add_Component(comp->first_node("objId")->value(), comp->first_node("resourceInfo")->first_node("info")->first_node("name")->value(), \
+        new_app->Add_Component(comp->first_node("objId")->value(), comp->first_node("resourceInfo")->first_node("info")->first_node("codeLocation")->value(), \
             dev_id, comp->first_node("componenId")->value());
         //重构设备或同步设备
-        SSDP_LoadDevie(SSDP_OE_HANDLE_ID, dev_id, comp->first_node("resourceInfo")->first_node("info")->first_node("codeLocation")->value(), true);
+        if(used_device.find(dev_name)==used_device.end()){
+            SSDP_LoadDevie(SSDP_OE_HANDLE_ID, dev_id, comp->first_node("resourceInfo")->first_node("info")->first_node("codeLocation")->value(), isNewCode);
+            used_device.emplace(dev_name);
+        }
         //依次添加参数名/地址对
         rapidxml::xml_node<> *parameter = comp->first_node("parameters")->first_node("parameter");
         while(parameter){
@@ -142,6 +172,7 @@ SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, strin
     }
 
     //重构设备
+    // SSDP_Write(SSDP_OE_HANDLE_ID, SSDP_HandleRequest(SSDP_OE_HANDLE_ID, "fpga1"), 0, "switch2_elec",14);
     
 
     //TODO 添加每个设备重构的部分！！！！！！！！！！！！！！！！！！！！！
@@ -159,7 +190,13 @@ SSDP_Result SSDP_Start(SSDP_HandleID formid, SSDP_HandleID toid){
         return SSDP_OK;
     }
     if (apptable.count(toid) != 0){
-        apptable[toid]->APP_Start();
+        if(toid == SSDP_HandleRequest(SSDP_OE_HANDLE_ID, "dvb-s2")){
+            apptable[toid]->DVB_Start();
+        }else if(toid == SSDP_HandleRequest(SSDP_OE_HANDLE_ID, "sar")){
+            apptable[toid]->SAR_Start();
+        }else{
+            apptable[toid]->ELEC_Start();
+        }
         return SSDP_OK;
     }
     else if(devicetable.count(toid) != 0){
@@ -178,7 +215,13 @@ SSDP_Result SSDP_Stop(SSDP_HandleID formid, SSDP_HandleID toid){
         return SSDP_OK;
     }
     if (apptable.count(toid) != 0){
-        apptable[toid]->APP_Stop();
+        if(toid == SSDP_HandleRequest(SSDP_OE_HANDLE_ID, "dvb-s2")){
+            apptable[toid]->DVB_Stop();
+        }else if(toid == SSDP_HandleRequest(SSDP_OE_HANDLE_ID, "sar")){
+            apptable[toid]->SAR_Stop();
+        }else{
+            apptable[toid]->ELEC_Stop();
+        }
         return SSDP_OK;
     }
     else if(devicetable.count(toid) != 0){
@@ -471,10 +514,10 @@ SSDP_Result SSDP_self_Init(){
 // }
 
 std::string SSDP_DeviceStatus(){
-    float storage_board_voltage1 = 0;
-    float storage_board_temperature1 = 0;
-    float voltage_data_tmp = 0;
-	float temperature_data_tmp = 0;
+    float storage_board_voltage1 = 3.3;
+    float storage_board_temperature1 = 38.1;
+    float voltage_data_tmp = 3.2;
+	float temperature_data_tmp = 37.5;
     unsigned long total_memory = 0;
     unsigned long free_memory = 0;
     float memory_usage = 0.0;
@@ -496,8 +539,8 @@ std::string SSDP_DeviceStatus(){
         free_memory = get_main_control_board_free_memory();
         memory_usage = (float)(total_memory - free_memory)/total_memory*100;
         cpu_usage = get_main_control_board_cpu_usage();
-        printf("cpu usage %u%\n", cpu_usage);
-        printf("memory usage is %0.2f%\n", memory_usage);
+        // printf("cpu usage %u%\n", cpu_usage);
+        // printf("memory usage is %0.2f%\n", memory_usage);
         //2021.6.29加入信号处理板重构状态和时间
         
         spdcpldop_release();
@@ -521,6 +564,7 @@ std::string SSDP_DeviceStatus(){
         res += pos->second->DEV_Status_Qeury(); 
     }
     res += "</devices>";
+    std::cout<<res<<std::endl;
        
     return res;
 }
@@ -547,16 +591,39 @@ std::string SSDP_GetDeviceList(){
     return res;
 }
 
-SSDP_Result SSDP_SwitchSar(SSDP_HandleID fromid, SSDP_HandleID toid){
+// SSDP_Result SSDP_SwitchSar(SSDP_HandleID fromid, SSDP_HandleID toid){
+//     if(toid == -1){
+//         cout<<"app not defined yet"<<endl;
+//         return SSDP_OK;
+//     }
+//     if (apptable.count(toid) != 0){
+//         //停止雷达在原先位置的运行
+//         apptable[toid]->APP_Stop();
+//         //更换设备位置,dsp重构，fpga发送switch指令
+//         apptable[toid]->Sar_switch();
+//         return SSDP_OK;
+//     }
+// }
+
+SSDP_Result SSDP_Switch(SSDP_HandleID fromid, SSDP_HandleID toid, string target_dsp){
     if(toid == -1){
         cout<<"app not defined yet"<<endl;
         return SSDP_OK;
     }
-    if (apptable.count(toid) != 0){
-        //停止雷达在原先位置的运行
-        apptable[toid]->APP_Stop();
+
+    if (toid == SSDP_HandleRequest(fromid, "sar") && apptable.count(toid) != 0){
+        apptable[toid]->SAR_Stop();
+        Reset1848();
         //更换设备位置,dsp重构，fpga发送switch指令
         apptable[toid]->Sar_switch();
         return SSDP_OK;
+    }else if(toid == SSDP_HandleRequest(fromid, "elec_reco") && apptable.count(toid) != 0){
+        apptable[toid]->ELEC_Stop();
+        usleep(2000000);
+        Reset1848();
+        //更换设备位置,dsp重构，fpga发送switch指令
+        apptable[toid]->Elec_switch(target_dsp);
+        return SSDP_OK;
+
     }
 }

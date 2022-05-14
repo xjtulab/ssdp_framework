@@ -13,6 +13,9 @@ public:
     CmdProcess();
     SSDP_Result ReceiveCommand(const string& cmd);
     ~CmdProcess();
+
+    int reconstruct_time; //gpf: This is reconstruct time for app, ms
+    int is_load;//gpf: whether is load 
 };
 
 

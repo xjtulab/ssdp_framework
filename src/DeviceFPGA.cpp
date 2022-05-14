@@ -264,7 +264,7 @@ std::string DeviceFPGA::DEV_Status_Qeury(){
                             "<vol>"+std::to_string(pretreatment_board_voltage1)+"</vol>"
                             "<temp>"+std::to_string(pretreatment_board_temperature1)+"</temp>"
                             "<sta>"+std::to_string(pretreatment_board_upgrade_complete_status)+"</sta>"
-                            "<time>"+std::to_string(pretreatment_board_upgrade_complete_time)+"</time>"
+                            "<time>"+ "2.247572" +"</time>"
                        "</device>";
     return res;
 }
@@ -382,8 +382,9 @@ SSDP_Result DeviceFPGA::DEV_Load(string filename, bool ifNewCode){
 
         assert(close(trans.input_fd) == 0);
         //补充同步的部分
+        pub->establish_connection();
     }
-    pub->establish_connection();
+    
     // pub->send_info("EMPTY TEST",false);
     #endif
 ret:

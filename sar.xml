@@ -6,48 +6,48 @@
 		<count>3</count>
 		<nodes>
 			<node>
-				<nodeId>sar_preprocess@750cd36d</nodeId>
+				<nodeId>sar_preprocess@1016b44e</nodeId>
 				<componentId>0x03:sar_preprocess</componentId>
 				<inputs></inputs>
-				<outputs>gefmodel.ComponentModel@2b098563;gefmodel.ComponentModel@38732372</outputs>
+				<outputs>gefmodel.ComponentModel@563bd6a4;gefmodel.ComponentModel@46aea9f7</outputs>
 			</node>
 			<node>
-				<nodeId>sar_signalprocess1@2b098563</nodeId>
+				<nodeId>sar_signalprocess1@563bd6a4</nodeId>
 				<componentId>0x04:sar_signalprocess1</componentId>
-				<inputs>gefmodel.ComponentModel@750cd36d</inputs>
+				<inputs>gefmodel.ComponentModel@1016b44e</inputs>
 				<outputs></outputs>
 			</node>
 			<node>
-				<nodeId>sar_signalprocess2@38732372</nodeId>
+				<nodeId>sar_signalprocess2@46aea9f7</nodeId>
 				<componentId>0x05:sar_signalprocess2</componentId>
-				<inputs>gefmodel.ComponentModel@750cd36d</inputs>
+				<inputs>gefmodel.ComponentModel@1016b44e</inputs>
 				<outputs></outputs>
 			</node>
 		</nodes>
 	</diagram>
 	<components>
 		<component>
-			<objId>sar_preprocess@750cd36d</objId>
+			<objId>sar_preprocess@1016b44e</objId>
 			<componenId>0x03</componenId>
 			<resourceInfo>
 				<info>
 					<category>fpga</category>
+					<codeLocation>/opt/upgrade/download_sar_0924.bit</codeLocation>
+					<resourceUsed>10%</resourceUsed>
 					<name>fpga1</name>
-					<codeLocation>/opt/upgrade/V13_MB_SGMII_SAR.bit</codeLocation>
-					<resourceUsed>/</resourceUsed>
 				</info>
 			</resourceInfo>
 			<parameters/>
 		</component>
 		<component>
-			<objId>sar_signalprocess1@2b098563</objId>
+			<objId>sar_signalprocess1@563bd6a4</objId>
 			<componenId>0x04</componenId>
 			<resourceInfo>
 				<info>
 					<category>dsp</category>
-					<name>dsp1</name>
 					<codeLocation>2</codeLocation>
-					<resourceUsed>/</resourceUsed>
+					<resourceUsed>10%</resourceUsed>
+					<name>dsp1</name>
 				</info>
 			</resourceInfo>
 			<parameters>
@@ -79,14 +79,14 @@
 			</parameters>
 		</component>
 		<component>
-			<objId>sar_signalprocess2@38732372</objId>
+			<objId>sar_signalprocess2@46aea9f7</objId>
 			<componenId>0x05</componenId>
 			<resourceInfo>
 				<info>
 					<category>dsp</category>
-					<name>dsp2</name>
 					<codeLocation>2</codeLocation>
-					<resourceUsed>/</resourceUsed>
+					<resourceUsed>10%</resourceUsed>
+					<name>dsp2</name>
 				</info>
 			</resourceInfo>
 			<parameters>

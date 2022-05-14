@@ -6,7 +6,9 @@
 #include "SSDP_PRE_DATA.h"
 #include "SSDP.h"
 #include "component.h"
+#include <unistd.h>
 #include <map>
+#include <vector>
 #include <iostream>
 using std::string;
 using namespace std;
@@ -50,40 +52,130 @@ public:
 
     //切换sar中的dsp组件位置
     void Sar_switch(){
-        auto iter = component_list.begin();
-        while(iter != component_list.end()){
+        string target_dsp = "";
+        vector<SSDP_HandleID> source, target;
+        auto iter = component_list.rbegin();
+        while(iter != component_list.rend()){
             if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp1")){
                 //设备是dsp就修改位置，并重构
+                source.emplace_back(iter->second->target_device);
+                target.emplace_back(ftable->handleRequest(handle_id, "dsp3"));
                 iter->second->target_device = ftable->handleRequest(handle_id, "dsp3");
-                ftable->loadDevice(handle_id, iter->second->target_device, iter->second->file_path, true);
+                target_dsp = "dsp3";
                 iter++;
                 continue;
             }else if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp2")){
+                source.emplace_back(iter->second->target_device);
+                target.emplace_back(ftable->handleRequest(handle_id, "dsp4"));
                 iter->second->target_device = ftable->handleRequest(handle_id, "dsp4");
-                ftable->loadDevice(handle_id, iter->second->target_device, iter->second->file_path, true);
                 iter++;
                 continue;
             }else if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp3")){
+                source.emplace_back(iter->second->target_device);
+                target.emplace_back(ftable->handleRequest(handle_id, "dsp1"));
                 iter->second->target_device = ftable->handleRequest(handle_id, "dsp1");
-                ftable->loadDevice(handle_id, iter->second->target_device, iter->second->file_path, true);
+                target_dsp = "dsp1";
                 iter++;
                 continue;
             }else if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp4")){
+                source.emplace_back(iter->second->target_device);
+                target.emplace_back(ftable->handleRequest(handle_id, "dsp2"));
                 iter->second->target_device = ftable->handleRequest(handle_id, "dsp2");
-                ftable->loadDevice(handle_id, iter->second->target_device, iter->second->file_path, true);
                 iter++;
                 continue;
             }else if(iter->second->target_device == ftable->handleRequest(handle_id, "fpga1")){
                 //设备是fpga就发送重构指令
-                ftable->write(handle_id, iter->second->target_device, 0, "switch",6);
                 iter++;
                 continue;
             }
         }
+        for(auto source_id:source){
+            ftable->loadDevice(handle_id, source_id, "0", true);
+        }
+        for(auto target_id:target){
+            ftable->loadDevice(handle_id, target_id, component_list.rbegin()->second->file_path, true);
+        }
+        if(target_dsp == "dsp1"){
+            ftable->write(handle_id, ftable->handleRequest(handle_id, "fpga1"), 0, "switch01_radar",14);
+            cout<<"fpga write cmd: switch01_radar"<<endl;
+        }else if(target_dsp == "dsp3"){
+            ftable->write(handle_id, ftable->handleRequest(handle_id, "fpga1"), 0, "switch23_radar",14);
+            cout<<"fpga write cmd: switch23_radar"<<endl;
+        }
+    }
+
+    void Elec_switch(string target_dsp){
+        map<string, string> dspNum2FpgaCmd = {
+            {"0", "switch0_elec"},
+            {"1", "switch1_elec"},
+            {"2", "switch2_elec"},
+            {"3", "switch3_elec"}
+        };
+        string t_dsp = "";
+        vector<SSDP_HandleID> source, target;
+        auto iter = component_list.rbegin();
+        while(iter != component_list.rend()){
+            if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp1")){
+                //设备是dsp就修改位置，并重构
+                source.emplace_back(iter->second->target_device);
+                target.emplace_back(ftable->handleRequest(handle_id, "dsp3"));
+                iter->second->target_device = ftable->handleRequest(handle_id, "dsp3");
+                t_dsp = "dsp3";
+                iter++;
+                continue;
+            }else if(iter->second->target_device == ftable->handleRequest(handle_id, "dsp3")){
+                source.emplace_back(iter->second->target_device);
+                target.emplace_back(ftable->handleRequest(handle_id, "dsp1"));
+                iter->second->target_device = ftable->handleRequest(handle_id, "dsp1");
+                t_dsp = "dsp1";
+                iter++;
+                continue;
+            }else if(iter->second->target_device == ftable->handleRequest(handle_id, "fpga1")){
+                //设备是fpga就发送重构指令
+                // ftable->loadDevice(handle_id, iter->second->target_device, iter->second->file_path, true);
+                iter++;
+                continue;
+            }
+        }
+        for(auto source_id:source){
+            ftable->loadDevice(handle_id, source_id, "0", true);
+        }
+        for(auto target_id:target){
+            ftable->loadDevice(handle_id, target_id, component_list.rbegin()->second->file_path, true);
+        }
+        // sleep(180);
+        if(t_dsp == "dsp1"){
+            ftable->write(handle_id, ftable->handleRequest(handle_id, "fpga1"), 0, "switch0_elec",14);
+            cout<<"fpga write cmd: switch0_elec"<<endl;
+        }else if(t_dsp == "dsp3"){
+            ftable->write(handle_id, ftable->handleRequest(handle_id, "fpga1"), 0, "switch2_elec",14);
+            cout<<"fpga write cmd: switch2_elec"<<endl;
+        }
+
     }
     
     //应用待实现接口
-    virtual SSDP_Result APP_Start(){
+    virtual SSDP_Result SAR_Start(){
+        SSDP_Result res = SSDP_OK;
+        auto iter = component_list.rbegin();
+        while(iter != component_list.rend()){
+            //TODO 需要传输compi地址参数，修改组件空间的02地址？
+            if(!ftable->start(handle_id, iter->second->target_device)){
+                res = SSDP_ERROR;
+            }
+            iter++;
+        }
+        return res;
+    };     
+    virtual SSDP_Result DVB_Start(){
+        SSDP_Result res = SSDP_OK;
+        auto iter = component_list.begin();
+        if(!ftable->start(handle_id, iter->second->target_device)){
+            res = SSDP_ERROR;
+        }
+        return res;
+    };
+    virtual SSDP_Result ELEC_Start(){
         SSDP_Result res = SSDP_OK;
         auto iter = component_list.begin();
         while(iter != component_list.end()){
@@ -94,11 +186,31 @@ public:
             iter++;
         }
         return res;
-    };                                                                         
-    virtual SSDP_Result APP_Stop(){
+    };                                                             
+    virtual SSDP_Result SAR_Stop(){
         SSDP_Result res = SSDP_OK;
         auto iter = component_list.begin();
         while(iter != component_list.end()){
+            //TODO 需要传输compi地址参数，修改组件空间的02地址？
+            if(!ftable->stop(handle_id, iter->second->target_device)){
+                res = SSDP_ERROR;
+            }
+            iter++;
+        }
+        return res;
+    };
+    virtual SSDP_Result DVB_Stop(){
+        SSDP_Result res = SSDP_OK;
+        auto iter = component_list.begin();
+        if(!ftable->stop(handle_id, iter->second->target_device)){
+            res = SSDP_ERROR;
+        }
+        return res;
+    };
+    virtual SSDP_Result ELEC_Stop(){
+        SSDP_Result res = SSDP_OK;
+        auto iter = component_list.rbegin();
+        while(iter != component_list.rend()){
             //TODO 需要传输compi地址参数，修改组件空间的02地址？
             if(!ftable->stop(handle_id, iter->second->target_device)){
                 res = SSDP_ERROR;

@@ -27,6 +27,8 @@ SSDP_Result SSDP_Read(SSDP_HandleID formid, SSDP_HandleID toid,int comp_id, stri
 SSDP_Result SSDP_show_cur_apps();
 SSDP_Result SSDP_self_Init();
 SSDP_Result SSDP_SwitchSar(SSDP_HandleID fromid, SSDP_HandleID toid);
+SSDP_Result SSDP_Switch(SSDP_HandleID fromid, SSDP_HandleID toid, string target_dsp);
+
 
 //设备相关API
 std::string SSDP_DeviceStatus();

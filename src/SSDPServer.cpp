@@ -136,6 +136,11 @@ void SSDPServer::handle_message(int fd){
             }else{
                 reply = "Command conduct error!";
             }
+            /*gpf: add reconstruct time with @*/
+            if(cmdprocesser.is_load){
+                reply = reply + "@" + ::to_string(cmdprocesser.reconstruct_time);
+            }
+            /* gpf end */
 
         }else if(mes.flag == 1){
             //TODO 文件处理流程
