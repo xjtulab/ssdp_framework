@@ -133,6 +133,8 @@ static inline void Reset1848(){
 SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, string filepath ){
     //TODO 主控板1848 复位
     bool isNewCode = true;
+    bool isSar = (handlename == "sar");//gpf: set sar flag
+
     if(isNewCode){
         Reset1848();
     }
@@ -181,6 +183,14 @@ SSDP_HandleID SSDP_InstantiateApp(SSDP_HandleID fromid, string handlename, strin
     //cout<<new_app.use_count()<<endl;
     //TODO 进行应用属性配置，启动等
     //new_app.use_count();
+
+    /* gpf: Sar application will call additional function */
+    if(isSar){
+        system("/bin/sarapplication");
+        cout<<"Start xxx done."<<endl;
+    }
+    /* gpf end*/
+
     return new_app->APP_GetHandleID();
 }
 
